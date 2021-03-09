@@ -29,6 +29,19 @@ J = 0.0022;
 B = 0.015;
 K_s = 1;
 
+% Separation:
+
+% Load 1:
+J1=J;
+B1=B;
+% Load 2:
+J2=J;
+B2=B;
+% Spring 1:
+K_s1=K_s;
+% Spring 2:
+K_s2=K_s;
+
 %% Controller parameters
 
 % Loop of current
@@ -53,14 +66,44 @@ Ti_p = 10;
 
 %% State-space representation
 
+% 2-DOF systemé unique model
 A = zeros(6,6);
 A(1,2) = 1;
-A(2,:) = [-K_s/(eta_m*eta_g*K_g^2*J_eq),-B_eq/J_eq,K_s/(eta_m*eta_g*K_g*J_eq),0,0,0];
+A(2,:) = [-K_s1/(eta_m*eta_g*K_g^2*J_eq),-B_eq/J_eq,K_s1/(eta_m*eta_g*K_g*J_eq),0,0,0];
 A(3,4) = 1;
-A(4,:) = [K_s/K_g,0,-2*K_s/J,-B/J,K_s/J,0];
+A(4,:) = [K_s2/(K_g*J1),0,-2*K_s2/J1,-B1/J1,K_s2/J1,0];
 A(5,6) = 1;
-A(6,:) = [0,0,K_s/J,0,-K_s/J,-B/J];
+A(6,:) = [0,0,K_s2/J2,0,-K_s2/J2,-B2/J2];
 
 B = [0,1/J_eq,0,0,0,0]';     % u = tau_m
+  
+C = [K_s1/(eta_g*K_g^2),0,-K_s1/(eta_g*K_g),0,0,0]; % y = tau_lm
 
-C = [K_s/(eta_g*K_g^2),0,-K_s/(eta_g*K_g),0,0,0];
+% Separated model: motor+gear 
+% Input: tau_m, theta_1, theta_1_dot
+% Output: tau_lm, theta_m, theta_m_dot
+Am = A(1:2,1:2);
+Bm = [B(1:2,1) A(1:2,3) zeros(2,1)];
+Cm = [C(1,1:2);
+      1,0;
+      0,1];
+Dm = zeros(3,3);
+Dm(1,2) = C(1,3);
+
+% Separated model: load 1
+%Input: theta_m, theta_m_dot, theta_2, theta_2_dot
+%Output: theta_1, theta_1_dot
+A1 = A(3:4,3:4);
+B1 = [A(3:4,1) zeros(2,1) A(3:4,5) zeros(2,1)];
+C1 = [1 0;
+      0 1];
+D1 = zeros(2,4);
+
+%Separated model: load 2
+%Input: theta_1,theta_1_dot
+%Output: theta_2,theta_2_dot
+A2 = A(5:6,5:6);
+B2 = A(5:6,3:4);
+C2 = [1 0;
+      0 1];
+D2 = zeros(2,2);
