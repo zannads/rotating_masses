@@ -2,6 +2,24 @@ clear all
 close all
 clc
 
+%% TO UPLOAD TESTS
+%add the directory to the Matlabpath if it hasn't been done permanently.
+% Get the name of the user who logged in to the computer.
+userProfile = getenv('USERPROFILE');
+
+directory = 'MatlabDrive\RotatingMasses';
+addpath( fullfile( userProfile, 'Documents', directory ) );
+
+%Load the desired test
+test = 'data_09-Mar-2021_15-37-13.mat';
+data = load( test );
+
+%unfortunately the variable has _ instead of - 
+test = 'data_09_Mar_2021_15_37_13';
+data = data.(test);
+number_signal = size( data, 1);
+time_steps  =size( data, 2);
+
 %% Factory parameters
 
 % Motor/gear parameters
@@ -41,6 +59,16 @@ B2=B;
 K_s1=K_s;
 % Spring 2:
 K_s2=K_s;
+
+%% Sensor parameters 
+volt_to_deg_potentiometer = 35.2; % [V/deg]
+deg_to_rad = pi/180; 
+pulse_per_rev_encoder = 4096;
+pulse_to_rad = 2*pi/pulse_per_rev_encoder;
+
+%The low pass filter for speed measuring is now commented through, once we
+%set this up we can uncomment it
+%speed_sensor_flter = 1/s+w ???? 
 
 %% Controller parameters
 
@@ -107,3 +135,7 @@ B2 = A(5:6,3:4);
 C2 = [1 0;
       0 1];
 D2 = zeros(2,2);
+%%
+figure
+plot( data_09_Mar_2021_16_48_16(1, :),  [data_09_Mar_2021_16_48_16(2:end-1, :);...
+    1000*data_09_Mar_2021_16_48_16(end, :)] ); grid on
