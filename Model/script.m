@@ -7,7 +7,7 @@ clc
 % Get the name of the user who logged in to the computer.
 userProfile = getenv('USERPROFILE');
 
-directory = 'MatlabDrive\RotatingMasses';
+directory = 'MatlabDrive/RotatingMasses';
 addpath( fullfile( userProfile, 'Documents', directory ) );
 
 %Load the desired test
