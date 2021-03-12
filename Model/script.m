@@ -11,14 +11,22 @@ directory = 'MatlabDrive\RotatingMasses';
 addpath( fullfile( userProfile, 'Documents', directory ) );
 
 %Load the desired test
-test = 'data_09-Mar-2021_15-37-13.mat';
-data = load( test );
-
+% test = 'data_09-Mar-2021_15-37-13.mat';
 %unfortunately the variable has _ instead of - 
-test = 'data_09_Mar_2021_15_37_13';
+test = 'data_09_Mar_2021_18_53_24';
+data = load( test );
 data = data.(test);
 number_signal = size( data, 1);
 time_steps  =size( data, 2);
+
+voltage_ref=[data(1,:)',data(3,:)'];
+motor_pos=[data(1,:)',data(2,:)'];
+mass_pos=[data(1,:)',data(4,:)'];
+if number_signal>4
+    mass_vel=[data(1,:)',data(5,:)'];
+else
+    mass_vel=[data(1,:)',zeros(time_steps,1)];
+end
 
 %% Factory parameters
 
@@ -69,6 +77,7 @@ pulse_to_rad = 2*pi/pulse_per_rev_encoder;
 %The low pass filter for speed measuring is now commented through, once we
 %set this up we can uncomment it
 %speed_sensor_flter = 1/s+w ???? 
+wfilter=2*pi*25;
 
 %% Controller parameters
 
@@ -137,5 +146,5 @@ C2 = [1 0;
 D2 = zeros(2,2);
 %%
 figure
-plot( data_09_Mar_2021_16_48_16(1, :),  [data_09_Mar_2021_16_48_16(2:end-1, :);...
-    1000*data_09_Mar_2021_16_48_16(end, :)] ); grid on
+plot( data(1, :),  [data(2:end-1, :);...
+    1000*data(end, :)] ); grid on
