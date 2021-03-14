@@ -19,13 +19,14 @@ data = data.(test);
 number_signal = size( data, 1);
 time_steps = size( data, 2);
 
-voltage_ref=[data(1,:)',data(3,:)'];
-motor_pos=[data(1,:)',data(2,:)'];
-mass_pos=[data(1,:)',data(4,:)'];
+voltage_ref = [data(1,:)',data(3,:)'];
+motor_pos_data = [data(1,:)',data(2,:)'];
+motor_pos_0 = motor_pos_data(1,2);
+mass_pos_data = [data(1,:)',data(4,:)'];
 if number_signal>4
-    mass_vel=[data(1,:)',data(5,:)'];
+    mass_vel_data = [data(1,:)',data(5,:)'];
 else
-    mass_vel=[data(1,:)',zeros(time_steps,1)];
+    mass_vel_data = [data(1,:)',zeros(time_steps,1)];
 end
 
 %% Factory parameters
@@ -54,8 +55,8 @@ I_max = 1;
 w_max = 628.3;
 
 % Load parameters
-% J = 0.0022;
-% B = 0.015;
+% J = 0.0022;         %resonance freq. wrong
+% B = 0.015;          %resonance freq. wrong
 J = 0.000545;
 B = 0.0015;
 K_s = 1;
@@ -92,8 +93,8 @@ kp_I = wc_I*Lm;
 ki_I = wc_I*Rm;
 Ti_I = kp_I/ki_I;
 
-I_th=1.6*I_max;
-V_th=1*V_nom;
+I_th = I_max*1.6;
+V_th = V_max*1;
 
 % Loop of speed
 wc_v = B_eq/J_eq;
@@ -108,7 +109,9 @@ Ti_p = 10;
 
 %% State-space representation
 
-% 2-DOF systemé unique model
+% 2-DOF system, unique model
+% ATTENZIONE! Controllare modello rispetto a Simulink
+
 % A = zeros(6,6);
 % A(1,2) = 1;
 % A(2,:) = [-K_s1/(eta_m*eta_g*K_g^2*J_eq),-B_eq/J_eq,K_s1/(eta_m*eta_g*K_g*J_eq),0,0,0];
@@ -116,12 +119,12 @@ Ti_p = 10;
 % A(4,:) = [K_s2/(K_g*J1),0,-2*K_s2/J1,-B1/J1,K_s2/J1,0];
 % A(5,6) = 1;
 % A(6,:) = [0,0,K_s2/J2,0,-K_s2/J2,-B2/J2];
-% 
 % B = [0,1/J_eq,0,0,0,0]';     % u = tau_m
-%   
 % C = [K_s1/(eta_g*K_g^2),0,-K_s1/(eta_g*K_g),0,0,0]; % y = tau_lm
 
+
 % Motor model
+
 % state: x1 = theta_m, x2 = theta_m_dot;
 % input: u1 = tau_m, u2 = tau_lm;
 % output: y1 = theta_m, y2 = theta_m_dot;
@@ -131,36 +134,6 @@ B_m = [0,0;
        1/J_eq,-1/J_eq];
 C_m = eye(2);
 D_m = zeros(2);
-
-% A=zeros(4,4);
-% A(1,2) = 1;
-% A(2,:) = [-K_s1/(J_eq),-B_eq/J_eq,K_s1/J_eq,0];
-% A(3,4) = 1;
-% A(4,:) = [K_s1/(J_1),0,-K_s1/J_1,-B_1/J_1];
-% B = [0,eta_m*eta_g*K_g/J_eq,0,0]';
-% C = [1 0 0 0;
-%     0 1 0 0;
-%     0 0 1 0;
-%     0 0 0 1];
-% D=zeros(4,1);
-
-% Separated model: load 1
-%Input: theta_m, theta_m_dot, theta_2, theta_2_dot
-%Output: theta_1, theta_1_dot
-% A1 = A(3:4,3:4);
-% B1 = [A(3:4,1) zeros(2,1) A(3:4,5) zeros(2,1)];
-% C1 = [1 0;
-%       0 1];
-% D1 = zeros(2,4);
-
-%Separated model: load 2
-%Input: theta_1,theta_1_dot
-%Output: theta_2,theta_2_dot
-% A2 = A(5:6,5:6);
-% B2 = A(5:6,3:4);
-% C2 = [1 0;
-%       0 1];
-% D2 = zeros(2,2);
 
 %%
 figure
