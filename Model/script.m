@@ -35,7 +35,7 @@ V_nom = 6;
 V_max = 10;
 Rm = 2.6;
 Lm = 0.18e-3;
-k_t = 7.68e-3*0.9;
+k_t = 7.68e-3;
 k_m = 7.68e-3;
 
 K_g = 70;           % high-gear total gear ratio
@@ -117,9 +117,9 @@ Ti_p = 10;
 % A(5,6) = 1;
 % A(6,:) = [0,0,K_s2/J2,0,-K_s2/J2,-B2/J2];
 % 
-B = [0,1/J_eq,0,0,0,0]';     % u = tau_m
-  
-C = [K_s1/(eta_g*K_g^2),0,-K_s1/(eta_g*K_g),0,0,0]; % y = tau_lm
+% B = [0,1/J_eq,0,0,0,0]';     % u = tau_m
+%   
+% C = [K_s1/(eta_g*K_g^2),0,-K_s1/(eta_g*K_g),0,0,0]; % y = tau_lm
 
 % Motor model
 % state: x1 = theta_m, x2 = theta_m_dot;
@@ -131,6 +131,18 @@ B_m = [0,0;
        1/J_eq,-1/J_eq];
 C_m = eye(2);
 D_m = zeros(2);
+
+% A=zeros(4,4);
+% A(1,2) = 1;
+% A(2,:) = [-K_s1/(J_eq),-B_eq/J_eq,K_s1/J_eq,0];
+% A(3,4) = 1;
+% A(4,:) = [K_s1/(J_1),0,-K_s1/J_1,-B_1/J_1];
+% B = [0,eta_m*eta_g*K_g/J_eq,0,0]';
+% C = [1 0 0 0;
+%     0 1 0 0;
+%     0 0 1 0;
+%     0 0 0 1];
+% D=zeros(4,1);
 
 % Separated model: load 1
 %Input: theta_m, theta_m_dot, theta_2, theta_2_dot
