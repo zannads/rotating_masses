@@ -17,7 +17,7 @@ test = 'data_09_Mar_2021_18_53_24';
 data = load( test );
 data = data.(test);
 number_signal = size( data, 1);
-time_steps  =size( data, 2);
+time_steps = size( data, 2);
 
 voltage_ref=[data(1,:)',data(3,:)'];
 motor_pos=[data(1,:)',data(2,:)'];
@@ -32,12 +32,15 @@ end
 
 % Motor/gear parameters
 V_nom = 6;
+V_max = 10;
 Rm = 2.6;
 Lm = 0.18e-3;
-k_t = 7.68e-3;
+k_t = 7.68e-3*0.9;
 k_m = 7.68e-3;
 
 K_g = 70;           % high-gear total gear ratio
+K_gi = 14;
+K_ge = 5;
 eta_m = 0.69;
 eta_g = 0.9;
 
@@ -51,25 +54,27 @@ I_max = 1;
 w_max = 628.3;
 
 % Load parameters
-J = 0.0022;
-B = 0.015;
+% J = 0.0022;
+% B = 0.015;
+J = 0.000545;
+B = 0.0015;
 K_s = 1;
 
 % Separation:
 
 % Load 1:
-J1=J;
-B1=B;
+J_1=J;
+B_1=B;
 % Load 2:
-J2=J;
-B2=B;
+J_2=J;
+B_2=B;
 % Spring 1:
 K_s1=K_s;
 % Spring 2:
 K_s2=K_s;
 
 %% Sensor parameters 
-volt_to_deg_potentiometer = 35.2; % [V/deg]
+volt_to_deg_potentiometer = 35.2; % [deg/V]
 deg_to_rad = pi/180; 
 pulse_per_rev_encoder = 4096;
 pulse_to_rad = 2*pi/pulse_per_rev_encoder;
@@ -104,46 +109,47 @@ Ti_p = 10;
 %% State-space representation
 
 % 2-DOF systemé unique model
-A = zeros(6,6);
-A(1,2) = 1;
-A(2,:) = [-K_s1/(eta_m*eta_g*K_g^2*J_eq),-B_eq/J_eq,K_s1/(eta_m*eta_g*K_g*J_eq),0,0,0];
-A(3,4) = 1;
-A(4,:) = [K_s2/(K_g*J1),0,-2*K_s2/J1,-B1/J1,K_s2/J1,0];
-A(5,6) = 1;
-A(6,:) = [0,0,K_s2/J2,0,-K_s2/J2,-B2/J2];
-
+% A = zeros(6,6);
+% A(1,2) = 1;
+% A(2,:) = [-K_s1/(eta_m*eta_g*K_g^2*J_eq),-B_eq/J_eq,K_s1/(eta_m*eta_g*K_g*J_eq),0,0,0];
+% A(3,4) = 1;
+% A(4,:) = [K_s2/(K_g*J1),0,-2*K_s2/J1,-B1/J1,K_s2/J1,0];
+% A(5,6) = 1;
+% A(6,:) = [0,0,K_s2/J2,0,-K_s2/J2,-B2/J2];
+% 
 B = [0,1/J_eq,0,0,0,0]';     % u = tau_m
   
 C = [K_s1/(eta_g*K_g^2),0,-K_s1/(eta_g*K_g),0,0,0]; % y = tau_lm
 
-% Separated model: motor+gear 
-% Input: tau_m, theta_1, theta_1_dot
-% Output: tau_lm, theta_m, theta_m_dot
-Am = A(1:2,1:2);
-Bm = [B(1:2,1) A(1:2,3) zeros(2,1)];
-Cm = [C(1,1:2);
-      1,0;
-      0,1];
-Dm = zeros(3,3);
-Dm(1,2) = C(1,3);
+% Motor model
+% state: x1 = theta_m, x2 = theta_m_dot;
+% input: u1 = tau_m, u2 = tau_lm;
+% output: y1 = theta_m, y2 = theta_m_dot;
+A_m = [0,1;
+      0,-B_eq/J_eq];
+B_m = [0,0;
+       1/J_eq,-1/J_eq];
+C_m = eye(2);
+D_m = zeros(2);
 
 % Separated model: load 1
 %Input: theta_m, theta_m_dot, theta_2, theta_2_dot
 %Output: theta_1, theta_1_dot
-A1 = A(3:4,3:4);
-B1 = [A(3:4,1) zeros(2,1) A(3:4,5) zeros(2,1)];
-C1 = [1 0;
-      0 1];
-D1 = zeros(2,4);
+% A1 = A(3:4,3:4);
+% B1 = [A(3:4,1) zeros(2,1) A(3:4,5) zeros(2,1)];
+% C1 = [1 0;
+%       0 1];
+% D1 = zeros(2,4);
 
 %Separated model: load 2
 %Input: theta_1,theta_1_dot
 %Output: theta_2,theta_2_dot
-A2 = A(5:6,5:6);
-B2 = A(5:6,3:4);
-C2 = [1 0;
-      0 1];
-D2 = zeros(2,2);
+% A2 = A(5:6,5:6);
+% B2 = A(5:6,3:4);
+% C2 = [1 0;
+%       0 1];
+% D2 = zeros(2,2);
+
 %%
 figure
 plot( data(1, :),  [data(2:end-1, :);...
