@@ -47,8 +47,8 @@ eta_g = 0.9;
 
 Jm = 3.90e-7;
 Jtach = 7.06e-8;
-J_eq = 2.087e-3;    % high-gear
-B_eq = 0.015;       % high-gear
+J_eq = 2.087e-3*1.22;    % high-gear
+B_eq = 0.015*0.253;       % high-gear
 
 f_max = 50;
 I_max = 1;
@@ -57,8 +57,8 @@ w_max = 628.3;
 % Load parameters
 % J = 0.0022;         %resonance freq. wrong
 % B = 0.015;          %resonance freq. wrong
-J = 0.000545;
-B = 0.0015;
+J = 0.000545*1.3;
+B = 0.0015*0.2;
 K_s = 1;
 
 % Separation:
