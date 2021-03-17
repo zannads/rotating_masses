@@ -3,52 +3,55 @@ close all
 clc
 
 %% TO UPLOAD TESTS
-%add the directory to the Matlabpath if it hasn't been done permanently.
-% Get the name of the user who logged in to the computer.
-userProfile = getenv('USERPROFILE');
+% load the object that has memory of the tests
+data = data_loader
 
-directory = 'MatlabDrive/RotatingMasses';
-addpath( fullfile( userProfile, 'Documents', directory ) );
+%%
 
-%Load the desired test
-% test = 'data_09-Mar-2021_15-37-13.mat';
-%unfortunately the variable has _ instead of - 
-test = 'data_09_Mar_2021_18_53_24';
-data = load( test );
-data = data.(test);
-number_signal = size( data, 1);
-time_steps = size( data, 2);
 
-voltage_ref = [data(1,:)',data(3,:)'];
-motor_pos_data = [data(1,:)',data(2,:)'];
+voltage_ref = [data(1,:)',data(2,:)'];
+motor_pos_data = [data(1,:)',data(3,:)'];
+
+% voltage_ref = [data(1,:)',data(3,:)'];
+% motor_pos_data = [data(1,:)',data(2,:)'];
 motor_pos_0 = motor_pos_data(1,2);
-mass_pos_data = [data(1,:)',data(4,:)'];
+mass_pos_data = [data(1,:)',data(5,:)'];
 if number_signal>4
-    mass_vel_data = [data(1,:)',data(5,:)'];
+    mass_vel_data = [data(1,:)',data(6,:)'];
 else
     mass_vel_data = [data(1,:)',zeros(time_steps,1)];
 end
+
+% mass_pos_data = [data(1,:)',data(4,:)'];
+% if number_signal>4
+%     mass_vel_data = [data(1,:)',data(5,:)'];
+% else
+%     mass_vel_data = [data(1,:)',zeros(time_steps,1)];
+% end
 
 %% Factory parameters
 
 % Motor/gear parameters
 V_nom = 6;
 V_max = 10;
-Rm = 2.6;
+% Rm = 2.6;
+Rm = 2.6*0.948;
 Lm = 0.18e-3;
-k_t = 7.68e-3;
-k_m = 7.68e-3;
+k_t = 7.68e-3*1.045;
+k_m = 7.68e-3*0.8995;
 
 K_g = 70;           % high-gear total gear ratio
 K_gi = 14;
 K_ge = 5;
-eta_m = 0.69;
-eta_g = 0.9;
+eta_m = 0.69*1.029;
+eta_g = 0.9*1.085;
 
 Jm = 3.90e-7;
 Jtach = 7.06e-8;
-J_eq = 2.087e-3*1.22;    % high-gear
-B_eq = 0.015*0.253;       % high-gear
+% J_eq = 2.087e-3*1.22;    % high-gear
+% B_eq = 0.015*0.253;       % high-gear
+J_eq = 2.087e-3;    % high-gear
+B_eq = 0.015;       % high-gear
 
 f_max = 50;
 I_max = 1;
@@ -57,8 +60,11 @@ w_max = 628.3;
 % Load parameters
 % J = 0.0022;         %resonance freq. wrong
 % B = 0.015;          %resonance freq. wrong
-J = 0.000545*1.3;
-B = 0.0015*0.2;
+% J = 0.000545*1.3;
+% B = 0.0015*0.2;
+J = 0.000545;
+B = 0.0015;
+
 K_s = 1;
 
 % Separation:
@@ -74,15 +80,15 @@ K_s1=K_s;
 % Spring 2:
 K_s2=K_s;
 
-%% Sensor parameters 
+%% Sensor parameters
 volt_to_deg_potentiometer = 35.2; % [deg/V]
-deg_to_rad = pi/180; 
+deg_to_rad = pi/180;
 pulse_per_rev_encoder = 4096;
 pulse_to_rad = 2*pi/pulse_per_rev_encoder;
 
 %The low pass filter for speed measuring is now commented through, once we
 %set this up we can uncomment it
-%speed_sensor_flter = 1/s+w ???? 
+%speed_sensor_flter = 1/s+w ????
 wfilter=2*pi*25;
 
 %% Controller parameters
@@ -97,7 +103,7 @@ I_th = I_max*1.6;
 V_th = V_max*1;
 
 % Loop of speed
-wc_v = B_eq/J_eq;
+wc_v = 2*pi*6;
 kp_v = wc_v*J_eq;
 ki_v = wc_v*B_eq;
 Ti_v = kp_v/ki_v;
@@ -125,13 +131,13 @@ Ti_p = 10;
 
 % Motor model
 
-% state: x1 = theta_m, x2 = theta_m_dot;
-% input: u1 = tau_m, u2 = tau_lm;
+% state: x1 = theta_l, x2 = theta_l_dot;
+% input: u1 = tau_ml, u2 = tau_l;
 % output: y1 = theta_m, y2 = theta_m_dot;
 A_m = [0,1;
-      0,-B_eq/J_eq];
+    0,-B_eq/J_eq];
 B_m = [0,0;
-       1/J_eq,-1/J_eq];
+    1/J_eq,-1/J_eq];
 C_m = eye(2);
 D_m = zeros(2);
 
