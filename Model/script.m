@@ -3,31 +3,24 @@ close all
 clc
 
 %% TO UPLOAD TESTS
-% load the object that has memory of the tests
-data = data_loader
+% in lab vanno messe nella stessa cartella del file:
+% - le cartelle di cui ci interessano i risultati
+% - file data_handler.mat
+% a casa una volta aggiunto Matlabdrive al path del computer dovremmo
+% essere a posto
 
-%%
+data = data_loader;
+disp( data );
 
+%% BUILD VARIABLES FOR SIMULINK FOR SIMULATION COMPARISON
 
-voltage_ref = [data(1,:)',data(2,:)'];
-motor_pos_data = [data(1,:)',data(3,:)'];
+voltage_ref = [data.time', data.voltage'];
+motor_pos_data = [data.time', data.motor_pos'];
+motor_pos_0 = data.motor_pos(1);
 
-% voltage_ref = [data(1,:)',data(3,:)'];
-% motor_pos_data = [data(1,:)',data(2,:)'];
-motor_pos_0 = motor_pos_data(1,2);
-mass_pos_data = [data(1,:)',data(5,:)'];
-if number_signal>4
-    mass_vel_data = [data(1,:)',data(6,:)'];
-else
-    mass_vel_data = [data(1,:)',zeros(time_steps,1)];
-end
+mass1_pos_data = [data.time', data.mass1_pos'];
+mass1_vel_data = [data.time', data.mass1_vel'];
 
-% mass_pos_data = [data(1,:)',data(4,:)'];
-% if number_signal>4
-%     mass_vel_data = [data(1,:)',data(5,:)'];
-% else
-%     mass_vel_data = [data(1,:)',zeros(time_steps,1)];
-% end
 
 %% Factory parameters
 
@@ -113,22 +106,7 @@ wc_p = wc_v/10;
 kp_p = wc_p;
 Ti_p = 10;
 
-%% State-space representation
-
-% 2-DOF system, unique model
-% ATTENZIONE! Controllare modello rispetto a Simulink
-
-% A = zeros(6,6);
-% A(1,2) = 1;
-% A(2,:) = [-K_s1/(eta_m*eta_g*K_g^2*J_eq),-B_eq/J_eq,K_s1/(eta_m*eta_g*K_g*J_eq),0,0,0];
-% A(3,4) = 1;
-% A(4,:) = [K_s2/(K_g*J1),0,-2*K_s2/J1,-B1/J1,K_s2/J1,0];
-% A(5,6) = 1;
-% A(6,:) = [0,0,K_s2/J2,0,-K_s2/J2,-B2/J2];
-% B = [0,1/J_eq,0,0,0,0]';     % u = tau_m
-% C = [K_s1/(eta_g*K_g^2),0,-K_s1/(eta_g*K_g),0,0,0]; % y = tau_lm
-
-
+%% block model
 % Motor model
 
 % state: x1 = theta_l, x2 = theta_l_dot;
@@ -141,7 +119,13 @@ B_m = [0,0;
 C_m = eye(2);
 D_m = zeros(2);
 
-%%
-figure
-plot( data(1, :),  [data(2:end-1, :);...
-    1000*data(end, :)] ); grid on
+%% state space model
+A=zeros(4,4);
+A(1,2) = 1;
+A(2,:) = [-K_s1/(J_eq),-B_eq/J_eq,K_s1/J_eq,0];
+A(3,4) = 1;
+A(4,:) = [K_s1/J_1,0,-K_s1/J_1,-B_1/J_1];
+B = [0,eta_m*eta_g*K_g/J_eq,0,0]';
+C = eye(4);
+D=zeros(4,1);
+

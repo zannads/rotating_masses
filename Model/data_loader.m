@@ -1,13 +1,13 @@
 function data = data_loader()
 %DATA_LOADER 
 % new loading
-load( 'data_handler.mat' ); %#ok<*LOAD>
+load data_handler.mat data_handler;
 data = [];
 
 % get date from number of lab
 date = input( 'Numero del laboratorio ? ', 's' );
 date = str2double( date);
-while isnan( date ) |  date <= 0 | date > size( data_handler.date, 1 )+1 %#ok<NODEF,OR2>
+while isnan( date ) |  (date <= 0) | (date > size( data_handler.date, 1 )+1 ) %#ok<OR2>
     disp( 'Numero sbagliato');
     date = input( 'Numero del laboratorio ? ', 's' );
     date = str2double( date);
