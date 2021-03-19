@@ -6,6 +6,7 @@ clc
 % in lab vanno messe nella stessa cartella del file:
 % - le cartelle di cui ci interessano i risultati
 % - file data_handler.mat
+% l'importante è essere fuori dalle cartelle "lab_*" altrimenti non 
 % a casa una volta aggiunto Matlabdrive al path del computer dovremmo
 % essere a posto
 

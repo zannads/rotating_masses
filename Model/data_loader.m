@@ -16,6 +16,9 @@ end
 if date == size( data_handler.date, 1 )+1
     %nuova data
     data_handler.date(end+1, 1) = convertCharsToStrings( input( 'Data in formato Simulink? ', 's') );
+    if ~exist( strcat( "lab_", num2str( date ) ), 'dir' )
+        mkdir( strcat( "lab_", num2str( date ) ) );
+    end
     save data_handler;
 end
 
@@ -32,7 +35,7 @@ name_ = strrep( name, '-', '_');
 % if it exists we have already created it
 if exist( name_, 'file' ) == 2
     % load the file .mat the variable will be named data
-    load( name_ );
+    load( name_, 'data' );
     
     % if this time is not present in the structure search for it
 elseif exist( name, 'file' ) ==  2
@@ -74,6 +77,8 @@ elseif exist( name, 'file' ) ==  2
             % load previous
             data_prev = load( latest );
             data_prev = data_prev.data;
+        else
+            return;
         end
         
         
@@ -119,7 +124,8 @@ elseif exist( name, 'file' ) ==  2
         data.n_signal = numel( fieldnames(data) )-1;
         data.time_steps = size( data_, 2);
         save( strcat("lab_", num2str( date ), "/", name_, '.mat' ), 'data' );
-        
+else
+    disp( 'Non presente.' );
 end
 
 
