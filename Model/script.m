@@ -113,14 +113,15 @@ Ti_p = 10;
 % state: x1 = theta_l, x2 = theta_l_dot;
 % input: u1 = tau_ml, u2 = tau_l;
 % output: y1 = theta_m, y2 = theta_m_dot;
-A_m = [0,1;
-    0,-B_eq/J_eq];
-B_m = [0,0;
-    1/J_eq,-1/J_eq];
-C_m = eye(2);
-D_m = zeros(2);
+% A_m = [0,1;
+%     0,-B_eq/J_eq];
+% B_m = [0,0;
+%     1/J_eq,-1/J_eq];
+% C_m = eye(2);
+% D_m = zeros(2);
 
 %% state space model
+% for only 1 mass
 A=zeros(4,4);
 A(1,2) = 1;
 A(2,:) = [-K_s1/(J_eq),-B_eq/J_eq,K_s1/J_eq,0];
