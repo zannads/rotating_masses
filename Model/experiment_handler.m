@@ -5,7 +5,7 @@ classdef experiment_handler
     %   like the time and the titles. It also allows to manage the
     %   experiments and to automatically collect the data in the right way.
     
-    properties
+    properties 
         name                %Name of the object to be loaded or saved
         
         date                %Dates of the laboratory linked to the number
@@ -72,7 +72,6 @@ classdef experiment_handler
             obj.save;
         end
         
-        % load_data che è la stessa cosa dell'attuale data_handler
         function data = load_data( obj )
             %LOAD_DATA Takes an already saved object and set it up like it
             %is used in our simulink scripts.
@@ -98,9 +97,9 @@ classdef experiment_handler
             % returned in the correct way. 
         end
         
-        % delete_data % cancella l'ogetto dell'esperimento
         function obj = delete_data( obj )
-            
+            %DELETE_DATA Erases the data from the class and from the
+            %directory.
             try 
                 lab = obj.get_lab;
                 requested = obj.get_datasets( lab );
@@ -118,22 +117,45 @@ classdef experiment_handler
                 obj.titles( req_idx ) = missing;
                 obj.hours( req_idx ) = missing;
             end
+            delete( strcat( requested, '.mat' ) );
+            
             obj.save;
         end
         
-        function obj = create_data( obj )
+        function obj = create_data( obj, title )
+            %CREATE_DATA Creates the data object and saves it with its
+            %title, plus it deletes the set of data acqired. 
+            
+            % get the name of the datasets present in the folder.
+            
+            listing = dir(  'data_*.mat' );
+            if isempty( listing )
+                msg= 'No experiment is present in the current folder' ;
+                error( msg );
+            end
+            
+            
+            % like last one or update the structure? 
+            
+            
         end
         
-        % do experiment :
-        % chiedi quanti
-        % chiedi quali
-        % for each experiment
-        % salva i dati dell'experiment sul workspace
-        % pausa
-        % noir unniamo simulink
-        % % ci prendiamo il nuov oggetto
-        % % lo trasformiamo usando data_create
-        % eliminiamo il vecchio e lo salviamo in nuovo formato
+        function data = prepare_simulation( obj )
+            %PREPARE_SIMULATION Formats the data in the way that simulink
+            %wants for the use of "from workspace".
+            %   With this function we can create the data for the
+            %   SIMULATIONS in simulink as we want.
+            
+            raw_data = obj.load_data;
+            
+            data.voltage_ref = [raw_data.time', raw_data.voltage'];
+            data.motor_pos_data = [raw_data.time', raw_data.motor_pos'];
+            data.motor_pos_0 = raw_data.motor_pos(1);
+            
+            data.mass1_pos_data = [raw_data.time', raw_data.mass1_pos'];
+            data.mass1_vel_data = [raw_data.time', raw_data.mass1_vel'];
+        end
+        
         
         
         function obj = define_experiment( obj )
@@ -204,7 +226,11 @@ classdef experiment_handler
             obj.print_experiments;
             
             idx_exp = input( 'Quale esperimento? ' );
+            
+            obj.valid_numexp( idx_exp );
+            
             experiment = obj.experiments{idx_exp};
+            
         end
         
         function obj = delete_experiment( obj )
@@ -218,8 +244,19 @@ classdef experiment_handler
             obj.save;
         end
         
+        % do experiment :
+        % chiedi quanti
+        % chiedi quali
+        % for each experiment
+        % salva i dati dell'experiment sul workspace
+        % pausa
+        % noir unniamo simulink
+        % % ci prendiamo il nuov oggetto
+        % % lo trasformiamo usando data_create
+        % eliminiamo il vecchio e lo salviamo in nuovo formato
+        
+        
     end
-    
     
     %% 
     % "a little help from some old friend" .cit
@@ -227,6 +264,21 @@ classdef experiment_handler
         function out = num_labs( obj )
             %NUM_LABS Returns the number of available laboratories.
             out = size( obj.date, 1);
+        end
+        
+        function valid_numlab( obj, number )
+            %VALID_NUMLAB Does nothing if it is a valid number, otherwise
+            %it throws an exception.
+            % check validity
+            if number <= 0 | number > obj.num_labs %#ok<OR2>
+                msg =  "Incorrect number. Try again." ;
+                
+                if number == obj.num_labs+1
+                    msg = strcat(msg, "\nConsider calling before the method 'new_laboratory'.");
+                end
+                error( msg );
+            end
+            
         end
         
         function print_labs( obj )
@@ -247,15 +299,7 @@ classdef experiment_handler
             disp( " ");
             lab = input( 'Which one do you want? ');
             
-            % check validity
-            if lab <= 0 | lab > obj.num_labs %#ok<OR2>
-                msg =  "Incorrect number. Try again." ;
-                
-                if lab == obj.num_labs+1
-                    msg = strcat(msg, "\nConsider calling before the method 'new_laboratory'.");
-                end
-                error( msg );
-            end
+            obj.valid_numlab( lab );
         end
         
         function out = num_datasets( obj, lab )
@@ -302,13 +346,21 @@ classdef experiment_handler
             disp( " ");
             data_idx = input( 'Which one do you want? ');
             
+            %validate 
+            valid_numdataset( lab, data_idx );
+            
+            title = obj.titles( lab, idx==data_idx );
+        end
+        
+        function valid_numdataset( obj, lab, number )
+            %VALID_NUMDATASET Checks if the number inserted is a valid
+            %number for that date of the experiment, otherwise it throws an
+            %error.
             % check validity
-            if data_idx <= 0 | data_idx > obj.num_datasets( lab ) %#ok<OR2>
+            if number <= 0 | number > obj.num_datasets( lab ) %#ok<OR2>
                 msg = "Incorrect number. Try again.";
                 error( msg );
             end
-            
-            title = obj.titles( lab, idx==data_idx );
         end
         
         function print_experiments( obj )
@@ -320,6 +372,37 @@ classdef experiment_handler
                     ", tipo di segnale: ", obj.experiments{idx}.type ) );
             end
         end
+        
+        function out = num_exp( obj )
+            %NUM_EXP Returns the number of defined experiments.
+            out = length( obj.experiments );
+        end
+        
+        function valid_numexp( obj, number) 
+            %VALID_NUMEXP Checks if the number is a valid number of
+            %experiment. 
+            if number <= 0 || number > obj.num_exp
+                msg= 'Number of the experiment incorrect' ;
+                error( msg );
+            end
+        end
     end
+    
+    %% 
+    % some more help
+    methods (Static)
+        function out = today_lab( obj, number )
+            persistent todaylab;
+            
+            if isempty( todaylab ) || nargin == 1
+                todaylab = obj.num_labs;
+            else   
+                todaylab = number;
+            end
+            
+            out = todaylab;
+        end
+    end
+            
 end
 

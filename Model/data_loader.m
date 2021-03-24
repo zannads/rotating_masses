@@ -1,50 +1,50 @@
 function data = data_loader()
 %DATA_LOADER 
 % new loading
-load data_handler.mat data_handler;
-data = [];
-
-% get date from number of lab
-date = input( 'Numero del laboratorio ? ', 's' );
-date = str2double( date);
-while isnan( date ) |  (date <= 0) | (date > size( data_handler.date, 1 )+1 ) %#ok<OR2>
-    disp( 'Numero sbagliato');
-    date = input( 'Numero del laboratorio ? ', 's' );
-    date = str2double( date);
-end
-% create new one
-if date == size( data_handler.date, 1 )+1
-    %nuova data
-    data_handler.date(end+1, 1) = convertCharsToStrings( input( 'Data in formato Simulink? ', 's') );
-    if ~exist( strcat( "lab_", num2str( date ) ), 'dir' )
-        mkdir( strcat( "lab_", num2str( date ) ) );
-    end
-    save data_handler;
-end
-
-% ask for time
-hour = input( 'Ora della prova ? ', 's' );
-hour = strrep( hour, ' ', '-');
-hour = hour(1:8);
-
-% build the name
-name = strcat( "data_", data_handler.date( date ), "_", hour, ".mat" );
-% substitute - con _
-name_ = strrep( name, '-', '_');
-
-% if it exists we have already created it
-if exist( name_, 'file' ) == 2
-    % load the file .mat the variable will be named data
-    load( name_, 'data' );
-    
-    % if this time is not present in the structure search for it
-elseif exist( name, 'file' ) ==  2
-    data_ = load( name );
-    
-    %remove .mat
-    [~, name_, ~] = fileparts( name_ );
-    data_ = data_.(name_);
-    
+% load data_handler.mat data_handler;
+% data = [];
+% 
+% % get date from number of lab
+% date = input( 'Numero del laboratorio ? ', 's' );
+% date = str2double( date);
+% while isnan( date ) |  (date <= 0) | (date > size( data_handler.date, 1 )+1 ) %#ok<OR2>
+%     disp( 'Numero sbagliato');
+%     date = input( 'Numero del laboratorio ? ', 's' );
+%     date = str2double( date);
+% end
+% % create new one
+% if date == size( data_handler.date, 1 )+1
+%     %nuova data
+%     data_handler.date(end+1, 1) = convertCharsToStrings( input( 'Data in formato Simulink? ', 's') );
+%     if ~exist( strcat( "lab_", num2str( date ) ), 'dir' )
+%         mkdir( strcat( "lab_", num2str( date ) ) );
+%     end
+%     save data_handler;
+% end
+% 
+% % ask for time
+% hour = input( 'Ora della prova ? ', 's' );
+% hour = strrep( hour, ' ', '-');
+% hour = hour(1:8);
+% 
+% % build the name
+% name = strcat( "data_", data_handler.date( date ), "_", hour, ".mat" );
+% % substitute - con _
+% name_ = strrep( name, '-', '_');
+% 
+% % if it exists we have already created it
+% if exist( name_, 'file' ) == 2
+%     % load the file .mat the variable will be named data
+%     load( name_, 'data' );
+%     
+%     % if this time is not present in the structure search for it
+% elseif exist( name, 'file' ) ==  2
+%     data_ = load( name );
+%     
+%     %remove .mat
+%     [~, name_, ~] = fileparts( name_ );
+%     data_ = data_.(name_);
+%     
     data.title = input( "Vuoi dare un titolo alla prova? ", 's' );
     
     % ask for the structure
