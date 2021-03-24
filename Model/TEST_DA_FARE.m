@@ -4,6 +4,7 @@
 % step 2V da - 10 a 10 
 
 % acquisire :
+%DATA:
 % titolo : dof1 step x V 
 % time: 
 % voltage : 
