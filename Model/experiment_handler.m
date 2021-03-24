@@ -1,22 +1,20 @@
 classdef experiment_handler
-    %EXPERIMENT_HANDLER Summary of this class goes here
-    %   Detailed explanation goes here
+    %EXPERIMENT_HANDLER Class to manage the experiment and the data
+    %collected in the laboratory of automation and control engineering.
+    %   This class saves some information about all the test we have done,
+    %   like the time and the titles. It also allows to manage the
+    %   experiments and to automatically collect the data in the right way.
     
     properties
-        % saving name
-        name
+        name                %Name of the object to be loaded or saved
         
-        %lab names
-        date
+        date                %Dates of the laboratory linked to the number
         
-        % data hours
-        hours
+        hours               %Times of the data collected for each laboratory.
         
-        % data titles
-        titles
+        titles      %Titles of the experiment done.
         
-        %experiments
-        experiments
+        experiments     %Experiments that has been defined.
     end
     
     methods
@@ -49,20 +47,24 @@ classdef experiment_handler
         end
         
         function save( obj )
+            %SAVE Saves the object in the current folder.
             % save it
             save( strcat( obj.name, '.mat'), 'obj');
         end
         
         function obj = new_laboratory( obj )
             %NEW_LABORATORY Adds the date of the new laboratory and
-            %preallocate the spaces for hours and titles.
+            %eventually creates the folder to save the experiments.
             
+            % ask for the date
             new_date = convertCharsToStrings( input( 'Data in formato Simulink? ', 's') );
             new_date = strrep( new_date, ' ', '-');
             
+            % add it in column
             obj.date(end+1, 1) = new_date;
             idx = size( obj.date, 1);
             
+            % if folder doesn't exist, it creates a new one.
             if ~exist( strcat( "lab_", num2str( idx ) ), 'dir' )
                 mkdir( strcat( "lab_", num2str( idx ) ) );
             end
@@ -72,21 +74,54 @@ classdef experiment_handler
         
         % load_data che è la stessa cosa dell'attuale data_handler
         function data = load_data( obj )
-            % mostra i lab
-            % acquisisci lab
-            % mostra i titoli
-            % acquisisci i titoli
-            data = [];
-            % se esiste caricalo
-                % lo formatta come lo vuole simulink! 
-                % data.voltage_ref
-                % data.
+            %LOAD_DATA Takes an already saved object and set it up like it
+            %is used in our simulink scripts.
             
-            % se non esiste pace
+            try 
+                lab = obj.get_lab;
+                requested = obj.get_datasets( lab );
+            catch e
+                rethrow(e);
+            end
+            
+            % if we are at this point at least it exist in the class.
+            if ~exist( strcat( requested, '.mat') , 'file')
+                % ops
+                msg = "Missing file.\nConsider running the method 'update_files'." ;
+                error( msg );
+            end
+            
+            % then it also exit in the hard disk. Load it!
+            load( strcat( requested, '.mat'), 'data' );
+            
+            % the object will already been called data, thus it will be
+            % returned in the correct way. 
         end
+        
         % delete_data % cancella l'ogetto dell'esperimento
         function obj = delete_data( obj )
             
+            try 
+                lab = obj.get_lab;
+                requested = obj.get_datasets( lab );
+            catch e
+                rethrow(e);
+            end
+            
+            confirm = input( strcat( "Sei sicuro di cancellare il dataset ", ...
+                requested , '? [y/n] ' ), 's' );
+            if strcmp( confirm, 'y' )
+                % get the idx of the requested title
+                req_idx = strcmpi( obj.titles, requested );
+                % set to missing ( like nan for numbers, but it is used in
+                % arrays of strings )
+                obj.titles( req_idx ) = missing;
+                obj.hours( req_idx ) = missing;
+            end
+            obj.save;
+        end
+        
+        function obj = create_data( obj )
         end
         
         % do experiment :
@@ -153,18 +188,9 @@ classdef experiment_handler
             obj.save;
         end
         
-        % print experiment
-        function print_experiment( obj )
-            num_exp = length( obj.experiments );
-            for idx = 1:num_exp
-                disp( strcat( '[', num2str( idx ), "]  ", ...
-                    obj.experiments{idx}.title, ...
-                    " ; var di riferimento: ", obj.experiments{idx}.refVariable, ...
-                    ", tipo di segnale: ", obj.experiments{idx}.type ) );
-            end
-            idx_exp = input( 'Quale esperimento vuoi visualizzare? ' );
-            experiment = obj.experiments{idx_exp};
-            disp(" ");
+        function show_experiment( obj )
+            
+            experiment = obj.load_experiment;
             
             disp( strcat( "Titolo: ", experiment.title ) );
             disp( strcat("Riferimento: ", experiment.refVariable) );
@@ -174,28 +200,15 @@ classdef experiment_handler
             disp( experiment.(experiment.refVariable).(experiment.type) );
         end
         
-        % load experiment
         function experiment = load_experiment( obj )
-            num_exp = length( obj.experiments );
-            for idx = 1:num_exp
-                disp( strcat( '[', num2str( idx ), "]  ", ...
-                    obj.experiments{idx}.title, ...
-                    " ; var di riferimento: ", obj.experiments{idx}.refVariable, ...
-                    ", tipo di segnale: ", obj.experiments{idx}.type ) );
-            end
-            idx_exp = input( 'Quale esperimento vuoi caricare? ' );
+            obj.print_experiments;
+            
+            idx_exp = input( 'Quale esperimento? ' );
             experiment = obj.experiments{idx_exp};
         end
         
-        % delete experiment
         function obj = delete_experiment( obj )
-            num_exp = length( obj.experiments );
-            for idx = 1:num_exp
-                disp( strcat( '[', num2str( idx ), "]  ", ...
-                    obj.experiments{idx}.title, ...
-                    " ; var di riferimento: ", obj.experiments{idx}.refVariable, ...
-                    ", tipo di segnale: ", obj.experiments{idx}.type ) );
-            end
+            obj.print_experiments;
             idx_exp = input( 'Quale esperimento vuoi cancellare? ' );
             confirm = input( strcat( 'Sei sicuro di cancellare l''esperimento n.', ...
                 num2str( idx_exp) , '? [y/n] ' ), 's' );
@@ -205,6 +218,108 @@ classdef experiment_handler
             obj.save;
         end
         
+    end
+    
+    
+    %% 
+    % "a little help from some old friend" .cit
+    methods (Access=private)
+        function out = num_labs( obj )
+            %NUM_LABS Returns the number of available laboratories.
+            out = size( obj.date, 1);
+        end
+        
+        function print_labs( obj )
+            %PRINT_LABS Prints to command window all the available labs.
+            %And ask to choose one
+            
+            disp( "This are the available labs:" );
+            % show available labs
+            for idx = 1:obj.num_labs
+                disp( strcat( "[", num2str(idx), "] ", obj.date(idx) ) );
+            end
+        end
+        
+        function lab = get_lab( obj )
+            %GET_LAB Returns the index of the lab requested from the user.
+            
+            obj.print_labs;
+            disp( " ");
+            lab = input( 'Which one do you want? ');
+            
+            % check validity
+            if lab <= 0 | lab > obj.num_labs %#ok<OR2>
+                msg =  "Incorrect number. Try again." ;
+                
+                if lab == obj.num_labs+1
+                    msg = strcat(msg, "\nConsider calling before the method 'new_laboratory'.");
+                end
+                error( msg );
+            end
+        end
+        
+        function out = num_datasets( obj, lab )
+            %NUM_DATASETS Returns the number of dataset collected that
+            %laboratory indicated by lab.
+            out = sum( ~ismissing( obj.hours( lab, :) ) );
+        end
+        
+        function idx = print_datasets( obj, lab )
+            %PRINT_DATASETS Prints the available datasets for the
+            %laboratory indicated by lab.
+            
+            disp( "This are the available data sets:" );
+            % show available sets
+            
+            % take em now they are just vectors
+            hrs = obj.hours(lab, :);
+            tls = obj.titles(lab, :);
+            
+            % create the idx vector that maps from user input to the class
+            % array.
+            idx = zeros( size( hrs) );
+            
+            %print and populate idx
+            count = 1;
+            for jdx = 1:length( hrs )
+                
+                if ~ismissing( hrs(jdx) )
+                    % print 
+                    disp( strcat( "[", num2str(count), "] ", hrs(jdx), ...
+                        ": ", tls(jdx) ) );
+                    % populate
+                    idx( jdx ) = count;
+                    count = count +1;
+                end
+            end
+            
+        end
+%         
+        function title = get_datasets( obj, lab)
+            %GET_DATASETS Returns the title of the request dataset from the
+            %user. 
+            idx = obj.print_datasets( lab );
+            disp( " ");
+            data_idx = input( 'Which one do you want? ');
+            
+            % check validity
+            if data_idx <= 0 | data_idx > obj.num_datasets( lab ) %#ok<OR2>
+                msg = "Incorrect number. Try again.";
+                error( msg );
+            end
+            
+            title = obj.titles( lab, idx==data_idx );
+        end
+        
+        function print_experiments( obj )
+            num_exp = length( obj.experiments );
+            for idx = 1:num_exp
+                disp( strcat( '[', num2str( idx ), "]  ", ...
+                    obj.experiments{idx}.title, ...
+                    " ; var di riferimento: ", obj.experiments{idx}.refVariable, ...
+                    ", tipo di segnale: ", obj.experiments{idx}.type ) );
+            end
+        end
     end
 end
 
