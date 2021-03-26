@@ -4,17 +4,21 @@ classdef experiment_handler
     %   This class saves some information about all the test we have done,
     %   like the time and the titles. It also allows to manage the
     %   experiments and to automatically collect the data in the right way.
+    % Dataset data are collected in the experiment, formatted as defined in the
+    % dataset_struct.
     
     properties 
-        name                %Name of the object to be loaded or saved
+        name                %Name of the object to be loaded or saved.
         
-        date                %Dates of the laboratory linked to the number
+        date                %Dates of the laboratory linked to the number.
         
         hours               %Times of the data collected for each laboratory.
         
-        titles      %Titles of the experiment done.
+        titles      %Titles of the data collected.
         
-        experiments     %Experiments that has been defined.
+        experiments     %Inputs for the lab experiment that has been defined.
+        
+        dataset_structs %Struct explaining how dataset data are collected.
     end
     
     methods
@@ -72,6 +76,7 @@ classdef experiment_handler
             obj.save;
         end
         
+        %% data
         function data = load_data( obj )
             %LOAD_DATA Takes an already saved object and set it up like it
             %is used in our simulink scripts.
@@ -116,15 +121,16 @@ classdef experiment_handler
                 % arrays of strings )
                 obj.titles( req_idx ) = missing;
                 obj.hours( req_idx ) = missing;
+                %delete the file
+                delete( strcat( requested, '.mat' ) );
             end
-            delete( strcat( requested, '.mat' ) );
             
             obj.save;
         end
         
-        function obj = create_data( obj, title )
+        function obj = create_data( obj, varargin )
             %CREATE_DATA Creates the data object and saves it with its
-            %title, plus it deletes the set of data acqired. 
+            %title, plus it deletes the set of data acqired.
             
             % get the name of the datasets present in the folder.
             
@@ -134,10 +140,39 @@ classdef experiment_handler
                 error( msg );
             end
             
+            title = varargin{1};
+            dataset_struct = varargin{2};
+            exper = varargin{3};
             
-            % like last one or update the structure? 
-            
-            
+            for jdx = 1: min(length( listing ), varargin{4} )
+                
+                fname = listing(jdx).name;
+                raw_data = load( fname );
+                name_ = strrep( fname, '-', '_' );
+                %remove .mat
+                [~, name_, ~] = fileparts( name_ );
+                raw_data = raw_data.(name_);
+                
+                fname = fieldnames( dataset_struct );
+                for idx = 1: numel(fname)
+                    dataset_struct.(fname{idx}) = raw_data(idx, :);
+                end
+                
+                data = dataset_struct;
+                data.title = title(jdx);
+                data.exp_title = exper{jdx}.title;
+                data.w_filter = exper{jdx}.w_filter;
+                data.n_signal = numel ( fieldnames( dataset_struct ) );
+                
+                save( strcat( 'lab_', num2str(obj.today_lab), '/', title(jdx)), 'data');
+                
+                obj.hours( obj.today_lab ,end+1) = name_( (end-7):end );
+                obj.titles( obj.today_lab ,end+1) = title(jdx);
+                
+                obj.save;
+                
+                delete (listing(jdx).name );
+           end
         end
         
         function data = prepare_simulation( obj )
@@ -148,16 +183,15 @@ classdef experiment_handler
             
             raw_data = obj.load_data;
             
-            data.voltage_ref = [raw_data.time', raw_data.voltage'];
-            data.motor_pos_data = [raw_data.time', raw_data.motor_pos'];
+            data.voltage = [raw_data.time', raw_data.voltage'];
+            data.motor_pos = [raw_data.time', raw_data.motor_pos'];
             data.motor_pos_0 = raw_data.motor_pos(1);
             
-            data.mass1_pos_data = [raw_data.time', raw_data.mass1_pos'];
-            data.mass1_vel_data = [raw_data.time', raw_data.mass1_vel'];
+            data.mass1_pos = [raw_data.time', raw_data.mass1_pos'];
+            data.mass1_vel = [raw_data.time', raw_data.mass1_vel'];
         end
         
-        
-        
+        %% experiments
         function obj = define_experiment( obj )
             experiment = struct( 'title', [], 'voltage', [], 'motor_pos', [], ...
                 'motor_vel', [], 'mass1_pos', [], 'mass1_vel', [], ...
@@ -255,6 +289,33 @@ classdef experiment_handler
         % % lo trasformiamo usando data_create
         % eliminiamo il vecchio e lo salviamo in nuovo formato
         
+        %% datasets struct
+        function obj = define_datasetstruct( obj )
+            
+            str = input( 'Insert the name of the field: ', 's');
+            while ~isempty( str )
+                dataset_struct.(str) = [];
+                str = input( 'Insert the name of the field: ', 's');
+            end
+            
+            obj.dataset_structs{end+1} = dataset_struct;
+            
+            obj.save;
+        end
+        
+        
+        function out = today_lab( obj, varargin )
+            persistent todaylab;
+            
+            if isempty( todaylab ) 
+                todaylab = num_labs(obj) ;
+            end
+            if nargin > 1   
+                todaylab = varargin{1};
+            end
+            
+            out = todaylab;
+        end
         
     end
     
@@ -283,7 +344,6 @@ classdef experiment_handler
         
         function print_labs( obj )
             %PRINT_LABS Prints to command window all the available labs.
-            %And ask to choose one
             
             disp( "This are the available labs:" );
             % show available labs
@@ -303,7 +363,7 @@ classdef experiment_handler
         end
         
         function out = num_datasets( obj, lab )
-            %NUM_DATASETS Returns the number of dataset collected that
+            %NUM_DATASETS Returns the number of dataset collected for the
             %laboratory indicated by lab.
             out = sum( ~ismissing( obj.hours( lab, :) ) );
         end
@@ -347,7 +407,7 @@ classdef experiment_handler
             data_idx = input( 'Which one do you want? ');
             
             %validate 
-            valid_numdataset( lab, data_idx );
+            obj.valid_numdataset( lab, data_idx );
             
             title = obj.titles( lab, idx==data_idx );
         end
@@ -386,23 +446,18 @@ classdef experiment_handler
                 error( msg );
             end
         end
+        
+        function out = get_todayfolder( obj )
+            %GET_TODAYFOLDER Looks at today lab and build the corresponding
+            %lab directory.
+            
+            out = strcat( 'lab_', num2str( obj.today_lab ), '/' );
+        end
+        
+        
     end
     
-    %% 
-    % some more help
-    methods (Static)
-        function out = today_lab( obj, number )
-            persistent todaylab;
-            
-            if isempty( todaylab ) || nargin == 1
-                todaylab = obj.num_labs;
-            else   
-                todaylab = number;
-            end
-            
-            out = todaylab;
-        end
-    end
+ 
             
 end
 
