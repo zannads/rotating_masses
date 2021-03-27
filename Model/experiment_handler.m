@@ -198,7 +198,7 @@ classdef experiment_handler
                 'mass2_pos', [], 'mass2_vel', []);
             step = struct( 'init_time', 0, 'step_size', 0);
             ramp = struct( 'init_time', 0, 'ramp_pend', 0, 'init_value', 0, 'final_value', 0);
-            sinesweep = struct( 'init_freq', 0.1, 'final_freq', 0.1, 'target_time', 0, 'mean_value', 0);
+            sinesweep = struct( 'init_freq', 0.1, 'final_freq', 0.1, 'target_time', 0, 'mean_value', 0, 'v_max', 0);
             
             
             experiment.title = input( 'Titolo dell''esperimento ? ', 's' );
@@ -230,11 +230,13 @@ classdef experiment_handler
                     experiment.(refVariable).(type).final_value = input( "Valore finale: " );
                 case 'sinesweep'
                     experiment.(refVariable).(type).init_freq = input( "Frequenza iniziale [Hz] (>0): " );
-                    experiment.(refVariable).(type).final_freq = input( "Frequenza finale: " );
-                    experiment.(refVariable).(type).target_time = input( "Tempo esperimento [Hz]: " );
+                    experiment.(refVariable).(type).final_freq = input( "Frequenza finale [Hz]: " );
+                    experiment.(refVariable).(type).target_time = input( "Tempo esperimento : " );
+                    experiment.(refVariable).(type).mean_value = input( "Valore medio : " );
+                    experiment.(refVariable).(type).v_max = input( "Valore massimo : " );
             end
             
-            experiment.w_filter = 25;
+            experiment.w_filter = inf;
             % ask for filter in future
             
             experiment.refVariable = refVariable;

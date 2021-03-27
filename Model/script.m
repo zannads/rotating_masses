@@ -5,22 +5,12 @@ clc
 %% TO UPLOAD TESTS
 % in lab vanno messe nella stessa cartella del file:
 % - le cartelle di cui ci interessano i risultati
-% - file data_handler.mat
+% - file experiment_handler.mat
 % l'importante è essere fuori dalle cartelle "lab_*" altrimenti non 
 % a casa una volta aggiunto Matlabdrive al path del computer dovremmo
 % essere a posto
 
-data = data_loader;
-disp( data );
-
-%% BUILD VARIABLES FOR SIMULINK FOR SIMULATION COMPARISON
-
-voltage_ref = [data.time', data.voltage'];
-motor_pos_data = [data.time', data.motor_pos'];
-motor_pos_0 = data.motor_pos(1);
-
-mass1_pos_data = [data.time', data.mass1_pos'];
-mass1_vel_data = [data.time', data.mass1_vel'];
+data = e_h.prepare_simulation;
 
 
 %% Factory parameters
