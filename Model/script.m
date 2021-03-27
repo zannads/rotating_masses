@@ -10,8 +10,8 @@ clc
 % a casa una volta aggiunto Matlabdrive al path del computer dovremmo
 % essere a posto
 
+data.motor_pos_0 = 0;
 data = e_h.prepare_simulation;
-
 
 %% Factory parameters
 
@@ -163,7 +163,7 @@ step(G_tot)
 %pidTuner(G_tot)
 
 %% Regulator PI (for speed)
-wc_v = 8;
+wc_v = 7;
 ki_v=wc_v;
 kp_v=wc_v/38.4664;
 Ti_v = kp_v/ki_v;
@@ -175,3 +175,5 @@ L=R*G_tot;
 F=L/(1+L);
 
 
+%% Regulator P (for position)
+kp_p=4;
