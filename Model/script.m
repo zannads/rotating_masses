@@ -75,27 +75,6 @@ pulse_to_rad = 2*pi/pulse_per_rev_encoder;
 %speed_sensor_flter = 1/s+w ????
 wfilter=2*pi*25;
 
-%% Controller parameters
-
-% Loop of current
-wc_I = Rm/Lm;
-kp_I = wc_I*Lm;
-ki_I = wc_I*Rm;
-Ti_I = kp_I/ki_I;
-
-I_th = I_max*1.6;
-V_th = V_max*1;
-
-% Loop of speed
-wc_v = 2*pi*6;
-kp_v = wc_v*J_eq;
-ki_v = wc_v*B_eq;
-Ti_v = kp_v/ki_v;
-
-% Loop of position
-wc_p = wc_v/10;
-kp_p = wc_p;
-Ti_p = 10;
 
 %% block model
 % Motor model
@@ -120,4 +99,79 @@ A(4,:) = [K_s1/J_1,0,-K_s1/J_1,-B_1/J_1];
 B = [0,eta_m*eta_g*K_g/J_eq,0,0]';
 C = eye(4);
 D=zeros(4,1);
+%% Controller parameters
+
+% Loop of current
+% wc_I = Rm/Lm;
+% kp_I = wc_I*Lm;
+% ki_I = wc_I*Rm;
+% Ti_I = kp_I/ki_I;
+% 
+I_th = I_max*1.6;
+V_th = V_max*1;
+% 
+% Loop of speed
+% wc_v = 2*pi*5.8;
+% kp_v = wc_v*J_eq;
+% ki_v = wc_v*B_eq;
+% Ti_v = kp_v/ki_v;
+% 
+% Loop of position
+% wc_p = wc_v/10;
+% kp_p = wc_p;
+% Ti_p = 10;
+s=tf('s');
+R= (30*70/45)*(s+45)/((s+30)*(s+70)); 
+
+%% TF COMPARISON
+
+%% TF nominal parameters
+G_nom=(2.021e-07*s^2 + 1.414e-05*s + 1.129e05) / (s^3 + 43.02*s^2 + 2425*s + 7.52e04);
+
+%% TF optimal medium parameters
+G_opt= (2.694e-07*s^2 + 1.567e-05*s + 1.389e05) / ( s^3 + 46.56*s^2 + 2435*s + 8.169e04 );
+
+%% TF optimal precise parameter 1V
+G_opt1 = (2.365e-07*s^2 + 1.415e-05*s + 1.234e05) / (s^3 + 46.09*s^2 + 2433*s + 8.083e04);  
+
+%% TF optimal precise parameter 4V
+G_opt4 = (2.577e-07*s^2 + 1.59e-05*s + 1.362e05) / ( s^3 + 45.44*s^2 + 2432*s + 7.965e04 );
+
+%% TF optimal precise parameter 10V
+G_opt10 = (3.097e-07*s^2 + 1.57e-05*s + 1.516e05) / (s^3 + 49.04*s^2 + 2441*s + 8.625e04);
+
+% %% TF sweep sine
+% close all
+% G_sine = ( 6.84*s^2 - 1058*s - 4.29e04) / (s^3 + 121*s^2 + 2266*s + 2.696e05)
+figure(1)
+bode(G_nom,G_opt, G_opt1,G_opt4, G_opt10, R)
+legend 
+
+
+%% Notch Filter
+
+wn=46.08;
+wn_numNf= 46.5;
+wn_denNf=45.5;
+psi1=0.0879;
+psi2=0.72;
+Nf= (wn_denNf^2/wn_numNf^2)*(s^2+2*psi1*wn_numNf*s+wn_numNf^2)/(s^2+2*psi2*wn_denNf*s+wn_denNf^2);
+G_tot=Nf*G_opt;
+figure(2)
+bode(G_tot)
+step(G_tot)
+%pidTuner(G_tot)
+
+%% Regulator PI (for speed)
+wc_v = 8;
+ki_v=wc_v;
+kp_v=wc_v/38.4664;
+Ti_v = kp_v/ki_v;
+R1=kp_v+ki_v/s;
+R=wc_v*(s/38.4664+1)/s;
+
+
+L=R*G_tot;
+F=L/(1+L);
+
 

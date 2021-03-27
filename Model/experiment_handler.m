@@ -275,7 +275,7 @@ classdef experiment_handler
             confirm = input( strcat( 'Sei sicuro di cancellare l''esperimento n.', ...
                 num2str( idx_exp) , '? [y/n] ' ), 's' );
             if strcmp( confirm, 'y' )
-                obj.experiments{idx_exp} = [];
+                obj.experiments(idx_exp) = [];
             end
             obj.save;
         end
