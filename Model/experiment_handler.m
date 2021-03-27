@@ -200,7 +200,6 @@ classdef experiment_handler
             ramp = struct( 'init_time', 0, 'ramp_pend', 0, 'init_value', 0, 'final_value', 0);
             sinesweep = struct( 'init_freq', 0.1, 'final_freq', 0.1, 'target_time', 0, 'mean_value', 0, 'v_max', 0);
             
-            
             experiment.title = input( 'Titolo dell''esperimento ? ', 's' );
             
             disp( 'Variabile di riferimento ?');
@@ -220,24 +219,26 @@ classdef experiment_handler
             
             switch( type )
                 case 'step'
-                    experiment.(refVariable).(type).init_time = input( "Istante iniziale: " );
-                    experiment.(refVariable).(type).step_size = input( "Ampiezza step: " );
+                    experiment.(refVariable).(type).init_time = input( " Istante iniziale: " );
+                    experiment.(refVariable).(type).step_size = input( " Ampiezza step: " );
                 case 'ramp'
-                    experiment.(refVariable).(type).init_time = input( "Istante iniziale: " );
-                    experiment.(refVariable).(type).ramp_pend = input( strcat( 'Pendenza rampa [', ...
-                        experiment.refVariable, "/s]: " ) );
-                    experiment.(refVariable).(type).init_value = input( "Valore iniziale: " );
-                    experiment.(refVariable).(type).final_value = input( "Valore finale: " );
+                    experiment.(refVariable).(type).init_time = input( " Istante iniziale: " );
+                    experiment.(refVariable).(type).ramp_pend = input( " Pendenza rampa [units/s]: " );
+                    experiment.(refVariable).(type).init_value = input( " Valore iniziale: " );
+                    experiment.(refVariable).(type).final_value = input( " Valore finale: " );
                 case 'sinesweep'
-                    experiment.(refVariable).(type).init_freq = input( "Frequenza iniziale [Hz] (>0): " );
-                    experiment.(refVariable).(type).final_freq = input( "Frequenza finale [Hz]: " );
-                    experiment.(refVariable).(type).target_time = input( "Tempo esperimento : " );
-                    experiment.(refVariable).(type).mean_value = input( "Valore medio : " );
-                    experiment.(refVariable).(type).v_max = input( "Valore massimo : " );
+                    experiment.(refVariable).(type).init_freq = input( " Frequenza iniziale [Hz] (>0): " );
+                    experiment.(refVariable).(type).final_freq = input( " Frequenza finale [Hz]: " );
+                    experiment.(refVariable).(type).target_time = input( " Tempo esperimento [s]: " );
+                    experiment.(refVariable).(type).mean_value = input( " Valore medio : " );
+                    experiment.(refVariable).(type).v_max = input( " Valore massimo : " );
             end
             
             experiment.w_filter = inf;
-            % ask for filter in future
+            new_val = input( strcat( " w_filter: Inf --> " ) );
+            if num2str( new_val ) ~= ""
+                experiment.w_filter = new_val;
+            end
             
             experiment.refVariable = refVariable;
             experiment.type = type;
@@ -246,16 +247,106 @@ classdef experiment_handler
             obj.save;
         end
         
+        function obj = edit_experiment( obj )
+            
+            obj.print_experiments;
+            idx_exp = input( 'Quale esperimento? ' );
+            obj.valid_numexp( idx_exp );
+            experiment = obj.experiments{idx_exp};
+            
+            type = experiment.type;
+            refVariable = experiment.refVariable;
+            disp( "Modifica i valori [Invio per confermare]" );
+            
+            new_title = input( strcat( " Titolo: ", experiment.title, " --> " ), 's' );
+            if new_title ~= ""
+                experiment.title = new_title;
+            end
+            
+            new_val = input( strcat( " w_filter: ", num2str( experiment.w_filter ), " --> " ) );
+            if num2str( new_val ) ~= ""
+                experiment.w_filter = new_val;
+            end
+            
+            switch( type )
+                case 'step'
+                    
+                    new_val = input( strcat( " Istante iniziale: ", num2str( experiment.(refVariable).(type).init_time ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).init_time = new_val;
+                    end
+                    
+                    new_val = input( strcat( " Ampiezza step: ", num2str( experiment.(refVariable).(type).step_size ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).step_size = new_val;
+                    end
+                    
+                case 'ramp'
+                    
+                    new_val = input( strcat( " Istante iniziale: ", num2str( experiment.(refVariable).(type).init_time ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).init_time = new_val;
+                    end
+                    
+                    new_val = input( strcat( " Pendenza rampa [units/s]: ", num2str( experiment.(refVariable).(type).ramp_pend ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).ramp_pend = new_val;
+                    end
+                    
+                    new_val = input( strcat( " Valore iniziale: ", num2str( experiment.(refVariable).(type).init_value ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).init_value = new_val;
+                    end
+                    
+                    new_val = input( strcat( " Valore finale: ", num2str( experiment.(refVariable).(type).final_value ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).final_value = new_val;
+                    end
+                    
+                case 'sinesweep'
+                    
+                    new_val = input( strcat( " Frequenza iniziale [Hz] (>0): ", num2str( experiment.(refVariable).(type).init_freq ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).init_freq = new_val;
+                    end
+                    
+                    new_val = input( strcat( " Frequenza finale [Hz]: ", num2str( experiment.(refVariable).(type).final_freq ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).final_freq = new_val;
+                    end
+                    
+                    new_val = input( strcat( " Tempo esperimento [s]: ", num2str( experiment.(refVariable).(type).target_time ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).target_time = new_val;
+                    end
+                    
+                    new_val = input( strcat( " Valore medio : ", num2str( experiment.(refVariable).(type).mean_value ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).mean_value = new_val;
+                    end
+                    
+                    new_val = input( strcat( " Valore massimo : ", num2str( experiment.(refVariable).(type).v_max ), " --> " ) );
+                    if num2str( new_val ) ~= ""
+                        experiment.(refVariable).(type).v_max = new_val;
+                    end
+                    
+            end
+            
+            obj.experiments{idx_exp} = experiment;
+            obj.save;
+            
+        end
+        
         function show_experiment( obj )
             
             experiment = obj.load_experiment;
             
-            disp( strcat( "Titolo: ", experiment.title ) );
-            disp( strcat("Riferimento: ", experiment.refVariable) );
-            disp( strcat("Tipo di segnale: ", experiment.type) );
-            
-            disp( "");
+            disp( strcat( " Titolo: ", experiment.title ) );
+            disp( strcat( " Riferimento: ", experiment.refVariable) );
+            disp( strcat( " w_filter: ", num2str( experiment.w_filter ) ) );
+            disp( strcat( " Tipo di segnale: ", experiment.type) );
             disp( experiment.(experiment.refVariable).(experiment.type) );
+            disp( "");
         end
         
         function experiment = load_experiment( obj )
@@ -273,7 +364,7 @@ classdef experiment_handler
             obj.print_experiments;
             idx_exp = input( 'Quale esperimento vuoi cancellare? ' );
             confirm = input( strcat( 'Sei sicuro di cancellare l''esperimento n.', ...
-                num2str( idx_exp) , '? [y/n] ' ), 's' );
+                num2str( idx_exp) , "? [y/n] " ), 's' );
             if strcmp( confirm, 'y' )
                 obj.experiments(idx_exp) = [];
             end
