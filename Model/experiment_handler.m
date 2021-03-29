@@ -4,7 +4,7 @@ classdef experiment_handler
     %   This class saves some information about all the test we have done,
     %   like the time and the titles. It also allows to manage the
     %   experiments and to automatically collect the data in the right way.
-    % Dataset data are collected in the experiment, formatted as defined in the
+    % Dataset data are collected during the experiment, formatted as defined in the
     % dataset_struct.
     
     properties 
@@ -128,7 +128,7 @@ classdef experiment_handler
             obj.save;
         end
         
-        function obj = create_data( obj, varargin )
+        function obj = create_data( obj, title, dataset_struct, exper )
             %CREATE_DATA Creates the data object and saves it with its
             %title, plus it deletes the set of data acqired.
             
@@ -140,11 +140,8 @@ classdef experiment_handler
                 error( msg );
             end
             
-            title = varargin{1};
-            dataset_struct = varargin{2};
-            exper = varargin{3};
-            
-            for jdx = 1: min(length( listing ), varargin{4} )
+            %Associate multiple experiment to multiple titles
+            for jdx = 1: min(length( listing ), length(title) )
                 
                 fname = listing(jdx).name;
                 raw_data = load( fname );
@@ -153,24 +150,29 @@ classdef experiment_handler
                 [~, name_, ~] = fileparts( name_ );
                 raw_data = raw_data.(name_);
                 
+                % each field of the dataset is a row in data
                 fname = fieldnames( dataset_struct );
                 for idx = 1: numel(fname)
                     dataset_struct.(fname{idx}) = raw_data(idx, :);
                 end
-                
+                % assign the remaining informations
                 data = dataset_struct;
                 data.title = title(jdx);
                 data.exp_title = exper{jdx}.title;
                 data.w_filter = exper{jdx}.w_filter;
                 data.n_signal = numel ( fieldnames( dataset_struct ) );
                 
+                % save the new data object
                 save( strcat( 'lab_', num2str(obj.today_lab), '/', title(jdx)), 'data');
                 
+                % add it to the memory
                 obj.hours( obj.today_lab ,end+1) = name_( (end-7):end );
                 obj.titles( obj.today_lab ,end+1) = title(jdx);
                 
+                % save handler
                 obj.save;
                 
+                % delete raw data
                 delete (listing(jdx).name );
            end
         end
@@ -337,7 +339,7 @@ classdef experiment_handler
             
         end
         
-        function show_experiment( obj )
+        function print_experiment( obj )
             
             experiment = obj.load_experiment;
             
@@ -349,14 +351,26 @@ classdef experiment_handler
             disp( "");
         end
         
-        function experiment = load_experiment( obj )
+        function experiment = load_experiment( obj, varargin )
             obj.print_experiments;
             
-            idx_exp = input( 'Quale esperimento? ' );
+            if nargin> 1 && strcmp( varargin{1}, 'from_to' )
+                from = varargin{2};
+                to = from(2);
+                from = from(1);
+                
+                obj.valid_numexp( to );
+                obj.valid_numexp( from );
+            else
+                idx_exp = input( 'Quale esperimento? ' );
+                
+                obj.valid_numexp( idx_exp );
+                
+                from = idx_exp;
+                to = idx_exp;
+            end
             
-            obj.valid_numexp( idx_exp );
-            
-            experiment = obj.experiments{idx_exp};
+            experiment = obj.experiments(from:to);
             
         end
         
@@ -370,17 +384,6 @@ classdef experiment_handler
             end
             obj.save;
         end
-        
-        % do experiment :
-        % chiedi quanti
-        % chiedi quali
-        % for each experiment
-        % salva i dati dell'experiment sul workspace
-        % pausa
-        % noir unniamo simulink
-        % % ci prendiamo il nuov oggetto
-        % % lo trasformiamo usando data_create
-        % eliminiamo il vecchio e lo salviamo in nuovo formato
         
         %% datasets struct
         function obj = define_datasetstruct( obj )
@@ -396,6 +399,14 @@ classdef experiment_handler
             obj.save;
         end
         
+        function print_datasetstruct( obj)
+            
+            for idx = 1: length( obj.dataset_structs )
+                disp( strcat( "[", num2str(idx), "] ") );
+                disp(obj.dataset_structs{idx});
+            end
+            
+        end
         
         function out = today_lab( obj, varargin )
             persistent todaylab;
