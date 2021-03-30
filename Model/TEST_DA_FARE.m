@@ -34,7 +34,7 @@ e_h = experiment_handler( 'experiment_handler' );
             experiments = e_h.load_experiment('from_to', [11, 20]);
             dts_struct = e_h.dataset_structs{2};
             
-for idx = 1:length( title )
+for idx = 1:length( titoli )
                 
         experiment = experiments{idx};
         
@@ -83,6 +83,36 @@ e_h = e_h.create_data( "voltage_sinesweep_1dof", dts_struct, experiment );
 % 2massa 
 % uguale identico
 
+titoli = ["voltage_sinesweep_2V_5_8_ave4";
+                "mass1vel_step_15";
+                "mass1vel_step_-8";
+                "mass1vel_step_17";
+                "mass1vel_ramp_0_15";
+                "mass1vel_ramp_-17_17";
+                "mass1pos_step_45"];
+            
+            experiments = e_h.load_experiment('from_to', [22, 28]);
+            dts_struct = e_h.dataset_structs{2};
+            
+for idx = 1:length( titoli )
+                
+        experiment = experiments{idx};
+        
+        pause;
+        
+        % we run simulink
+        
+        % stop the pause pressing enter on command window
+        
+        e_h = e_h.create_data( titoli(idx), dts_struct, {experiment} );
+end
+
+%%
+
+%%
+% 2massa 
+% uguale identico
+
 titoli = ["voltage_step_2dof_-10V";
                 "voltage_step_2dof_-8V";
                 "voltage_step_2dof_-6V";
@@ -97,7 +127,7 @@ titoli = ["voltage_step_2dof_-10V";
             experiments = e_h.load_experiment('from_to', [11, 20]);
             dts_struct = e_h.dataset_structs{2};
             
-for idx = 1:length( title )
+for idx = 1:length( titoli )
                 
         experiment = experiments{idx};
         
@@ -109,7 +139,6 @@ for idx = 1:length( title )
         
         e_h = e_h.create_data( titoli(idx), dts_struct, {experiment} );
 end
-
 
 %% IN SETTIMANA
 % DENNIS - GIACOMO
