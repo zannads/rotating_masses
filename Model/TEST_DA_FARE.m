@@ -16,10 +16,50 @@
 % mass2_vel :
 % w_filter : [Hz] 
 
+e_h = experiment_handler( 'experiment_handler' );
+
+ % I should have the same number of titles and experiments,
+            % while dataset_struct is just one!
+            titoli = ["voltage_step_1dof_-10V";
+                "voltage_step_1dof_-8V";
+                "voltage_step_1dof_-6V";
+                "voltage_step_1dof_-4V";
+                "voltage_step_1dof_-2V";
+                "voltage_step_1dof_2V";
+                "voltage_step_1dof_4V";
+                "voltage_step_1dof_6V";
+                "voltage_step_1dof_8V";
+                "voltage_step_1dof_10V"];
+            
+            experiments = e_h.load_experiment('from_to', [11, 20]);
+            dts_struct = e_h.dataset_structs{2};
+            
+for idx = 1:length( title )
+                
+        experiment = experiments{idx};
+        
+        pause;
+        
+        % we run simulink
+        
+        % stop the pause pressing enter on command window
+        
+        e_h = e_h.create_data( titoli(idx), dts_struct, {experiment} );
+end
+%%
 % sweptsine da 10^-2, 10^1
 % acquisire uguale 
+experiment = e_h.load_experiment( 'from_to', [21, 21] );
 
+pause;
 
+% we run simulink
+
+% stop the pause pressing enter on command window
+
+e_h = e_h.create_data( "voltage_sinesweep_1dof", dts_struct, experiment );
+
+%%
 % creare tf dagli esperimenti
 
 % ci estriamo l'errore sul gain 
@@ -39,8 +79,36 @@
 % vel1_ref :
 % vel1_err :
 
+%%
 % 2massa 
 % uguale identico
+
+titoli = ["voltage_step_2dof_-10V";
+                "voltage_step_2dof_-8V";
+                "voltage_step_2dof_-6V";
+                "voltage_step_2dof_-4V";
+                "voltage_step_2dof_-2V";
+                "voltage_step_2dof_2V";
+                "voltage_step_2dof_4V";
+                "voltage_step_2dof_6V";
+                "voltage_step_2dof_8V";
+                "voltage_step_2dof_10V"];
+            
+            experiments = e_h.load_experiment('from_to', [11, 20]);
+            dts_struct = e_h.dataset_structs{2};
+            
+for idx = 1:length( title )
+                
+        experiment = experiments{idx};
+        
+        pause;
+        
+        % we run simulink
+        
+        % stop the pause pressing enter on command window
+        
+        e_h = e_h.create_data( titoli(idx), dts_struct, {experiment} );
+end
 
 
 %% IN SETTIMANA
@@ -76,3 +144,4 @@
 % ~~ controllo di posizione 1dof
 
 % su 2 dof evitare oscillazioni di entrambe le masse
+
