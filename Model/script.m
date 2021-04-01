@@ -99,6 +99,7 @@ A(4,:) = [K_s1/J_1,0,-K_s1/J_1,-B_1/J_1];
 B = [0,eta_m*eta_g*K_g/J_eq,0,0]';
 C = eye(4);
 D=zeros(4,1);
+
 %% Controller parameters
 
 % Loop of current
@@ -147,6 +148,23 @@ figure(1)
 bode(G_nom,G_opt, G_opt1,G_opt4, G_opt10, R)
 legend 
 
+%% transfer functions from voltage
+
+s = tf( 's' );
+G_motor = 1/(Rm + s*Lm);
+G_mass1 = C * inv(s*eye(4)-A) * B + D;
+G_tau_to_thetaLdot = G_mass1(2);
+G_tau_to_theta1dot = G_mass1(4);
+L_V_to_thetaLdot = G_motor * k_t * eta_m * eta_g * K_g * G_tau_to_thetaLdot;
+F_V_to_thetaLdot = feedback( L_V_to_thetaLdot, k_m * K_g );
+
+G_V_to_theta1dot = G_motor * k_t * eta_m * eta_g * K_g * G_tau_to_theta1dot / (1 + k_m * K_g * G_motor * k_t * eta_m * eta_g * K_g * G_tau_to_thetaLdot); %Giacomo
+G_Luca = -K_s1/J_1 * F_V_to_thetaLdot / ( s^2 + B_1/J_1 * s+ K_s1/J_1 );
+
+figure(1)
+bode( G_opt ); hold on;
+bode( G_V_to_theta1dot )
+bode( G_Luca );
 
 %% Notch Filter
 
