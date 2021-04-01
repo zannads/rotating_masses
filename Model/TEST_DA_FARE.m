@@ -17,24 +17,21 @@
 % w_filter : [Hz] 
 
 e_h = experiment_handler( 'experiment_handler' );
-
+%%
  % I should have the same number of titles and experiments,
             % while dataset_struct is just one!
-            titoli = ["voltage_step_1dof_-10V";
-                "voltage_step_1dof_-8V";
-                "voltage_step_1dof_-6V";
-                "voltage_step_1dof_-4V";
-                "voltage_step_1dof_-2V";
-                "voltage_step_1dof_2V";
-                "voltage_step_1dof_4V";
-                "voltage_step_1dof_6V";
-                "voltage_step_1dof_8V";
-                "voltage_step_1dof_10V"];
+            titoli = ["voltage_step_1dof_-10V_filterok";
+               
+                "voltage_step_1dof_-6V_filterok";
+                
+                "voltage_step_1dof_2V_filterok";
+                
+                "voltage_step_1dof_10V_filterok"];
             
             experiments = e_h.load_experiment('from_to', [11, 20]);
             dts_struct = e_h.dataset_structs{2};
             
-for idx = 1:length( titoli )
+idx = 10
                 
         experiment = experiments{idx};
         
@@ -44,12 +41,12 @@ for idx = 1:length( titoli )
         
         % stop the pause pressing enter on command window
         
-        e_h = e_h.create_data( titoli(idx), dts_struct, {experiment} );
-end
+        e_h = e_h.create_data( titoli(4), dts_struct, {experiment} );
+
 %%
 % sweptsine da 10^-2, 10^1
 % acquisire uguale 
-experiment = e_h.load_experiment( 'from_to', [21, 21] );
+experiment = e_h.load_experiment( 'from_to', [22, 22] );
 
 pause;
 
@@ -57,7 +54,7 @@ pause;
 
 % stop the pause pressing enter on command window
 
-e_h = e_h.create_data( "voltage_sinesweep_1dof", dts_struct, experiment );
+e_h = e_h.create_data( "voltage_sinesweep_1dof_5_8Hz", dts_struct, experiment );
 
 %%
 % creare tf dagli esperimenti
@@ -80,32 +77,31 @@ e_h = e_h.create_data( "voltage_sinesweep_1dof", dts_struct, experiment );
 % vel1_err :
 
 %%
-% 2massa 
+% 1massa  con controllore
 % uguale identico
 
-titoli = ["voltage_sinesweep_2V_5_8_ave4";
-                "mass1vel_step_15";
-                "mass1vel_step_-8";
+titoli = ["mass1vel_step_15_test6";
+                "mass1vel_step_-8_test2";
                 "mass1vel_step_17";
                 "mass1vel_ramp_0_15";
                 "mass1vel_ramp_-17_17";
                 "mass1pos_step_45"];
             
-            experiments = e_h.load_experiment('from_to', [22, 28]);
-            dts_struct = e_h.dataset_structs{2};
+            experiments = e_h.load_experiment('from_to', [23, 28]);
+            dts_struct = e_h.dataset_structs{3};
             
-for idx = 1:length( titoli )
+idx = 6
                 
         experiment = experiments{idx};
         
-        pause;
+       % pause;
         
         % we run simulink
         
         % stop the pause pressing enter on command window
         
-        e_h = e_h.create_data( titoli(idx), dts_struct, {experiment} );
-end
+        %e_h = e_h.create_data( titoli(idx), dts_struct, {experiment} );
+
 
 %%
 
@@ -113,21 +109,21 @@ end
 % 2massa 
 % uguale identico
 
-titoli = ["voltage_step_2dof_-10V";
-                "voltage_step_2dof_-8V";
+titoli = ["voltage_step_2dof_-10V_filterok";
+                "voltage_step_2dof_-8V_filterok";
                 "voltage_step_2dof_-6V";
-                "voltage_step_2dof_-4V";
+                "voltage_step_2dof_-4V_filterok";
                 "voltage_step_2dof_-2V";
-                "voltage_step_2dof_2V";
+                "voltage_step_2dof_2V_filterok";
                 "voltage_step_2dof_4V";
                 "voltage_step_2dof_6V";
-                "voltage_step_2dof_8V";
+                "voltage_step_2dof_8V_filterok";
                 "voltage_step_2dof_10V"];
             
             experiments = e_h.load_experiment('from_to', [11, 20]);
             dts_struct = e_h.dataset_structs{2};
             
-for idx = 1:length( titoli )
+ idx = 6
                 
         experiment = experiments{idx};
         
@@ -138,7 +134,7 @@ for idx = 1:length( titoli )
         % stop the pause pressing enter on command window
         
         e_h = e_h.create_data( titoli(idx), dts_struct, {experiment} );
-end
+
 
 %% IN SETTIMANA
 % DENNIS - GIACOMO

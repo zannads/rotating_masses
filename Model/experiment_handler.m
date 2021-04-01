@@ -191,6 +191,9 @@ classdef experiment_handler
             
             data.mass1_pos = [raw_data.time', raw_data.mass1_pos'];
             data.mass1_vel = [raw_data.time', raw_data.mass1_vel'];
+            
+            data.mass2_pos = [raw_data.time', raw_data.mass2_pos'];
+            data.mass2_vel = [raw_data.time', raw_data.mass2_vel'];
         end
         
         %% experiments
@@ -342,6 +345,7 @@ classdef experiment_handler
         function print_experiment( obj )
             
             experiment = obj.load_experiment;
+            experiment = experiment{1};
             
             disp( strcat( " Titolo: ", experiment.title ) );
             disp( strcat( " Riferimento: ", experiment.refVariable) );
