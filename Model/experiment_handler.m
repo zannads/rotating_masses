@@ -192,8 +192,8 @@ classdef experiment_handler
             data.mass1_pos = [raw_data.time', raw_data.mass1_pos'];
             data.mass1_vel = [raw_data.time', raw_data.mass1_vel'];
             
-            data.mass2_pos = [raw_data.time', raw_data.mass2_pos'];
-            data.mass2_vel = [raw_data.time', raw_data.mass2_vel'];
+%             data.mass2_pos = [raw_data.time', raw_data.mass2_pos'];
+%             data.mass2_vel = [raw_data.time', raw_data.mass2_vel'];
         end
         
         %% experiments
