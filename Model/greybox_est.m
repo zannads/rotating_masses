@@ -1,4 +1,4 @@
-%% Greybox estimation
+%% Greybox estimation: 1-dof
 
 data1 = load( 'voltage_step_1dof_-10V_filterok.mat', 'data');
 % data2 = load( 'voltage_step_1dof_-8V.mat', 'data');
@@ -41,9 +41,30 @@ data_to_est = iddata( outputs, inputs, 0.002 );
 opt = greyestOptions('EnforceStability',true, ...
     'WeightingFilter', [0.01,70] );
 opt.SearchOptions.MaxIterations = 40;
-sys_id = greyest( data_to_est, nominal_sys_1dof, opt );
+greybox_id_1dof = greyest( data_to_est, nominal_sys_1dof, opt );
 
 figure
-bode( ss( sys_id.A, sys_id.B, sys_id.C, sys_id.D ), {0.1,100} ); hold on
+bode( greybox_id_1dof, {0.1,100} ); hold on
 bode( G_opt )
 bode( nominal_sys_1dof )
+
+%% Greybox estimation: 2-dof
+
+data1 = load( 'voltage_step_2dof_-10V_filterok.mat', 'data');
+data2 = load( 'voltage_step_2dof_-4V_filterok.mat', 'data');
+data3 = load( 'voltage_step_2dof_2V_filterok.mat', 'data');
+
+inputs = {data1.data.voltage', data2.data.voltage', data3.data.voltage'};
+outputs = {-data1.data.mass1_vel', -data2.data.mass1_vel', -data3.data.mass1_vel'};
+
+data_to_est = iddata( outputs, inputs, 0.002 );
+
+opt = greyestOptions('EnforceStability',true, ...
+    'WeightingFilter', [0.01,70] );
+opt.SearchOptions.MaxIterations = 60;
+greybox_id_2dof = greyest( data_to_est, nominal_sys_2dof, opt );
+
+figure
+bode( greybox_id_2dof, {0.1,100} ); hold on
+bode( G_opt )
+bode( nominal_sys_2dof )

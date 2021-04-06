@@ -41,7 +41,7 @@ psi2=0.72;
 
 
 Nf= (wn_denNf^2/wn_numNf^2)*(s^2+2*psi1*wn_numNf*s+wn_numNf^2)/(s^2+2*psi2*wn_denNf*s+wn_denNf^2);
-G_tot=Nf*G_opt;
+% G_tot=Nf*G_opt;
 % figure(2)
 % bode(G_tot)
 % step(G_tot)
@@ -76,9 +76,9 @@ R1=kp_v+ki_v/s;
 R=wc_v*(s/38.4664+1)/s;
 
 
-L=R*G_tot;
-F=L/(1+L);
-margin(L)
+% L=R*G_tot;
+% F=L/(1+L);
+% margin(L)
 
 %% Regulator P (for position)
 kp_p=1.5; %prova delle 18.28

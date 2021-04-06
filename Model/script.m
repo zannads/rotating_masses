@@ -1,5 +1,8 @@
-sensor_parameters;
+% clear all
+% clc
+
 nominal_model;
+sensors_parameters;
 controller_1dof;
 
 e_h = experiment_handler( 'experiment_handler' );
