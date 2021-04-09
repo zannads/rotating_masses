@@ -23,7 +23,6 @@ s=tf('s');
 % psi1=0.0879;
 % psi2=0.72;
 
-
 % parametri fino alle 17.50 (experiment 37)
 % wn=46.08;
 %  wn_numNf= 46.5;
@@ -31,14 +30,12 @@ s=tf('s');
 % psi1=0.0879;
 % psi2=0.9;
 
-
 % parametri fino alle 17.50 (experiment 37)
 wn=46.08;
  wn_numNf= 46.5;
  wn_denNf=45.5;
 psi1=0.0879;
 psi2=0.72;
-
 
 Nf= (wn_denNf^2/wn_numNf^2)*(s^2+2*psi1*wn_numNf*s+wn_numNf^2)/(s^2+2*psi2*wn_denNf*s+wn_denNf^2);
 % G_tot=Nf*G_opt;
