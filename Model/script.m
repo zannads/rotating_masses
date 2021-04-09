@@ -32,6 +32,9 @@ if active_dof == 1
     K_s1 = greybox_id_1dof.Structure.Parameters(10).Value;
     J_1 = greybox_id_1dof.Structure.Parameters(11).Value;
     B_1 = greybox_id_1dof.Structure.Parameters(12).Value;
+    K_s2 = 0;
+    J_2 = 0;
+    B_2 = 0;
 end
 %% Loading parameters: 2-dof
 if active_dof == 2
