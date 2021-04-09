@@ -10,7 +10,7 @@ titoli = { 'voltage_step_1dof_-10V.mat', 'voltage_step_1dof_-8V.mat', 'voltage_s
 
 for idx = 1:length(titoli)
     load( titoli{idx}, 'data' );
-    posint = intpos( data.mass1_pos );
+    posint = intencoder( data.mass1_pos );
 %     plot( data.time, [data.mass1_pos; posint])
     
     vel = diffvel( posint );
@@ -20,7 +20,7 @@ for idx = 1:length(titoli)
     data.mass1_pos = posint;
     data.mass1_vel = vel;
     
-    posint = intpos( data.mass2_pos );
+    posint = intencoder( data.mass2_pos );
 %     plot( data.time, [data.mass2_pos; posint])
     
     vel = diffvel( posint );
@@ -42,7 +42,7 @@ end
 
 
 %%
-function out = intpos( mass_pos )
+function out = intencoder( mass_pos )
 giri = 0;
 out = zeros( size(mass_pos) );
 out(1) = mass_pos(1);
