@@ -1,6 +1,6 @@
 %% Greybox estimation: 1-dof
 
-%% Dati con filtro a 25rad/s, con filtro spostato a 25Hz
+%% Dati con filtro a 25 Hz
 
 titoli = { 'voltage_step_1dof_-10V.mat', 'voltage_step_1dof_-8V.mat', 'voltage_step_1dof_-6V.mat', ...
     'voltage_step_1dof_-4V.mat', 'voltage_step_1dof_-2V.mat', 'voltage_step_1dof_2V.mat', ...
@@ -18,16 +18,17 @@ end
 
 data_to_est = iddata( outputs, inputs, 0.002 );
 
-opt = greyestOptions('EnforceStability',true, 'WeightingFilter', [0.01,70] );
-opt.SearchOptions.MaxIterations = 200;
+opt = greyestOptions('EnforceStability',true, 'WeightingFilter', [0.1,100] );
+opt.SearchOptions.MaxIterations = 600;
 greybox_id_1dof = greyest( data_to_est, nominal_sys_1dof, opt );
-greybox_id_1dof.Notes = "Dati con filtro a 25rad/s, con filtro spostato a 25Hz";
+greybox_id_1dof.Notes = "Dati con filtro a 25 Hz";
 greybox_id_1dof.Name = "greybox id 1dof";
 
 figure
-bode( greybox_id_1dof, {0.1,100} ); hold on; legend
+bode( ss(greybox_id_1dof.A,greybox_id_1dof.B,greybox_id_1dof.C(2,:),greybox_id_1dof.D(2,:)),{1,100} )
+hold on; bode( blackbox_id_1dof )
 
-%% Dati con filtro a 25Hz
+%% Dati con filtro a 25 Hz (dati filterok)
 
 % titoli = { 'voltage_step_1dof_-10V_filterok.mat', 'voltage_step_1dof_-6V_filterok.mat', 'voltage_step_1dof_2V_filterok.mat' };
 % 
@@ -52,7 +53,7 @@ bode( greybox_id_1dof, {0.1,100} ); hold on; legend
 
 %% Greybox estimation: 2-dof
 
-%% Dati con filtro a 25rad/s, con filtro spostato a 25Hz
+%% Dati con filtro a 25 Hz
 
 titoli = { 'voltage_step_2dof_-10V.mat', 'voltage_step_2dof_-8V.mat', 'voltage_step_2dof_-6V.mat', ...
     'voltage_step_2dof_-4V.mat', 'voltage_step_2dof_-2V.mat', 'voltage_step_2dof_2V.mat', ...
@@ -70,16 +71,16 @@ end
 
 data_to_est = iddata( outputs, inputs, 0.002 );
 
-opt = greyestOptions('EnforceStability',true, 'WeightingFilter', [0.01,100] );
-opt.SearchOptions.MaxIterations = 400;
+opt = greyestOptions('EnforceStability',true, 'WeightingFilter', [0.1,150] );
+opt.SearchOptions.MaxIterations = 600;
 greybox_id_2dof = greyest( data_to_est, nominal_sys_2dof, opt );
-greybox_id_2dof.Notes = "Dati con filtro a 25rad/s, con filtro spostato a 25Hz";
+greybox_id_2dof.Notes = "Dati con filtro a 25 Hz";
 greybox_id_2dof.Name = "greybox id 2dof";
 
 figure
-bode( greybox_id_2dof, {0.1,100} ); hold on; legend
+bode( greybox_id_2dof, {1,150} ); hold on; legend
 
-%% Dati con filtro a 25Hz
+%% Dati con filtro a 25 Hz (dati filterok)
 
 % titoli = { 'voltage_step_2dof_-4V_filterok.mat', 'voltage_step_2dof_2V_filterok.mat' };
 % 
