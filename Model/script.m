@@ -3,7 +3,7 @@
 
 nominal_model;
 sensors_parameters;
-controller_1dof;
+controller_setup;
 
 e_h = experiment_handler( 'experiment_handler' );
 
@@ -12,10 +12,9 @@ load( 'blackbox_id_1dof.mat', 'blackbox_id_1dof' );
 load( 'greybox_id_2dof.mat', 'greybox_id_2dof' );
 load( 'blackbox_id_2dof.mat', 'blackbox_id_2dof' );
 
-active_dof = 2;     % 1 or 2 dof
-% data.active_dof = data.voltage;
-% data.active_dof(:,2) = active_dof*ones( size(data.active_dof(:,2) ) );
+
 %% Loading parameters: 1-dof
+active_dof = 1;     % 1 or 2 dof
 
 if active_dof == 1
     Rm = greybox_id_1dof.Structure.Parameters(1).Value;
@@ -33,10 +32,8 @@ if active_dof == 1
     K_s2 = 1;
     J_2 = 1;
     B_2 = 1;
-end
-%% Loading parameters: 2-dof
-
-if active_dof == 2
+else
+%     active_dof == 2
     Rm = greybox_id_2dof.Structure.Parameters(1).Value;
     Lm = greybox_id_2dof.Structure.Parameters(2).Value;
     k_m = greybox_id_2dof.Structure.Parameters(3).Value;
@@ -53,3 +50,6 @@ if active_dof == 2
     J_2 = greybox_id_2dof.Structure.Parameters(14).Value;
     B_2 = greybox_id_2dof.Structure.Parameters(15).Value;
 end
+
+%%
+% load experiment, load data, load controller run and save 

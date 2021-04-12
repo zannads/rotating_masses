@@ -127,57 +127,8 @@ classdef experiment_handler
             
             obj.save;
         end
-        
-        function obj = create_data( obj, title, dataset_struct, exper )
-            %CREATE_DATA Creates the data object and saves it with its
-            %title, plus it deletes the set of data acqired.
-            
-            % get the name of the datasets present in the folder.
-            
-            listing = dir(  'data_*.mat' );
-            if isempty( listing )
-                msg= 'No experiment is present in the current folder' ;
-                error( msg );
-            end
-            
-            %Associate multiple experiment to multiple titles
-            for jdx = 1: min(length( listing ), length(title) )
                 
-                fname = listing(jdx).name;
-                raw_data = load( fname );
-                name_ = strrep( fname, '-', '_' );
-                %remove .mat
-                [~, name_, ~] = fileparts( name_ );
-                raw_data = raw_data.(name_);
-                
-                % each field of the dataset is a row in data
-                fname = fieldnames( dataset_struct );
-                for idx = 1: numel(fname)
-                    dataset_struct.(fname{idx}) = raw_data(idx, :);
-                end
-                % assign the remaining informations
-                data = dataset_struct;
-                data.title = title(jdx);
-                data.exp_title = exper{jdx}.title;
-                data.w_filter = exper{jdx}.w_filter;
-                data.n_signal = numel ( fieldnames( dataset_struct ) );
-                
-                % save the new data object
-                save( strcat( 'lab_', num2str(obj.today_lab), '/', title(jdx)), 'data');
-                
-                % add it to the memory
-                obj.hours( obj.today_lab ,end+1) = name_( (end-7):end );
-                obj.titles( obj.today_lab ,end+1) = title(jdx);
-                
-                % save handler
-                obj.save;
-                
-                % delete raw data
-                delete (listing(jdx).name );
-           end
-        end
-        
-        function data = prepare_simulation( obj )
+        function [data, experiment, controller] = prepare_simulation( obj )
             %PREPARE_SIMULATION Formats the data in the way that simulink
             %wants for the use of "from workspace".
             %   With this function we can create the data for the
@@ -195,8 +146,23 @@ classdef experiment_handler
             if isfield( raw_data, 'mass2_pos' )
                 data.mass2_pos = [raw_data.time', raw_data.mass2_pos'];
                 data.mass2_vel = [raw_data.time', raw_data.mass2_vel'];
+            else 
+                data.mass2_pos = [raw_data.time', zeros( size( raw_data.time' ) )];
+                data.mass2_vel = [raw_data.time', zeros( size( raw_data.time' ) )];
             end
             
+            experiment = obj.load_experiment( 'title', raw_data.exp_title );
+            
+            % variable controller is created
+            controller_setup;
+            if isfield( raw_data, 'controller' )
+                
+                if ~isempty(raw_data.controller) 
+                   c = fieldnames( raw_data.controller );
+                   c = c{1};
+                   controller.(c) = raw_data.controller.(c);
+                end
+            end
         end
         
         %% experiments
@@ -348,7 +314,6 @@ classdef experiment_handler
         function print_experiment( obj )
             
             experiment = obj.load_experiment;
-            experiment = experiment{1};
             
             disp( strcat( " Titolo: ", experiment.title ) );
             disp( strcat( " Riferimento: ", experiment.refVariable) );
@@ -359,7 +324,6 @@ classdef experiment_handler
         end
         
         function experiment = load_experiment( obj, varargin )
-            obj.print_experiments;
             
             if nargin> 1 && strcmp( varargin{1}, 'from_to' )
                 from = varargin{2};
@@ -368,17 +332,25 @@ classdef experiment_handler
                 
                 obj.valid_numexp( to );
                 obj.valid_numexp( from );
+                %return as cell is a set 
+                experiment = obj.experiments(from:to);
+            elseif nargin> 1 && strcmp( varargin{1}, 'title' )
+                wtitle = varargin{2};
+                
+                idx_exp = obj.experiment_title_search( wtitle );
+                
+                % is a single object 
+                experiment = obj.experiments{idx_exp};
             else
+                obj.print_experiments;       
+                
                 idx_exp = input( 'Quale esperimento? ' );
                 
                 obj.valid_numexp( idx_exp );
                 
-                from = idx_exp;
-                to = idx_exp;
+                % is a single object 
+                experiment = obj.experiments{idx_exp};
             end
-            
-            experiment = obj.experiments(from:to);
-            
         end
         
         function obj = delete_experiment( obj )
@@ -565,6 +537,18 @@ classdef experiment_handler
             out = strcat( 'lab_', num2str( obj.today_lab ), '/' );
         end
         
+        function out = experiment_title_search( obj, reftitile) 
+            
+            for idx = 1:obj.num_exp
+                if strcmp( obj.experiments{idx}.title, reftitile )
+                    out = idx;
+                    return;
+                end
+            end
+            
+            msg = "Experiment title not present";
+            error(msg);
+        end
         
     end
     
