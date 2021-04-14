@@ -34,7 +34,7 @@ data.w_filter = experiment.w_filter;
 data.n_signal = numel ( fieldnames( dataset_struct ) );
 data.controller = [];
 if controller.active_technique>0
-    controller_string = strcat( 'c', controller.active_technique );
+    controller_string = strcat( 'c', num2str(controller.active_technique) );
     data.controller.(controller_string) = controller.(controller_string);
 end
 
