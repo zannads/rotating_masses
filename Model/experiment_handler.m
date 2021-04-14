@@ -161,6 +161,7 @@ classdef experiment_handler
                    c = fieldnames( raw_data.controller );
                    c = c{1};
                    controller.(c) = raw_data.controller.(c);
+                   controller.active_technique = str2double( c(2:end) );
                 end
             end
         end
