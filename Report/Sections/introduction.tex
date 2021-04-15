@@ -4,7 +4,8 @@
 
 \subsection{Mathematical description}
 
-Il modello fisico può essere modellizzato in equazioni differenziali ordinarie (EDOs) suddividendo il sistema in singole componenti: motore DC, trasmissione, molla, massa, molla, massa. I parametri utilizzati sono i valori nominali forniti nei manuali di setup delle componenti.
+Il modello fisico può essere modellizzato in equazioni differenziali ordinarie (EDOs) suddividendo il sistema in singole componenti: motore DC, trasmissione, molla, massa, molla, massa. I parametri utilizzati sono i valori nominali forniti nei manuali di setup delle componenti. \\
+Questa formulazione del problema può rivelarsi utile successivamente, quando il progetto del regolatore sarà basato sulla rappresentazione in spazio di stato oppure sulla funzione di trasferimento.
 
 % \includegraphics{model}
 
@@ -22,8 +23,6 @@ Il modello fisico può essere modellizzato in equazioni differenziali ordinarie 
 \[ J_1 \ddot{\theta}_1 + B_1 \dot{\theta}_1 = K_{s_1} ( \theta_l - \theta_1 ) - K_{s_2} ( \theta_1 - \theta_2 ) \]
 \[ J_2 \ddot{\theta}_2 + B_2 \dot{\theta}_2 = K_{s_2} ( \theta_1 - \theta_2 ) \]
 
-Questa formulazione del problema può rivelarsi utile successivamente, quando il progetto del regolatore sarà basato sulla rappresentazione in spazio di stato oppure sulla funzione di trasferimento.
-
 % Forma di stato
 \textit{State-space representation of the 1-d.o.f. system}
 
@@ -35,6 +34,10 @@ Questa formulazione del problema può rivelarsi utile successivamente, quando il
 	
 \end{array}
 \]
+
+Da questa ultima formulazione matematica, è facile verificare (tramite delle funzioni \textit{ctrb} e \textit{obsb} di Matlab} la controllabilità, per mezzo della tensione applicata al motore, e l'osservabilità del sistema.
+Il sistema con una sola massa rotante (1-dof) è controllabile solamente in 2 variabili di stato su 5: certamente, una di queste è la corrente (direttamente influenzata dall'input), l'altra è una a scelta tra le restanti. Viceversa, il rango della matrice di osservabilità è 4 su 5: dal momento che 
+
 
 % TF
 
@@ -62,7 +65,14 @@ Una soluzione a questo problema è svincolarsi dal modello puramente matematico 
 
 Gli esperimenti atti all'identificazione del modello, tutti con tensione del motore come variabile di input, sono di due tipi: scalini di varie ampiezze e sinusoidi a frequenza variabile. 
 
-Dal momento che questo approccio non include un significato fisico, ha senso stimare solo la FdT di nostro interesse: dalla tensione alla velocità delle masse 1 oppure 2, in funzione nel numero di dof. Poiché la TF vede solamente i poli osservabili e controllabili, il numero di poli imposto alla funzione di identificazione è ottenuto osservando i risultati del computer: se aggiungendo ulteriori poli, il risultato coincide con quello di un numero inferiore di poli, allora si è ottenuto l'ordine del sistema.
+Dal momento che questo approccio non include un significato fisico, ha senso stimare solo la FdT di nostro interesse: dalla tensione alla velocità delle masse 1 oppure 2, in funzione nel numero di dof. 
+L'ordine della 
+
+
+
+
+
+Poiché la TF vede solamente i poli osservabili e controllabili, il numero di poli imposto alla funzione di identificazione è ottenuto osservando i risultati del computer: se aggiungendo ulteriori poli, il risultato coincide con quello di un numero inferiore di poli, allora si è ottenuto l'ordine del sistema.
 Con questo procedimento troviamo una TF del 3° ordine, con 2 zeri a parte reale positiva: in questo modo la perdita di fase ad alta frequenza del modello white-box e black-box coincidono. Il guadagno statico ad alta frequenza, però, è molto meno pendente.
 
 Per sopperire questo problema, abbiamo deciso di imporre il numero di poli e zeri nell'identificazione: sono stati imposti uguali alla TF ottenuta nella white-box. Dunque, con 5 poli e 1 zero, sia modulo sia fase sono molto simili a quelle del modello matematico a tutte le frequenze.
