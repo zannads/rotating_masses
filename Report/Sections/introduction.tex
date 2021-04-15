@@ -9,9 +9,12 @@ Il modello fisico può essere modellizzato in equazioni differenziali ordinarie 
 % \includegraphics{model}
 
 % Equazioni componenti
-\[	V = R_m i + L_m \frac{d}{dt}i + k_m \dot{\theta}_m \]
-\[ \tau_m = \eta_m k_t i , \quad \tau_{ml} = \eta_g K_g \tau_m = \eta_m \eta_g K_g k_t i \]
-\[ J_m \ddot{\theta}_l + B_m \dot{\theta}_l = \tau_{ml} - K_{s1} ( \theta_l - \theta_1 ) \]
+\begin{align*}
+	V &= R_m i + L_m \frac{d}{dt}i + k_m \dot{\theta}_m \\
+	\tau_m &= \eta_m k_t i , \quad \tau_{ml} = \eta_g K_g \tau_m = \eta_m \eta_g K_g k_t i \\
+	J_m \ddot{\theta}_l + B_m \dot{\theta}_l &= \tau_{ml} - K_{s1} ( \theta_l - \theta_1 )
+\end{align*}
+
 \textit{Model of the 1-d.o.f. system}
 \[ J_1 \ddot{\theta}_1 + B_1 \dot{\theta}_1 = K_{s_1} ( \theta_l - \theta_1 ) \]
 \textit{Model of the 2-d.o.f. system}
@@ -19,9 +22,20 @@ Il modello fisico può essere modellizzato in equazioni differenziali ordinarie 
 \[ J_1 \ddot{\theta}_1 + B_1 \dot{\theta}_1 = K_{s_1} ( \theta_l - \theta_1 ) - K_{s_2} ( \theta_1 - \theta_2 ) \]
 \[ J_2 \ddot{\theta}_2 + B_2 \dot{\theta}_2 = K_{s_2} ( \theta_1 - \theta_2 ) \]
 
-Questa formulazione del problema è utile per il progetto del regolatore, che baseremo su una rappresentazione in spazio di stato ed una funzione di trasferimento.
+Questa formulazione del problema può rivelarsi utile successivamente, quando il progetto del regolatore sarà basato sulla rappresentazione in spazio di stato oppure sulla funzione di trasferimento.
 
 % Forma di stato
+\textit{State-space representation of the 1-d.o.f. system}
+
+\[
+\begin{array}{ccccc}
+	-\frac{R_m}{L_m} & 0 & -\frac{k_m K_g}{L_m} & 0 & 0 \\
+	0 & 0 & 1 & 0 & 0 \\
+	\frac{\eta_m \eta_g k_t K_g}{J_m} & -\frac{K_{s_1}}
+	
+\end{array}
+\]
+
 % TF
 
 % Immagine simulink: componenti separate
@@ -30,10 +44,10 @@ Per poter verificare la correttezza di questo modello, si sono condotti degli es
 Imponendo una tensione sul motore, si è confrontata la risposta in anello aperto del sistema fisico con la simulazione eseguita da Simulink e basata sul modello matematico.
 
 
-Si è innanzitutto verificato il guadagno statico della FdT dall'input di controllo del motore alla velocità del primo carico. Imponendo una tensione costante, terminato il transitorio di assestamento della massa, si è osservato che il modello matematico sottostimava la velocità di regime.
+Si è innanzitutto verificato il guadagno statico della FdT dall'input di controllo del motore alla velocità del primo carico. Imponendo una tensione costante, terminato il transitorio di assestamento della massa, si è osservato che il modello matematico sottostima la velocità di regime.
 Abbiamo manualmente modificato i parametri che più inficiano il guadagno statico: la resistenza rotorica del motore, l'efficienza del motore, l'efficienza meccanica della trasmissione, la costante corrente-coppia e, infine, la costante velocità-tensione (causa della forza elettromotrice).
 
-Per fare questo, si sono condotti esperimenti a velocità differenti (entrambe le direzioni di moto, da velocità molto basse alle massime consentite dai limiti elettrici del motore). Da ciò, si è osservato che il comportamento del sistema non è perfettamente lineare rispetto alla tensione imposta al motore. Alcune interpretazioni fisiche sono state avanzate: l'efficienza meccanica della trasmissione, probabilmente, è sottostimata a basse velocità; per quanto riguarda la $k_m$ (causa della forza elettromotrice), una stima ti tale parametro è difficile dal momento che il suo effetto contrasta la potenza del motore in modo significativo ad alte velocità, ma pressoché nullo a basse velocità.
+Per fare questo, si sono condotti esperimenti a velocità differenti (entrambe le direzioni di moto, da velocità molto basse alle massime consentite dai limiti elettrici del motore). Da ciò, si è osservato che il comportamento del sistema non è perfettamente lineare rispetto alla tensione imposta al motore. Alcune interpretazioni fisiche sono state avanzate: l'efficienza meccanica della trasmissione, probabilmente, è sottostimata a basse velocità; per quanto riguarda la $k_m$ (causa della forza elettromotrice), una stima di tale parametro è difficile dal momento che il suo effetto contrasta la potenza del motore in modo significativo ad alte velocità, ma pressoché nullo a basse velocità.
 % parametri modificati ---> G_opt
 
 
@@ -48,10 +62,16 @@ Una soluzione a questo problema è svincolarsi dal modello puramente matematico 
 
 Gli esperimenti atti all'identificazione del modello, tutti con tensione del motore come variabile di input, sono di due tipi: scalini di varie ampiezze e sinusoidi a frequenza variabile. 
 
-
-
 Dal momento che questo approccio non include un significato fisico, ha senso stimare solo la FdT di nostro interesse: dalla tensione alla velocità delle masse 1 oppure 2, in funzione nel numero di dof. Poiché la TF vede solamente i poli osservabili e controllabili, il numero di poli imposto alla funzione di identificazione è ottenuto osservando i risultati del computer: se aggiungendo ulteriori poli, il risultato coincide con quello di un numero inferiore di poli, allora si è ottenuto l'ordine del sistema.
-Nel nostro caso, gli esperimenti ad 1 dof identificano un sistema del 3° ordine, mentre 
+Con questo procedimento troviamo una TF del 3° ordine, con 2 zeri a parte reale positiva: in questo modo la perdita di fase ad alta frequenza del modello white-box e black-box coincidono. Il guadagno statico ad alta frequenza, però, è molto meno pendente.
+
+Per sopperire questo problema, abbiamo deciso di imporre il numero di poli e zeri nell'identificazione: sono stati imposti uguali alla TF ottenuta nella white-box. Dunque, con 5 poli e 1 zero, sia modulo sia fase sono molto simili a quelle del modello matematico a tutte le frequenze.
+
+Seguendo questo approccio, si è osservato la frequenza di risonanza del modello identificato sperimentalmente è più bassa rispetto al modello matematico; lo smorzamento, invece, è inferiore.
+Queste difformità si sono potute osservare immediatamente anche negli esperimenti condotti in laboratorio, in particolare, con input sinusoidale a frequenza variabile.
+
+Nel nostro caso, gli esperimenti ad 1 dof identificano un sistema del 5° ordine.
+Il numero di zeri, invece, è stato imposto uguale a quello della white-box: così 
 
 \paragraph{Step inputs}
 
