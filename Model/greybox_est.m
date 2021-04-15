@@ -24,9 +24,9 @@ greybox_id_1dof = greyest( data_to_est, nominal_sys_1dof, opt );
 greybox_id_1dof.Notes = "Dati con filtro a 25 Hz";
 greybox_id_1dof.Name = "greybox id 1dof";
 
-figure
-bode( ss(greybox_id_1dof.A,greybox_id_1dof.B,greybox_id_1dof.C(2,:),greybox_id_1dof.D(2,:)),{1,100} )
-hold on; bode( blackbox_id_1dof )
+% figure
+% bode( ss(greybox_id_1dof.A,greybox_id_1dof.B,greybox_id_1dof.C(2,:),greybox_id_1dof.D(2,:)),{1,100} )
+% hold on; bode( blackbox_id_1dof )
 
 %% Dati con filtro a 25 Hz (dati filterok)
 
