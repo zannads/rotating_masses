@@ -14,7 +14,7 @@ load( 'blackbox_id_2dof.mat', 'blackbox_id_2dof' );
 
 
 %% Loading parameters: 1-dof
-active_dof = 1;     % 1 or 2 dof
+active_dof = 1     % 1 or 2 dof
 
 if active_dof == 1
     Rm = greybox_id_1dof.Structure.Parameters(1).Value;
