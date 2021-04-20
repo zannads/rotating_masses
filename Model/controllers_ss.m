@@ -14,7 +14,7 @@ B_obs = [B_sys-L*D_sys, L];
 C_obs = eye(4);
 D_obs = zeros(4,3);
 
-%% LQG 1-dof
+%% Pole-placement 1-dof
 
 % K = place( A_sys, B_sys, [-40+20i -40-20.1i -100 -0] );
 K = place( A_sys, B_sys, [-1, -20+20i, -20-20i, -3.38e+01] );

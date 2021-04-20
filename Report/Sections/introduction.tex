@@ -116,7 +116,7 @@ Questa formulazione del problema può rivelarsi utile successivamente, quando il
 Da questa ultima formulazione matematica, è facile verificare (tramite delle funzioni \textit{ctrb} e \textit{obsv} di Matlab) la controllabilità per mezzo della tensione applicata al motore, e l'osservabilità del sistema.
 Il sistema con una sola massa rotante (1-dof) è controllabile solamente in 2 variabili di stato su 5: certamente, una di queste è la corrente (direttamente influenzata dall'input), l'altra è una a scelta tra le restanti. Viceversa, il rango della matrice di osservabilità è 4 su 5: dal momento che la corrente non è misurabile tramite un sensore, non se ne può conoscere esattamente la dinamica; al contrario, tutte le altre variabili di stato sono osservabili perché misurate. \\
 
-Vista l'impossibilità di verificare la correttezza della dinamica di corrente tramite esperimenti, si è deciso di ignorarla~($L_m = 0$): la corrente dipende staticamente dalla tensione di input e dalla f.e.m. Riscrivendo le equazioni, otteniamo il modello ridotto:
+Vista l'impossibilità di verificare la correttezza della dinamica di corrente tramite esperimenti (che, in ogni caso, è significativamente più veloce delle dinamiche meccaniche del sistema), si è deciso di ignorarla~($L_m = 0$): la corrente dipende staticamente dalla tensione di input e dalla f.e.m. Riscrivendo le equazioni, otteniamo il modello ridotto:
 % Forma di stato ridotta
 \textit{State-space representation of the reduced 1 d.o.f. system}
 \begin{equation}
@@ -134,7 +134,6 @@ Vista l'impossibilità di verificare la correttezza della dinamica di corrente t
 		\frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}}{J_1} & -\frac{B_1}{J_1}
 	\end{bmatrix}
 	\begin{bmatrix}
-		i \\
 		\theta_l \\
 		\theta_l \\
 		\theta_1 \\
@@ -170,7 +169,6 @@ Vista l'impossibilità di verificare la correttezza della dinamica di corrente t
 		0 & 0 & \frac{K_{s_2}}{J_2} & 0 & -\frac{K_{s_2}}{J_2} & -\frac{B_2}{J_2}
 	\end{bmatrix}
 	\begin{bmatrix}
-		i \\
 		\theta_l \\
 		\theta_l \\
 		\theta_1 \\
