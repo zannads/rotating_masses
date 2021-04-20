@@ -233,7 +233,7 @@ controller.active_technique = 3;
     controller.c3.ki_v = controller.c3.wc_v;
     controller.c3.kp_v = controller.c3.wc_v/50; %33.3
     controller.c3.Ti_v = controller.c3.kp_v/controller.c3.ki_v;
-    R = -controller.c3.wc_v*(s/50+1)/s
+    R = -controller.c3.wc_v*(s/50+1)/s;
 %% Notch-filter
     
     Nfp1 = ...
