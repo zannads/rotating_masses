@@ -229,6 +229,7 @@ controller.active_technique = 3;
     controller.c3.psi_nf1=0.72;
     controller.c3.psi_nf2=0.9;
     controller.c3.Pf=1;
+   
     %% PI-structure    
     controller.c3.ki_v = controller.c3.wc_v;
     controller.c3.kp_v = controller.c3.wc_v/50; %33.3
