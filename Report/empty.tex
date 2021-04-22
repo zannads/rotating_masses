@@ -1,13 +1,14 @@
 \documentclass{report}
 
-\usepackage[english]{babel}		
+\usepackage[english]{babel}
 \usepackage{emptypage}
 \usepackage{lmodern}
 \usepackage{microtype} 
 \usepackage{graphicx}
 \usepackage{tocloft}
 \usepackage[latin1]{}
-\usepackage{textcomp}		
+\usepackage{textcomp}
+\usepackage{gensymb}	
 \usepackage{sidecap}
 \usepackage{tikz}
 \usetikzlibrary{arrows,intersections}
@@ -51,9 +52,9 @@
 \begin{document}
 
 \paragraph{Problem statement}
-	
+	\input{sections/introduction}
 	
 \section{Model identification}
-	\input{sections/introduction}
+	\input{sections/system_model}
 
 \end{document}

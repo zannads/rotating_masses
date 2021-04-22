@@ -1,0 +1,248 @@
+\subsection{Mathematical description}
+
+Il modello fisico può essere modellizzato in equazioni differenziali ordinarie (EDOs) suddividendo il sistema in singole componenti: motore DC, trasmissione, prima molla, prima massa, seconda molla, seconda massa. I parametri utilizzati sono i valori nominali forniti nei manuali di setup delle componenti. \\
+Questa formulazione del problema può rivelarsi utile successivamente, quando il progetto del regolatore sarà basato sulla rappresentazione in spazio di stato oppure sulla funzione di trasferimento.
+
+% \includegraphics{model}
+
+% Immagine simulink: componenti separate
+
+% Equazioni componenti
+\textit{Model of the motor and gear box}
+\begin{subequations}
+	\begin{align}
+		V &= R_m i + L_m \frac{d}{dt}i + k_m \dot{\theta}_m \\
+		\tau_m &= \eta_m k_t i \\
+		\tau_{ml} &= \eta_g K_g \tau_m = \eta_m \eta_g K_g k_t i\\
+		&= -J_m \ddot{\theta}_l - B_m \dot{\theta}_l - K_{s1} ( \theta_l - \theta_1 ) \qquad  \theta_l = \frac {1}{K_g} \theta_m \\
+		\label{model_equations}
+	\end{align}
+	%\caption{Model equations}
+\end{subequations}
+
+\textit{Model of the 1 d.o.f. system}
+\begin{equation}
+	J_1 \ddot{\theta}_1 + B_1 \dot{\theta}_1 = K_{s_1} ( \theta_l - \theta_1 )
+\end{equation}
+
+\textit{Model of the 2 d.o.f. system}
+\begin{subequations}
+	\begin{align}
+		J_1 \ddot{\theta}_1 + B_1 \dot{\theta}_1 &= K_{s_1} ( \theta_l - \theta_1 ) - K_{s_2} ( \theta_1 - \theta_2 ) \\
+		J_2 \ddot{\theta}_2 + B_2 \dot{\theta}_2 &= K_{s_2} ( \theta_1 - \theta_2 )
+	\end{align}
+\end{subequations}
+
+% Forma di stato
+\textit{State-space representation of the complete 1 d.o.f. system}
+\begin{equation}
+	\begin{bmatrix}
+		\dot{i} \\
+		\dot{\theta_l} \\
+		\ddot{\theta_l} \\
+		\dot{\theta_1} \\
+		\ddot{\theta_1}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		-\frac{R_m}{L_m} & 0 & -\frac{k_m K_g}{L_m} & 0 & 0 \\
+		0 & 0 &1 & 0 & 0 \\
+		\frac{\eta_m \eta_g k_t K_g}{J_m} & -\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m} & \frac{K_{s_1}}{J_m} & 0 \\
+		0 & 0 & 0 & 0 & 1 \\
+		0 & \frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}}{J_1} & -\frac{B_1}{J_1}
+	\end{bmatrix}
+	\begin{bmatrix}
+		i \\
+		\theta_l \\
+		\theta_l \\
+		\theta_1 \\
+		\theta_1
+	\end{bmatrix}
+	+
+	\begin{bmatrix}
+		\frac{1}{L_m} \\
+		0 \\
+		0 \\
+		0 \\
+		0
+	\end{bmatrix}
+	V
+\end{equation}
+
+\textit{State-space representation of the complete 2 d.o.f. system}
+\begin{equation}
+	\begin{bmatrix}
+		\dot{i} \\
+		\dot{\theta_l} \\
+		\ddot{\theta_l} \\
+		\dot{\theta_1} \\
+		\ddot{\theta_1} \\
+		\dot{\theta_2} \\
+		\ddot{\theta_2}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		-\frac{R_m}{L_m} & 0 & -\frac{k_m K_g}{L_m} & 0 & 0 & 0 & 0 \\
+		0 & 0 &1 & 0 & 0 & 0 & 0 \\
+		\frac{\eta_m \eta_g k_t K_g}{J_m} & -\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m} & \frac{K_{s_1}}{J_m} & 0 & 0 & 0 \\
+		0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+		0 & \frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}+K_{s_2}}{J_1} & -\frac{B_1}{J_1} & \frac{K_{s_2}}{J_1} & 0 \\
+		0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+		0 & 0 & 0 & \frac{K_{s_2}}{J_2} & 0 & -\frac{K_{s_2}}{J_2} & -\frac{B_2}{J_2}
+	\end{bmatrix}
+	\begin{bmatrix}
+		i \\
+		\theta_l \\
+		\theta_l \\
+		\theta_1 \\
+		\theta_1 \\
+		\theta_2 \\
+		\theta_2
+	\end{bmatrix}
+	+
+	\begin{bmatrix}
+		\frac{1}{L_m} \\
+		0 \\
+		0 \\
+		0 \\
+		0 \\
+		0 \\
+		0
+	\end{bmatrix}
+	V
+\end{equation}
+
+Da questa ultima formulazione matematica, è facile verificare (tramite delle funzioni \textit{ctrb} e \textit{obsv} di Matlab) la controllabilità per mezzo della tensione applicata al motore, e l'osservabilità del sistema.
+Il sistema con una sola massa rotante (1-dof) è controllabile solamente in 2 variabili di stato su 5: certamente, una di queste è la corrente (direttamente influenzata dall'input), l'altra è una a scelta tra le restanti. Viceversa, il rango della matrice di osservabilità è pieno; va considerato, però, che la dinamica della corrente è estremamente veloce (dettata da $\frac{L_m}{R_m} = 7.56e-05 \ s$), tanto che il tempo di campionamento impedisce la sua rilevazione, quindi non se ne può conoscere esattamente la dinamica. \\
+
+Vista l'impossibilità di verificare la correttezza della dinamica di corrente tramite esperimenti (che, in ogni caso, è significativamente più veloce delle dinamiche meccaniche del sistema), si è deciso di ignorarla~($L_m = 0$): la corrente dipende staticamente dalla tensione di input e dalla f.e.m. Riscrivendo le equazioni, otteniamo il modello ridotto:
+% Forma di stato ridotta
+\textit{State-space representation of the reduced 1 d.o.f. system}
+\begin{equation}
+	\begin{bmatrix}
+		\dot{\theta_l} \\
+		\ddot{\theta_l} \\
+		\dot{\theta_1} \\
+		\ddot{\theta_1}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		0 &1 & 0 & 0 \\
+		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m {K_g}^2}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 \\
+		0 & 0 & 0 & 1 \\
+		\frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}}{J_1} & -\frac{B_1}{J_1}
+	\end{bmatrix}
+	\begin{bmatrix}
+		\theta_l \\
+		\theta_l \\
+		\theta_1 \\
+		\theta_1
+	\end{bmatrix}
+	+
+	\begin{bmatrix}
+		0 \\
+		\frac{\eta_m \eta_g k_t K_g}{R_m J_m} \\
+		0 \\
+		0
+	\end{bmatrix}
+	V
+\end{equation}
+
+\textit{State-space representation of the reduced 2 d.o.f. system}
+\begin{equation}
+	\begin{bmatrix}
+		\dot{\theta_l} \\
+		\ddot{\theta_l} \\
+		\dot{\theta_1} \\
+		\ddot{\theta_1} \\
+		\dot{\theta_2} \\
+		\ddot{\theta_2}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		0 &1 & 0 & 0 & 0 & 0 \\
+		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m {K_g}^2}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 & 0 & 0 \\
+		0 & 0 & 0 & 1 & 0 & 0 \\
+		\frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}+K_{s_2}}{J_1} & -\frac{B_1}{J_1} & \frac{K_{s_2}}{J_1} & 0 \\
+		0 & 0 & 0 & 0 & 0 & 1 \\
+		0 & 0 & \frac{K_{s_2}}{J_2} & 0 & -\frac{K_{s_2}}{J_2} & -\frac{B_2}{J_2}
+	\end{bmatrix}
+	\begin{bmatrix}
+		\theta_l \\
+		\theta_l \\
+		\theta_1 \\
+		\theta_1 \\
+		\theta_2 \\
+		\theta_2
+	\end{bmatrix}
+	+
+	\begin{bmatrix}
+		0 \\
+		\frac{\eta_m \eta_g k_t K_g}{R_m J_m} \\
+		0 \\
+		0 \\
+		0 \\
+		0
+	\end{bmatrix}
+	V
+\end{equation}
+Verificando nuovamente la controllabilità e l'osservabilità del sistema ridotto, si osserva che le matrici $M_R$ e $M_O$ hanno rango completo.
+
+Per poter verificare la correttezza di questo modello, si sono condotti degli esperimenti sul sistema reale, innanzitutto collegando solo la prima massa, poi entrambe.
+Imponendo una tensione sul motore, si è confrontata la risposta in anello aperto del sistema fisico con la simulazione eseguita da Simulink e basata sul modello matematico.
+\paragraph{Experiments input}
+Gli esperimenti atti all'identificazione e validazione del modello, tutti con tensione del motore come variabile di input, sono di due tipi: scalini di varie ampiezze e sinusoidi a frequenza variabile. 
+L'intervallo di tensioni applicate varia da -10V a 10V, ad intervalli di 2V (eccetto lo scalino a 0V), per un totale di 10 esperimenti.
+
+Si è innanzitutto verificato il guadagno statico della FdT dall'input di controllo del motore alla velocità del primo carico. Imponendo una tensione costante, terminato il transitorio di assestamento della massa, si è osservato che il modello matematico sottostima la velocità di regime.
+Abbiamo manualmente modificato i parametri che più inficiano il guadagno statico: la resistenza rotorica del motore, l'efficienza del motore, l'efficienza meccanica della trasmissione, la costante corrente-coppia e, infine, la costante velocità-tensione (causa della forza elettromotrice).
+
+Dagli esperimenti, si è osservato che il comportamento del sistema non è perfettamente lineare rispetto alla tensione imposta al motore. Alcune interpretazioni fisiche sono state avanzate: l'efficienza meccanica della trasmissione, probabilmente, è sottostimata a basse velocità; per quanto riguarda la $k_m$ (causa della forza elettromotrice), una stima di tale parametro è difficile dal momento che il suo effetto contrasta la potenza del motore in modo significativo ad alte velocità, ma pressoché nullo a basse velocità.
+% parametri modificati ---> G_opt
+
+Gli esperimenti con input sinusoidale a frequenza variabile indicano un'ulteriore differenza del modello fisico osservato rispetto a quello nominale. Le oscillazioni in frequenza di risonanza del modello nominale avvengono a frequenza maggiore, anche se l'ampiezza delle oscillazioni è comparabile.
+
+
+Questo fatto ha implicazioni anche nel transitorio di risposta agli scalini: la sovra-elongazione iniziale e le successive oscillazioni dipendono da poli complessi coniugati, legati ai parametri fisici delle molle e masse (costante elastica, inerzia e coefficiente di frizione). \\
+Un aggiustamento del guadagno statico non permette di migliorare il comportamento del modello matematico durante il transitorio. Modificare manualmente tutti gli altri parametri sarebbe stata particolarmente gravoso, dal momento che si tratta di un approccio trial-and-error non basato su precise deduzioni razionali (il manuale di riferimento delle componenti meccaniche indica che i parametri nominali sono stati ottenuti sperimentalmente).
+Una soluzione a questo problema è svincolarsi dal modello puramente matematico (white-box) e sfruttare i dati sperimentali.
+
+\subsection{Black-box identification}
+
+\textit{Black-box identification with a parametric method of TF in time-domain}
+\\ \par Un approccio a scatola nera non tiene conto in alcun modo del modello matematico e delle sue le grandezza fisiche; al contrario, si basa esclusivamente sui dati raccolti in laboratorio tramite esperimenti.
+
+
+Dal momento che questo approccio non include un significato fisico, ha senso stimare solo la FdT di nostro interesse: dalla tensione alla velocità delle masse 1 oppure 2, in funzione nel numero di dof. 
+L'ordine della 
+
+
+
+
+
+Poiché la TF vede solamente i poli osservabili e controllabili, il numero di poli imposto alla funzione di identificazione è ottenuto osservando i risultati del computer: se aggiungendo ulteriori poli, il risultato coincide con quello di un numero inferiore di poli, allora si è ottenuto l'ordine del sistema.
+Con questo procedimento troviamo una TF del 3° ordine, con 2 zeri a parte reale positiva: in questo modo la perdita di fase ad alta frequenza del modello white-box e black-box coincidono. Il guadagno ad alta frequenza, però, è molto meno pendente.
+
+Per sopperire questo problema, abbiamo deciso di imporre il numero di poli e zeri nell'identificazione: sono stati imposti uguali alla TF ottenuta nella white-box. Dunque, nel sistema con 1dof abbiamo considerato 3 poli e 0 zeri, nel sistema a 2dof 5 poli e 0 zeri.
+In aggiunta ai poli del modello, va aggiunto il polo del filtro passa-basso (utilizzato per tagliare il rumore della misurazione di velocità). \\
+In questo modo, sia il modulo che la fase sono molto simili a quelle del modello matematico a tutte le frequenze.
+
+Seguendo questo approccio, si è osservato che la frequenza di risonanza del modello identificato sperimentalmente è più bassa rispetto al modello nominale; anche lo smorzamento è inferiore.
+Queste difformità si sono potute osservare immediatamente anche negli esperimenti condotti in laboratorio, in particolare, con input sinusoidale a frequenza variabile.
+Si ricordi che la misurazione della velocità contiene di per sè un rumore, di cui non viene tenuto conto con questa tecnica di identificazione; il filtro applicato ai dati in uscita del sensore, infatti, taglia solamente il rumore a frequenza più alta.
+Pertanto, ottenere la posizione integrando la velocità stimata tramite questa FdT genererebbe un effetto di drift che incrementa con il tempo.
+% scope Simulink: dati sperimentali confrontati con G_opt(DC gain aggiustato) e black-box
+
+I dati raccolti dal sensore di velocità della massa (encoder) sono stati collezionati in un set di esperimenti tramite le funzioni Matlab \textit{iddata()} e \textit{merge()}. Il set di esperimenti così costruito è l'input della funzione \textit{tfest()}: l'output ottenuto è il modello identificato tramite approccio black-box.
+
+\subsection{Gray-box identification}
+
+\textit{Gray-box identification with a parametric error method of state-space time-domain}
+\\ \par Il vantaggio di un approccio grey-box sta nel conservare il modello matematico e calibrare i parametri utilizzando i dati sperimentali raccolti. Il modello matematico è basato sui parametri nominali, di cui è definita anche l'incertezza (riportata nella documentazione): in questo modo, l'identificazione può tarare i ciascun parametro in un intervallo di valori ben definito e limitato, ciascuno con un significato fisico. Riguardo i parametri fisici delle masse (momento d'inerzia e coefficiente d'attrito), l'incertezza è fissata a valori tra il 10\% e 20 \%; tutti gli altri parametri hanno intervallo di incertezza come specificato sui file forniti dal produttore delle componenti.
+
+Operativamente, abbiamo collezionato i dati di vari esperimenti e eseguito la stima del modello tramite \textit{greyest()}. Le misurazioni su cui è stata fatta l'identificazione includono sia la posizione che la velocità delle masse: questo permette di avere un set di dati di output più ampio e vario.
+
+I risultati dell'identificazione sono molto soddisfacenti: la precisione del modello identificato rispetto ai dati di posizione è superiore al 99\%, mentre quella delle velocità superiore al 85\%. Va sottolineato che i dati utilizzati per l'identificazione contengono un rumore di misurazione, principalmente sulla velocità (in quanto derivata dalla posizione); la funzione Matlab permette anche di identificare la varianza di tale rumore, separando questo dalla dinamica del sistema. Questa è, probabilmente, anche la ragione per cui la precisione dell'identificazione sulla velocità è leggermente inferiore dell'altra.
+
+Il modello identificato ha una pulsazione di risonanza in mezzo a quella del modello nominale e black-box;, inoltre, osservando i dati raccolti in laboratorio, si avvicina molto al sistema reale.
+
