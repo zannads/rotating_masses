@@ -4,14 +4,18 @@
 % Cenni al experiment_handler
 The set of experiments and data collected in the laboratory requires a systemathic way to organize and manage them. Hence, Matlab functions have been designed: they help us in defining new experiments, which control techinque using, which data types recording and analysing.
 
-\subsection{Available sensors}
+\section{Available sensors}
 
 The setup includes three sensors: a potentiometer on the motor shaft and an encoder for each mass.
 
 \paragraph{Potentiometer}
 
 The potentiometer is installed next to the gear, on the load side. It is a single turn~$10 \ k\Omega$ sensor with no physical stops and has an electrical range of 352°; by definition, this sensor provides an absolute position measurement. \\
-
+\begin{figure*}[h]
+	\centering
+	\includegraphics[width=0.4\columnwidth]{images/sensors/potentiometer_scheme}
+	\caption{Potentiometer electrical scheme}
+\end{figure*}
 % trasformazione volt->rad fallita: non viene letta +-5V ma di meno
 % tolto il modulo, per avere posizione incrementale su più giri
 % interpolazione dei punti mancanti negli 8° di buco
@@ -21,13 +25,9 @@ The potentiometer is installed next to the gear, on the load side. It is a singl
 
 The total output range of the sensor should be ±5 V over the full 352° range.
 The first passage to obtain the motor position is converting the voltage measured in radiants:
-% formula di conversione volt->rad
 \[
 	\theta_l = \bigl{(} V_{meas} - V_1 \bigr{)} \frac{352 \degree }{V_3 - V_1} \frac{\pi}{180 \degree }
 \]
-% \begin{figure*}{\columnwidth}
-%	 \includegraphics{potentiometer_scheme}
-% \end{figure*}
 
 \subparagraph{Sensor calibration}
 Actually, a variation of the voltage range must be considered: at the ends of the potentiometer sensor, voltage reading is not exactely $+- 5V$, due to resistance variations from the nominal value. By observing the data collected, the usual maximum and minimum voltages are respectively~$V_3=4.67 \ V$ and~$V_1=-4.88 \ V$.
@@ -37,11 +37,17 @@ In particular, a Matlab script for post-processing elaboration of data has been 
 
 Moreover, the gap of~$8 \degree$ can be fitted by interpolating the two values around it. Notice that this procedure works only in case the motor speed is quite constant in time.
 
-Unfortunately it is visible that the sensor data are very imprecise: the slope of the curve is not continuous. For this reason, real time measurements for motor position and speed are not reliable; we use only the initial position beacause it is useful for controlling absolute position and  during simulations.
+% figure script potentiometer
+Unfortunately it is visible that the sensor data are very imprecise: the slope of the curve is not continuous. For this reason, real time measurements for motor position and speed are not reliable; we use only the initial position because it is useful for controlling absolute position and  during simulations.
+\begin{figure*}
+	\centering
+	\includegraphics[width=\columnwidth]{images/sensors/pote_recover}
+	\caption{Potentiometer data post-processing}
+\end{figure*}
 
 \paragraph{Encoder}
 
-The encoder is a digital sensor that reads angular motions. It generates a pulse every small movement (both clockwise of counter-clockwise, detecting the direction of the motion) and, thanks to a counter, gives an incremental measurement with respect to the initial position. One revolution includes 4096 pulses, so the formula to obtain the position is the following:
+The encoder is a digital sensor that reads angular motions. It generates a pulse every small movement (both clockwise or counter-clockwise, detecting the direction of the motion) and, thanks to a counter, gives an incremental measurement with respect to the initial position. One revolution includes 4096 pulses, so the formula to obtain the position is the following:
 \[
 	\theta_x = \frac{2\pi}{4096} \ y \qquad x={1,2}
 \]
@@ -72,7 +78,7 @@ The~$y$ signal is the processed one by the following Matlab function:
 	
 	y = y + buffer*2^16;
 \end{verbatim}
-This code is able to impose the initial condition of the masses position to~$0$ (notice that the buffer is not reset after an experiment, hence an incorrect value at the motion starting of the following experiment would be given). Moreover, it must be considered that buffer storage has dimention 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the Matlab function is able to overcome this problem by returning a greater number. The result is the correct relative motion from the beginning of the experiment.
+This code is able to impose the initial condition of the masses position to~$0$ (notice that the buffer is not reset after an experiment, hence an incorrect value at the motion starting of the following experiment would be given). Moreover, it must be considered that the buffer storage has dimention 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the Matlab function is able to overcome this problem by returning a greater number. The result is the correct relative motion from the beginning of the experiment.
 
 \subparagraph{Uncertainty and noise}
 
@@ -88,11 +94,11 @@ Thus, each measurement can be seen as a uniform distribution of probability betw
 
 \subparagraph{Speed}
 
-The speed of the two masses is obtainable by derivating the measument of the encoders. It is done thanks to the \textit{Discrete Derivative} Simulink block, that differentiates two consecutive values with respect to the sampling time.
+The speed of the two masses is obtainable by derivating the measument of the encoders. It is done thanks to the \textit{Discrete Derivative} Simulink block, that differentiates two consecutive values with respect to the sampling time:
 \[
 	\dot{\theta_l} = \frac{ \theta_{enc}(t) - \theta_{enc}(t-1)}{T_s}
 \]
-Due to the uncertainty of the encoder, the speed derivation is noisy, accorinding to the following:
+Due to the uncertainty of the encoder, the speed derivation is noisy, according to the following:
 \begin{align*}
 	U &= \frac{2(2R)^2}{12 {T_s}^2 } \\
 	\dot{\Theta}_{enc}	&\sim \Gamma \bigl{(} 0,\frac{(2R)^2}{12 \ {T_s}^2} \bigr{)} + \Gamma \bigl{(} 0,\frac{(2R)^2}{12 \ {T_s}^2} \bigr{)} = \Gamma \bigl{(} 0, 0.001 \bigr{)}
