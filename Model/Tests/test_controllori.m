@@ -106,7 +106,7 @@ controller.active_technique = 2;
 
 
 %% ORE = 3.22
- title = "test_11"; title = "test_12";
+ title = "test_11"; title = "test_13";
     controller.c2.wc_v = 5;
     controller.c2.kp_p= 2;
     controller.c2.wn_numNf= 41;
@@ -115,7 +115,7 @@ controller.active_technique = 2;
     controller.c2.psi2=0.72; 
     controller.c2.Pf=1;
     %% ORE = 3.54
-     title = "test_13";
+     title = "test_14";
     controller.c2.wc_v = 5;
     controller.c2.kp_p = 4;
     controller.c2.wn_numNf= 41;
@@ -123,8 +123,8 @@ controller.active_technique = 2;
     controller.c2.psi1=8.3e-2; 
     controller.c2.psi2=0.72; 
     controller.c2.Pf=1;
-     %% ORE = 4.00
-     title = "test_14";
+     %% ORE = 4.02
+     title = "test_12"; % test 12
     controller.c2.wc_v = 5;
     controller.c2.kp_p = 6;
     controller.c2.wn_numNf= 41;
@@ -133,7 +133,7 @@ controller.active_technique = 2;
     controller.c2.psi2=0.72; 
     controller.c2.Pf=1;
     
-    %% ORE = 4.12
+    %% ORE = 4.13
     title = "test_15";
     controller.c2.wc_v = 7;
     controller.c2.kp_p = 6;
@@ -187,8 +187,8 @@ controller.active_technique = 3;
     controller.c3.psi_nf2=0.72;
     controller.c3.Pf=1;
 
-%% ORE = 17.10
-    title = "test_19";
+%% ORE = 17.14
+    title = "test_20";
     controller.c3.wc_v=2;
     controller.c3.wn_p1=24.5;         
     controller.c3.psi_p1=1.36e-01;        
@@ -197,16 +197,7 @@ controller.active_technique = 3;
     controller.c3.psi_nf1=0.72;
     controller.c3.psi_nf2=0.9;
     controller.c3.Pf=1;
-    %% ORE = 17.40
-    title = "test_20";
-    controller.c3.wc_v=5;
-    controller.c3.wn_p1=24.5;         
-    controller.c3.psi_p1=1.36e-01;        
-    controller.c3.wn_p2=61.9;             
-    controller.c3.psi_p2=2.52e-02;
-    controller.c3.psi_nf1=0.72;
-    controller.c3.psi_nf2=0.9;
-    controller.c3.Pf=1;
+
 %% ORE = 18.00
 % cambiato polo cancellato da 33.3 a 25
     title = "test_21";

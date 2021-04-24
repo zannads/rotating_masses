@@ -169,6 +169,7 @@ nominal_sys_2dof.Structure.Parameters(15).Minimum = 0.3;
 nominal_sys_2dof.Structure.Parameters(15).Maximum = 1.7;
 nominal_sys_2dof.Structure.Parameters(15).Free = false;
 
+
 %% Total model 1-dof: state-space formulation
 
 % ...

@@ -14,15 +14,53 @@ if isempty( listing )
     error( msg );
 end
 
-fname = listing(1).name;
-raw_data = load( fname );
-name_ = strrep( fname, '-', '_' );
-%remove .mat
-[~, name_, ~] = fileparts( name_ );
-raw_data = raw_data.(name_);
+num_avail = length( listing );
+while num_avail
+    fname = listing(1).name;
+    raw_data = load( fname );
+    name_ = strrep( fname, '-', '_' );
+    %remove .mat
+    [~, name_, ~] = fileparts( name_ );
+    raw_data = raw_data.(name_);
+    
+    if isempty( raw_data )
+        % if empty consume the object
+        num_avail = num_avail -1;
+        delete (listing(1).name );
+        listing = listing( 2:end );
+        warning( 'Data was empty. It has been deleted.' );
+        
+        % if we have emptied listing
+        if ~num_avail
+            msg = 'All experiment present in the current folder were empty' ;
+            error( msg);
+        end
+    else
+        num_avail = 0;
+    end
+end
+
+% acquire title
+% get last for default
+title = e_h.get_new_title();
+
+str = input( strcat( '[', title, "] ",'Title of the experiment: ' ), 's' );
+if str ~= ""
+    title = str;
+end
+
+% check title consistency
+title = e_h.data_title_search( title );
 
 % each field of the dataset is a row in data
 fname = fieldnames( dataset_struct );
+if numel(fname) > size( raw_data, 1 )
+    msg =  'Dataset struct is not consistent with data acquired, less field are present' ;
+    error( msg );
+elseif numel(fname) < size( raw_data, 1 )
+    msg = "Dataset struct is not consistent with data acquired, you are going to lose data.";
+    error( msg );
+end
 for idx = 1: numel(fname)
     dataset_struct.(fname{idx}) = raw_data(idx, :);
 end
@@ -38,6 +76,9 @@ if controller.active_technique>0
     data.controller.(controller_string) = controller.(controller_string);
 end
 
+disp( 'Do you want to insert some notes? ' );
+data.notes = string(input( '', 's'));
+
 % save the new data object
 save( strcat( 'lab_', num2str(e_h.today_lab), '/', title), 'data');
 
@@ -49,4 +90,4 @@ e_h.titles( e_h.today_lab ,end+1) = title;
 e_h.save;
 
 % delete raw data
-delete (listing(1).name );
+movefile( listing(1).name, 'processed_data' );
