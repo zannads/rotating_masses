@@ -12,7 +12,7 @@ load( 'blackbox_id_1dof.mat', 'blackbox_id_1dof' );
 load( 'greybox_id_2dof.mat', 'greybox_id_2dof' );
 load( 'blackbox_id_2dof.mat', 'blackbox_id_2dof' );
 
-%% Loading parameters: 1-dof
+%% Loading parameters
 active_dof = 2;     % 1 or 2 dof
 
 if active_dof == 1

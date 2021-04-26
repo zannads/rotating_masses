@@ -196,9 +196,9 @@ classdef experiment_handler
             experiment.ramp = struct( 'init_time', 0, 'ramp_pend', 0, 'init_value', 0, 'final_value', 0);
             experiment.sinesweep = struct( 'init_freq', 0.1, 'final_freq', 0.1, 'target_time', 0, 'mean_value', 0, 'v_max', 0);
             
-            experiment.refVariable = e_h.ask_ref_variable();
+            experiment.refVariable = obj.ask_ref_variable();
             
-            experiment.type = e_h.ask_type();
+            experiment.type = obj.ask_type();
             
             switch( experiment.type )
                 case 'step'
@@ -243,7 +243,7 @@ classdef experiment_handler
             experiment.title = obj.experiment_title_build( experiment );
             disp( 'Titolo dell''esperimento ? ');
             new_name = string(input( ...
-                strcat( '[', experiment.title, "] ", "-->"), ...
+                strcat( '[', experiment.title, "] ", "--> "), ...
                 's' ) );
             if ~strcmp( new_name, "")
                 experiment.title = new_name;
@@ -660,18 +660,75 @@ classdef experiment_handler
         end
         
         function title = experiment_title_build( ~, experiment)
-            
             if strcmp( experiment.type, 'step' )
-               custom_part = "_1"; 
+                for idx = 1:length(experiment.step.step_size)
+                    custom_part = strcat( "_", ...
+                        num2str( experiment.step.step_size(idx) ) );
+                end
+                switch( experiment.refVariable )
+                    case 'voltage'
+                        unit = "V";
+                    case 'motor_pos'
+                        unit = "rad";
+                    case 'motor_vel'
+                        unit = "rad/s";
+                    case 'mass1_pos'
+                        unit = "rad";
+                    case 'mass1_vel'
+                        unit = "rad/s";
+                    case 'mass2_pos'
+                        unit = "rad";
+                    case 'mass2_vel'
+                        unit = "rad/s";
+                end
+                custom_part = strcat( custom_part, "_" , unit );
+                
             elseif strcmp( experiment.type, 'ramp' )
-                custom_part = "_1"; 
+                custom_part = strcat( "_", num2str( experiment.ramp.init_value ), ...
+                    "_to_", num2str( experiment.ramp.final_value ) );
+                switch( experiment.refVariable )
+                    case 'voltage'
+                        unit = "V";
+                    case 'motor_pos'
+                        unit = "rad";
+                    case 'motor_vel'
+                        unit = "rad/s";
+                    case 'mass1_pos'
+                        unit = "rad";
+                    case 'mass1_vel'
+                        unit = "rad/s";
+                    case 'mass2_pos'
+                        unit = "rad";
+                    case 'mass2_vel'
+                        unit = "rad/s";
+                end
+                custom_part = strcat( custom_part, "_" , unit );
+                
             else
-                custom_part = "_1"; 
+                custom_part = strcat( "_", num2str( experiment.sinesweep.init_freq ), ...
+                    "_to_", num2str( experiment.sinesweep.final_freq ), "Hz" );
+                switch( experiment.refVariable )
+                    case 'voltage'
+                        unit = "V";
+                    case 'motor_pos'
+                        unit = "rad";
+                    case 'motor_vel'
+                        unit = "rad/s";
+                    case 'mass1_pos'
+                        unit = "rad";
+                    case 'mass1_vel'
+                        unit = "rad/s";
+                    case 'mass2_pos'
+                        unit = "rad";
+                    case 'mass2_vel'
+                        unit = "rad/s";
+                end
+                custom_part = strcat( custom_part, "_" , unit );
             end
             
             title = string( strcat( experiment.refVariable, '_', ...
                 experiment.type, custom_part ) );
-        end     
+        end
         
         function refVariable = ask_ref_variable( ~ )
             disp( 'Variabile di riferimento ?');
@@ -703,7 +760,7 @@ classdef experiment_handler
         
         function type = ask_type( ~ )
             disp( 'Tipo dell''esperimento?' );
-            type = input( "[1] step, [2] ramp, [3] sinesweep ", 's' );
+            type = input( "[1] step, [2] ramp, [3] sinesweep : ", 's' );
             
             %consistency check 
             if ~isnan( str2double( type ) )
