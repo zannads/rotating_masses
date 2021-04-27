@@ -44,6 +44,11 @@ K_s1=K_s;
 % Spring 2:
 K_s2=K_s;
 
+% disturbances param
+b_d_1 = 0.005;
+b_d_2 = 0.005;
+
+
 %% Total model 1-dof
 
 parameters = {'motor resistance', Rm;

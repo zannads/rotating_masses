@@ -1,4 +1,4 @@
-[data,experiment,controller] = e_h.prepare_simulation;
+%[data,experiment,controller] = e_h.prepare_simulation;
 % experiment = e_h.load_experiment;
 
 A_sys = greybox_id_1dof.A;
