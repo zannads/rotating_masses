@@ -144,7 +144,7 @@ bode( R * Nf ), grid on
 %% TEST PI + notch cancellazione poli
 % ORE = 16.30 & 16.35 (step 2rad/s)
 controller.active_technique = 3;
-
+experiment = e_h.load_ezperiment(25)
 title = "test cancellazione poli 16 35";
 controller.c3.wc_v=8;
 controller.c3.wn_p1=24.5;
@@ -193,7 +193,7 @@ controller.c3.kp_v = controller.c3.wc_v/33.3; %33.3
 controller.c3.Ti_v = controller.c3.kp_v/controller.c3.ki_v;
 R = -controller.c3.wc_v*(s/33.3+1)/s;
 
-%% ORE = 17.08
+%% ORE = 17.12
 controller.active_technique = 3;
 
 title = "test cancellazione poli 17 08";
@@ -205,25 +205,6 @@ controller.c3.psi_p2=2.38e-02;
 controller.c3.psi_nf1=0.72;
 controller.c3.psi_nf2=0.9;
 controller.c3.Pf=1;
-controller.c3.wn_p3=100;
-
-controller.c3.ki_v = controller.c3.wc_v;
-controller.c3.kp_v = controller.c3.wc_v/33.3; %33.3
-controller.c3.Ti_v = controller.c3.kp_v/controller.c3.ki_v;
-R = -controller.c3.wc_v*(s/33.3+1)/s;
-
-%% ORE = 17.12
-controller.active_technique = 3;
-
-title = "test cancellazione poli 17 12";
-controller.c3.wc_v=8;
-controller.c3.wn_p1=24.5;
-controller.c3.psi_p1=1.37e-01;
-controller.c3.wn_p2=61.9;
-controller.c3.psi_p2=2.38e-02;
-controller.c3.psi_nf1=0.72;
-controller.c3.psi_nf2=0.9;
-controller.c3.Pf=1/(s/8+1);
 controller.c3.wn_p3=100;
 
 controller.c3.ki_v = controller.c3.wc_v;
