@@ -1,3 +1,8 @@
+load( 'greybox_id_1dof.mat', 'greybox_id_1dof' );
+load( 'blackbox_id_1dof.mat', 'blackbox_id_1dof' );
+load( 'greybox_id_2dof.mat', 'greybox_id_2dof' );
+load( 'blackbox_id_2dof.mat', 'blackbox_id_2dof' );
+
 s=tf('s');
 controller.active_technique = 0;
 
@@ -183,3 +188,5 @@ controller.c8.Nf = Nfp1*Nfp2;
 
 controller.c8.Pf=1;
 controller.c8.kp_p = 2.2;
+
+controllers_ss;
