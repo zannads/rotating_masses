@@ -35,7 +35,7 @@ title( '2-dof $G_{v,\dot \theta _2}$ comparison', 'Interpreter', 'latex');
 %% disturbances 
 
 B_d_1dof = [0,0,0,b_d_1/J_1]';
-B_d_2dof = [0,0,0, 0, 0, b_d_2/J_2]';
+B_d_2dof = [0,0,0, 0, 0, 2/J_2]';
 
 Gg_d_w1_1dof = minreal(greybox_id_1dof.C(end,:)/(s*eye(4)-greybox_id_1dof.A)*B_d_1dof)
 Gg_d_w1_2dof = minreal(greybox_id_2dof.C(2,:)/(s*eye(6)-greybox_id_2dof.A)*B_d_2dof)
@@ -108,9 +108,9 @@ title( 'Control Sensitivity Loop TF', 'Interpreter', 'latex');
 close all;
 C = -8.74/(s)*(s/34.9+1);
 NF = ...
-    (150^2/24.5/61.9)^2*...
+    (100^2/24.5/61.9)^2*...
     (s^2+2*0.137*(24.5)*s+(24.5)^2)*(s^2+2*0.0238*(61.9)*s+(61.9)^2)/...
-    (s^2+2*150*s+150^2)^2;
+    (s^2+2*100*s+100^2)^2;
 L = C*NF*Gg_v_w2_2dof;
 S = 1/(1+L);
 F = L/(1+L);
@@ -118,7 +118,7 @@ Q = C/(1+L);
 
 figure; 
 %hold on;
-%bode(S);
+bode(S);
 margin(L);
 %legend( '$S$ ', 'L', 'Interpreter', 'latex' );
 grid on;
