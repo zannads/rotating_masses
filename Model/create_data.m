@@ -42,6 +42,7 @@ end
 
 % acquire title
 % get last for default
+
 title = e_h.get_new_title();
 
 str = input( strcat( '[', title, "] ",'Title of the experiment: ' ), 's' );

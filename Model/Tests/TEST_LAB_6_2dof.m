@@ -2,7 +2,7 @@
 
 A_sys = greybox_id_2dof.A;
 B_sys = greybox_id_2dof.B;
-C_sys = greybox_id_2dof.C;         % in lab, con sensori togliere i "-"
+C_sys = greybox_id_2dof.C;         
 D_sys = greybox_id_2dof.D;
 
 % Observer 2-dof

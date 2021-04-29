@@ -190,3 +190,6 @@ controller.c8.Pf=1;
 controller.c8.kp_p = 2.2;
 
 controllers_ss;
+
+%% to avoid misunderstandings delete support variables
+clear Nfp1 Nfp2

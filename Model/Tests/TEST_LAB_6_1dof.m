@@ -2,7 +2,7 @@
 
 A_sys = greybox_id_1dof.A;
 B_sys = greybox_id_1dof.B;
-C_sys = greybox_id_1dof.C;         % in lab, con sensori togliere i "-"
+C_sys = greybox_id_1dof.C;        
 D_sys = greybox_id_1dof.D;
 
 % Observer 1-dof
@@ -48,7 +48,6 @@ title = "test 3 1-dof pole-placement + observer + loop_pos";
 % Pole-placement 1-dof
 controller.active_technique = 10;
 
-% K = place( A_sys, B_sys, [-40+20i -40-20.1i -100 -0] );
 A_place = [A_sys,zeros(4,1);
            -C_sys(1,:),0];
 B_place = [B_sys;0];
