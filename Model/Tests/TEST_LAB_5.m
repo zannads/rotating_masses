@@ -144,7 +144,7 @@ bode( R * Nf ), grid on
 %% TEST PI + notch cancellazione poli
 % ORE = 16.30 & 16.35 (step 2rad/s)
 controller.active_technique = 3;
-experiment = e_h.load_ezperiment(25)
+experiment = e_h.load_experiment(25)
 title = "test cancellazione poli 16 35";
 controller.c3.wc_v=8;
 controller.c3.wn_p1=24.5;

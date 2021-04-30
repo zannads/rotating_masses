@@ -60,20 +60,21 @@ K = place( A_place, B_place, [-0, -34.9, ...
 controller.c11.K_x = K(1:6);
 controller.c11.K_v = K(end);
 
-%% Pole-placement x position control + observer 2 dof
+% Pole-placement x position control + observer 2 dof
 
-% % observer
-% controller.c12.L = place( A_sys', C_sys', -[400 400.1 300 100 100.1 100.2] )';
-% controller.c12.A_obs = A_sys-controller.c12.L*C_sys;
-% controller.c12.B_obs = [B_sys-controller.c12.L*D_sys, controller.c12.L];
-% controller.c12.C_obs = eye(6);
-% controller.c12.D_obs = zeros(6,5);
-% 
-% %poleplacement
-% K = place( A_sys, B_sys, [-0, -33.8, -43.1, -43.101] )
-% 
-% controller.c10.K_x = K(1:6);
-% controller.c10.K_v = 3;
+% observer
+controller.c12.L = place( A_sys', C_sys', -[400 400.1 300 100 100.1 100.2] )';
+controller.c12.A_obs = A_sys-controller.c12.L*C_sys;
+controller.c12.B_obs = [B_sys-controller.c12.L*D_sys, controller.c12.L];
+controller.c12.C_obs = eye(6);
+controller.c12.D_obs = zeros(6,5);
+
+%poleplacement
+K = place( A_sys, B_sys, [-0, -34.9, ...
+    -24.5*(0.72+sin(acos(0.72))*1i), -24.5*(0.72-sin(acos(0.72))*1i), ...
+    -61.9*(0.72+sin(acos(0.72))*1i), -61.9*(0.72-sin(acos(0.72))*1i)] );
+controller.c12.K_x = K(1:6);
+controller.c12.K_v = 2;
 
 %% to avoid misunderstandings delete support variables
 clear A_sys B_sys C_sys D_sys

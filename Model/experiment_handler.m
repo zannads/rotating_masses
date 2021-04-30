@@ -263,12 +263,7 @@ classdef experiment_handler
             type = experiment.type;
             refVariable = experiment.refVariable;
             disp( "Modifica i valori [Invio per confermare]" );
-            
-            new_title = input( strcat( " Titolo: ", experiment.title, " --> " ), 's' );
-            if new_title ~= ""
-                experiment.title = new_title;
-            end
-            
+                       
             new_val = input( strcat( " w_filter: ", num2str( experiment.w_filter ), " --> " ) );
             if num2str( new_val ) ~= ""
                 experiment.w_filter = new_val;
@@ -294,7 +289,7 @@ classdef experiment_handler
                             if num2str( new_val ) ~= ""
                                 experiment.(type).step_size(idx) = new_val;
                             end
-                            idx = idx +1;
+                            idx = idx + 1;
                         else
                             i_t = input( " Istante iniziale: " );
                             s_a = input( " Ampiezza step: " );
@@ -309,6 +304,22 @@ classdef experiment_handler
                         end
                     
                     end
+                    %
+                case 'step'
+                    idx = 1;
+                    while idx
+                        i_t = input( " Istante iniziale: " );
+                        s_a = input( " Ampiezza step: " );
+                        
+                        if num2str(i_t) == "" | num2str(s_a) == "" %#ok<OR2>
+                            idx = 0;
+                        else
+                            experiment.step.init_time(1, idx) = i_t;
+                            experiment.step.step_size(1, idx) = s_a;
+                            idx = idx +1;
+                        end
+                    end
+                %
                 case 'ramp'
                     
                     new_val = input( strcat( " Istante iniziale: ", num2str( experiment.(type).init_time ), " --> " ) );
@@ -358,6 +369,12 @@ classdef experiment_handler
                         experiment.(type).v_max = new_val;
                     end
                     
+            end
+            
+            new_title = input( strcat( " Titolo: ", experiment.title, " --> " ), 's' );
+            new_title = input( strcat( " Titolo: ", experiment.title, " --> ", obj.experiment_title_build() ), '' );
+            if new_title ~= ""
+                experiment.title = new_title;
             end
             
             obj.experiments{idx_exp} = experiment;
@@ -660,74 +677,40 @@ classdef experiment_handler
         end
         
         function title = experiment_title_build( ~, experiment)
+            custom_part = "";
+            
             if strcmp( experiment.type, 'step' )
                 for idx = 1:length(experiment.step.step_size)
-                    custom_part = strcat( "_", ...
+                    custom_part = strcat( custom_part, "_", ...
                         num2str( experiment.step.step_size(idx) ) );
-                end
-                switch( experiment.refVariable )
-                    case 'voltage'
-                        unit = "V";
-                    case 'motor_pos'
-                        unit = "rad";
-                    case 'motor_vel'
-                        unit = "rad/s";
-                    case 'mass1_pos'
-                        unit = "rad";
-                    case 'mass1_vel'
-                        unit = "rad/s";
-                    case 'mass2_pos'
-                        unit = "rad";
-                    case 'mass2_vel'
-                        unit = "rad/s";
-                end
-                custom_part = strcat( custom_part, "_" , unit );
-                
+                end                
             elseif strcmp( experiment.type, 'ramp' )
-                custom_part = strcat( "_", num2str( experiment.ramp.init_value ), ...
-                    "_to_", num2str( experiment.ramp.final_value ) );
-                switch( experiment.refVariable )
-                    case 'voltage'
-                        unit = "V";
-                    case 'motor_pos'
-                        unit = "rad";
-                    case 'motor_vel'
-                        unit = "rad/s";
-                    case 'mass1_pos'
-                        unit = "rad";
-                    case 'mass1_vel'
-                        unit = "rad/s";
-                    case 'mass2_pos'
-                        unit = "rad";
-                    case 'mass2_vel'
-                        unit = "rad/s";
-                end
-                custom_part = strcat( custom_part, "_" , unit );
-                
+                custom_part = strcat( custom_part, "_", ...
+                    num2str( experiment.ramp.init_value ), "_to_", ...
+                    num2str( experiment.ramp.final_value ) );
             else
                 custom_part = strcat( "_", num2str( experiment.sinesweep.init_freq ), ...
                     "_to_", num2str( experiment.sinesweep.final_freq ), "Hz" );
-                switch( experiment.refVariable )
-                    case 'voltage'
-                        unit = "V";
-                    case 'motor_pos'
-                        unit = "rad";
-                    case 'motor_vel'
-                        unit = "rad/s";
-                    case 'mass1_pos'
-                        unit = "rad";
-                    case 'mass1_vel'
-                        unit = "rad/s";
-                    case 'mass2_pos'
-                        unit = "rad";
-                    case 'mass2_vel'
-                        unit = "rad/s";
-                end
-                custom_part = strcat( custom_part, "_" , unit );
             end
             
+            switch( experiment.refVariable )
+                case 'voltage'
+                    unit = "V";
+                case 'motor_pos'
+                    unit = "rad";
+                case 'motor_vel'
+                    unit = "rad/s";
+                case 'mass1_pos'
+                    unit = "rad";
+                case 'mass1_vel'
+                    unit = "rad/s";
+                case 'mass2_pos'
+                    unit = "rad";
+                case 'mass2_vel'
+                    unit = "rad/s";
+            end
             title = string( strcat( experiment.refVariable, '_', ...
-                experiment.type, custom_part ) );
+                experiment.type, custom_part, '_', unit ) );
         end
         
         function refVariable = ask_ref_variable( ~ )
