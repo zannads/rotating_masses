@@ -6,12 +6,13 @@ nominal_model_reduced;
 sensors_parameters;
 % create the object controller, defined as in simulink. Default
 % active_techinque = 0, thus openloop  voltage control.
+data.motor_pos_0 = 0;
 controller_setup;
 % load experiment handler to 
 e_h = experiment_handler( 'experiment_handler' );
 
 %% Loading parameters
-active_dof = 1;     % 1 or 2 dof
+active_dof = 2;     % 1 or 2 dof
 
 if active_dof == 1
     Rm = greybox_id_1dof.Structure.Parameters(1).Value;

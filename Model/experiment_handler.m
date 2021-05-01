@@ -263,7 +263,7 @@ classdef experiment_handler
             type = experiment.type;
             refVariable = experiment.refVariable;
             disp( "Modifica i valori [Invio per confermare]" );
-                       
+            
             new_val = input( strcat( " w_filter: ", num2str( experiment.w_filter ), " --> " ) );
             if num2str( new_val ) ~= ""
                 experiment.w_filter = new_val;
@@ -279,7 +279,7 @@ classdef experiment_handler
                     
                     idx = 1;
                     while idx
-                        if idx <= length( experiment.(type).init_time(idx) )
+                        if idx <= length( experiment.(type).init_time )
                             new_val = input( strcat( " Istante iniziale: ", num2str( experiment.(type).init_time(idx) ), " --> " ) );
                             if num2str( new_val ) ~= ""
                                 experiment.(type).init_time(idx) = new_val;
@@ -371,10 +371,12 @@ classdef experiment_handler
                     
             end
             
-            new_title = input( strcat( " Titolo: ", experiment.title, " --> " ), 's' );
-            new_title = input( strcat( " Titolo: ", experiment.title, " --> ", obj.experiment_title_build() ), '' );
+            new_title_auto = obj.experiment_title_build( experiment );
+            new_title = input( strcat( " Titolo: ", experiment.title, " --> ", new_title_auto, " " ), 's' );
             if new_title ~= ""
                 experiment.title = new_title;
+            else
+                experiment.title = new_title_auto;
             end
             
             obj.experiments{idx_exp} = experiment;
@@ -676,7 +678,7 @@ classdef experiment_handler
             title = string( title );
         end
         
-        function title = experiment_title_build( ~, experiment)
+        function title = experiment_title_build( ~, experiment )
             custom_part = "";
             
             if strcmp( experiment.type, 'step' )
