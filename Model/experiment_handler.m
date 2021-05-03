@@ -9,7 +9,7 @@ classdef experiment_handler
     
     properties
         name                %Name of the object to be loaded or saved.
-        
+     
         date                %Dates of the laboratory linked to the number.
         
         hours               %Times of the data collected for each laboratory.
@@ -19,6 +19,12 @@ classdef experiment_handler
         experiments     %Inputs for the lab experiment that has been defined.
         
         dataset_structs %Struct explaining how dataset data are collected.
+    end
+    
+    properties (Access=private)
+              
+        location            %Location where the file is saved.
+        
     end
     
     methods
@@ -35,12 +41,15 @@ classdef experiment_handler
             
             % it exist then it loads
             if exist( strcat(name, '.mat'), 'file' ) == 2
-                % load the file .mat the variable will be named data
+                % load the file .mat the variable will be named obj
                 load( name, 'obj' );
-                
+                %location = which( strcat(name, '.mat') );
+                % always overwrite the location.
+                [obj.location, ~, ~] = fileparts( which( strcat(name, '.mat') ) );
                 % it doesn't exist create an empty one with that name
             else
                 obj.name = name;
+                obj.location = cd;
                 obj.date = string.empty;
                 obj.hours = string.empty;
                 obj.titles = string.empty;
@@ -53,7 +62,11 @@ classdef experiment_handler
         function save( obj )
             %SAVE Saves the object in the current folder.
             % save it
-            save( strcat( obj.name, '.mat'), 'obj');
+            if isempty( obj.location )
+                save( strcat( obj.name, '.mat'), 'obj');
+            else 
+                save( strcat(obj.location, '/', obj.name, '.mat'), 'obj');
+            end
         end
         
         function obj = new_laboratory( obj )
@@ -186,6 +199,21 @@ classdef experiment_handler
                     controller.active_technique = str2double( c(2:end) );
                 end
             end
+            if isfield( raw_data, 'observer' )
+                if ~isempty(raw_data.observer)
+                    c = fieldnames( raw_data.observer );
+                    c = c{1};
+                    controller.(c) = raw_data.observer.(c);
+                    
+                    
+                    if c(1) == 'o'
+                             controller.active_observer = 0;
+                    else
+                        %elseif c(1) = 'r' is for red observer
+                             controller.active_observer = 1;
+                    end
+                end
+            end
         end
         
         %% experiments
@@ -194,7 +222,7 @@ classdef experiment_handler
             experiment.title = string().empty;
             experiment.step = struct( 'init_time', 0, 'step_size', 0);
             experiment.ramp = struct( 'init_time', 0, 'ramp_pend', 0, 'init_value', 0, 'final_value', 0);
-            experiment.sinesweep = struct( 'init_freq', 0.1, 'final_freq', 0.1, 'target_time', 0, 'mean_value', 0, 'v_max', 0);
+            experiment.sinesweep = struct( 'init_freq', 0.1, 'final_freq', 0.1, 'target_time', 1, 'mean_value', 0, 'v_max', 0);
             
             experiment.refVariable = obj.ask_ref_variable();
             
@@ -668,7 +696,7 @@ classdef experiment_handler
         
         function title = append_numeration( ~, title )
             old_num = str2double( extractBefore( title.reverse, '_' ) );
-            if isnumeric( old_num ) | isempty( old_num )
+            if ~isnumeric( old_num ) | isempty( old_num )  %#ok<OR2>
                 old_num = 1;
             else
                 title = reverse( extractAfter( title.reverse, '_' ) );

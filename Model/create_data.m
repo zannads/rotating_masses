@@ -76,6 +76,18 @@ data.controller = [];
 if controller.active_technique>0
     controller_string = strcat( 'c', num2str(controller.active_technique) );
     data.controller.(controller_string) = controller.(controller_string);
+    
+    if controller.active_technique > 8
+        observer_string = "";
+        switch controller.active_observer
+            case 0
+                observer_string = "obs_";
+            case 1
+                observer_string = "red_obs_";
+        end
+        observer_string = strcat( observer_string, num2str(active_dof), "dof");
+        data.observer.(observer_string) = controller.(observer_string);
+    end
 end
 
 disp( 'Do you want to insert some notes? ' );
