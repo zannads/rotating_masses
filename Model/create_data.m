@@ -50,6 +50,9 @@ str = input( strcat( '[', title, "] ",'Title of the experiment: ' ), 's' );
 if str ~= ""
     title = str;
 end
+title = strrep( title, "/", "-");
+title = strrep( title, ".", "dot");
+
 
 % check title consistency
 title = e_h.data_title_search( title );
@@ -105,3 +108,4 @@ e_h.save;
 
 % delete raw data
 movefile( listing(1).name, 'processed_data' );
+data.motor_pos_0 = 0;

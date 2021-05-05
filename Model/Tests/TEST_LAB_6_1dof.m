@@ -38,7 +38,7 @@ controller.active_technique = 10;
 % A_place = [A_sys,zeros(4,1);
 %            -C_sys(1,:),0];
 % B_place = [B_sys;0];
-K = place( A_sys, B_sys, [-0, -33.8, -43.1, -43.101] );
+K = place( A_sys, B_sys, [-10, -33.8, -43.1, -43.101] );
 controller.c10.K_x = K(1:4);
 controller.c10.K_v = 3;
 
