@@ -37,8 +37,9 @@
 \usepackage[a4paper,top=3cm,bottom=2cm,left=2cm,right=2cm]{geometry}
 \setlength{\skip\footins}{5ex plus 4pt minus 2pt}
 %\renewcommand{\footnoterule}{}
+\usepackage{comment}
 
-\graphicspath{images/}
+\graphicspath{{images/model/}{images/sensors/}{images/TFcontrol_1dof/}{images/TFcontrol_2dof/}}
 
 \usepackage{blkarray}
 \usepackage{multirow}
@@ -53,12 +54,12 @@
 \begin{document}
 
 \chapter{Problem statement}
-	\input{sections/introduction}
+	\input{chapters/1_introduction}
 	
-\section{Model identification}
-	\input{sections/system_model}
+\chapter{Model identification}
+	\input{chapters/2_system_model}
 
-%\section{Controllers based on transfer functions}
-%	\input{sections/siso_controllers}
+\chapter{Controllers based on transfer functions}
+	%\input{chapters/3_siso_controllers}
 
 \end{document}

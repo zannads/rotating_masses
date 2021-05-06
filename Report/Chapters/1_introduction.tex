@@ -13,7 +13,7 @@ The setup includes three sensors: a potentiometer on the motor shaft and an enco
 The potentiometer is installed next to the gear, on the load side. It is a single turn~$10 \ k\Omega$ sensor with no physical stops and has an electrical range of 352°; by definition, this sensor provides an absolute position measurement. \\
 \begin{figure*}[h]
 	\centering
-	\includegraphics[width=0.4\columnwidth]{images/sensors/potentiometer_scheme}
+	\includegraphics[width=0.4\columnwidth]{potentiometer_scheme}
 	\caption{Potentiometer electrical scheme}
 \end{figure*}
 % trasformazione volt->rad fallita: non viene letta +-5V ma di meno
@@ -30,7 +30,7 @@ The first passage to obtain the motor position is converting the voltage measure
 \]
 
 \subparagraph{Sensor calibration}
-Actually, a variation of the voltage range must be considered: at the ends of the potentiometer sensor, voltage reading is not exactely $+- 5V$, due to resistance variations from the nominal value. By observing the data collected, the usual maximum and minimum voltages are respectively~$V_3=4.67 \ V$ and~$V_1=-4.88 \ V$.
+Actually, a variation of the voltage range must be considered: at the ends of the potentiometer sensor, voltage reading is not exactely $\pm 5V$, due to resistance variations from the nominal value. By observing the data collected, the usual maximum and minimum voltages are respectively~$V_3=4.67 \ V$ and~$V_1=-4.88 \ V$.
 
 The sensor is able to detect the position along only one turn, then an incremental position that considers also the number of turns must be computed via software.
 In particular, a Matlab script for post-processing elaboration of data has been written. This is able to recognize the end of a turn and the beginning of the next one; thanks to this, it remembers the number of revolutions and rearranges all the data according to that.
@@ -41,7 +41,7 @@ Moreover, the gap of~$8 \degree$ can be fitted by interpolating the two values a
 Unfortunately it is visible that the sensor data are very imprecise: the slope of the curve is not continuous. For this reason, real time measurements for motor position and speed are not reliable; we use only the initial position because it is useful for controlling absolute position and  during simulations.
 \begin{figure*}
 	\centering
-	\includegraphics[width=\columnwidth]{images/sensors/pote_recover}
+	\includegraphics[width=\columnwidth]{pote_recover}
 	\caption{Potentiometer data post-processing}
 \end{figure*}
 
