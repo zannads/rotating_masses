@@ -136,6 +136,20 @@ controller.KF_2dof.B = [B_sys, L];
 controller.KF_2dof.C = eye(6);
 controller.KF_2dof.D = zeros(6,4);
 
+%% Kalman Filter 2 dof min
+
+controller.active_observer = 3; 
+C_sys=[0,0,0,0,-1,0];
+Q = eye(6)*1e-6;
+R = 2e-8;
+
+[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+L = L';
+controller.minKF_2dof.L = L;
+controller.minKF_2dof.A = A_sys-L*C_sys;
+controller.minKF_2dof.B = [B_sys, L];
+controller.minKF_2dof.C = eye(6);
+controller.minKF_2dof.D = zeros(6,2);
 %% Pole-placement x position control + observer 2 dof
 A_place = [A_sys, zeros(6,1);[0,0,0,0,1,0,0]];
 B_place = [B_sys;0];
