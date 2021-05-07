@@ -136,3 +136,9 @@ figure;
 bode(Q);
 grid on;
 title( 'Control Sensitivity Loop TF', 'Interpreter', 'latex');
+
+%% 
+Gg_ref_w1_1dof_pp = minreal(greybox_id_1dof.C(end,:)/(s*eye(4)-greybox_id_1dof.A+greybox_id_1dof.B*controller.c9.K_x)*greybox_id_1dof.B)
+figure;
+margin(Gg_ref_w1_1dof_pp*6/s);
+grid on;

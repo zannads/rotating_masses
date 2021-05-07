@@ -1,5 +1,7 @@
 % Potentiometer
-volt_to_deg_potentiometer = 35.2; % [deg/V]
+Vmin_pot = -4.8924;
+Vmax_pot = 4.6855;
+volt_to_deg_potentiometer = 352/(Vmax_pot-Vmin_pot); % [deg/V]
 deg_to_rad = pi/180;
 
 % Load encoder
