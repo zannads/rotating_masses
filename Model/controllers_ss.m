@@ -5,6 +5,7 @@ A_sys = greybox_id_1dof.A;
 B_sys = greybox_id_1dof.B;
 C_sys = [1,0,0,0;
         0,0,-1,0];
+D_sys = zeros(2,1);
 
 % observer
 L = place( A_sys', C_sys', -[400 400.1 400.2 400.3] )';
@@ -38,7 +39,39 @@ controller.obs_1dof.D = zeros(4,3);
 % controller.red_obs_1dof.C = eye(2);
 % controller.red_obs_1dof.D = zeros(2,3);
 
-%% Pole-placement x pos control + observer 1 dof 
+%% Kalman Filter 1 dof
+controller.active_observer = 2; 
+
+Q = eye(4)*1e-8;
+R = [1e-6, 0;
+     0, 2e-8];
+
+[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+L = L';
+controller.KF_1dof.L = L;
+controller.KF_1dof.A = A_sys-L*C_sys;
+controller.KF_1dof.B = [B_sys, L];
+controller.KF_1dof.C = eye(4);
+controller.KF_1dof.D = zeros(4,3);
+
+%% KF with 1 dof, minimum sensors
+controller.active_observer = 3; 
+
+C_sys = [0,0,-1,0];
+
+Q = eye(4)*1e-8;
+R = 2e-8;
+
+[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+L = L';
+controller.minKF_1dof.L = L;
+controller.minKF_1dof.A = A_sys-L*C_sys;
+controller.minKF_1dof.B = [B_sys, L];
+controller.minKF_1dof.C = eye(4);
+controller.minKF_1dof.D = zeros(4,2);
+
+%% Pole-placement x pos control + observer 1 dof
+
 A_place = [A_sys, zeros(4,1);[0,0,1,0,0]];
 B_place = [B_sys;0];
 
@@ -86,6 +119,22 @@ controller.obs_2dof.D = zeros(6,4);
 % controller.red_obs_2dof.B = [B_tilde_2-L*B_tilde_1, A_tilde_21-L*A_tilde_11+A_tilde_22*L-L*A_tilde_12*L];
 % controller.red_obs_2dof.C = eye(2);
 % controller.red_obs_2dof.D = zeros(2,5);
+
+%% Kalman Filter 2 dof
+controller.active_observer = 2; 
+
+Q = eye(6)*1e-6;
+R = [1e-6, 0, 0;
+     0, 2e-8, 0;
+     0, 0, 2e-8];
+
+[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+L = L';
+controller.KF_2dof.L = L;
+controller.KF_2dof.A = A_sys-L*C_sys;
+controller.KF_2dof.B = [B_sys, L];
+controller.KF_2dof.C = eye(6);
+controller.KF_2dof.D = zeros(6,4);
 
 %% Pole-placement x position control + observer 2 dof
 A_place = [A_sys, zeros(6,1);[0,0,0,0,1,0,0]];

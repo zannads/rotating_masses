@@ -10,3 +10,8 @@ pulse_to_rad = 2*pi/pulse_per_rev_encoder;
 
 % Motor saturation
 V_th = V_max*1;
+
+%% Noise variances
+
+potentiometer_var = 1e-6;
+encoder_var = 2e-8;
