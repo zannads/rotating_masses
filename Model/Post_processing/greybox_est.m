@@ -9,11 +9,11 @@ titoli = { 'voltage_step_1dof_-10V.mat', 'voltage_step_1dof_-8V.mat', 'voltage_s
 
 load( titoli{1}, 'data' );
 inputs{1,1} = data.voltage';
-outputs{1,1} = [data.mass1_pos', data.mass1_vel'] ;
+outputs{1,1} = [int_potentiometer(data.motor_pos, data.time)', data.mass1_pos'] ;
 for idx = 2:length( titoli )
     load( titoli{idx}, 'data' );
     inputs{1,idx} = data.voltage';
-    outputs{1,idx} = [data.mass1_pos', data.mass1_vel'] ;
+    outputs{1,idx} = [int_potentiometer(data.motor_pos, data.time)', data.mass1_pos'] ;
 end
 
 data_to_est = iddata( outputs, inputs, 0.002 );
