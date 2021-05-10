@@ -75,8 +75,8 @@ nominal_sys_1dof = idgrey( @dynamics_1dof, parameters, fcn_type, optional_args, 
     'StateUnit', { 'rad', 'rad/s', 'rad', 'rad/s' }, ...
     'InputName', { 'voltage' }, ...
     'InputUnit', { 'V' }, ...
-    'OutputName', { 'mass1_pos', 'mass1_speed' }, ...
-    'OutputUnit', { 'rad', 'rad/s' }, ...
+    'OutputName', { 'motor_pos', 'mass1_pos' }, ...
+    'OutputUnit', { 'rad', 'rad' }, ...
     'Name', 'RotatingMasses 1-dof, reduced' );
 
 nominal_sys_1dof.Structure.Parameters(1).Minimum = Rm*0.88;
@@ -136,8 +136,8 @@ nominal_sys_2dof = idgrey( @dynamics_2dof, parameters, fcn_type, optional_args, 
     'StateUnit', { 'rad', 'rad/s', 'rad', 'rad/s', 'rad', 'rad/s' }, ...
     'InputName', { 'voltage' }, ...
     'InputUnit', { 'V' }, ...
-    'OutputName', { 'mass1_pos', 'mass1_speed', 'mass2_pos', 'mass2_speed' }, ...
-    'OutputUnit', { 'rad', 'rad/s', 'rad', 'rad/s' }, ...
+    'OutputName', { 'motor_pos', 'mass1_pos', 'mass2_pos' }, ...
+    'OutputUnit', { 'rad', 'rad', 'rad' }, ...
     'Name', 'RotatingMasses 2-dof, reduced' );
 
 nominal_sys_2dof.Structure.Parameters(1).Minimum = Rm*0.88;
@@ -187,8 +187,8 @@ A(2,:) = [-K_s1/J_eq,-(eta_m*eta_g*k_t*k_m*K_g^2/Rm+B_eq)/J_eq,K_s1/J_eq,0];
 A(3,4) = 1;
 A(4,:) = [K_s1/J_1,0,-K_s1/J_1,-B_1/J_1];
 B = [0,eta_m*eta_g*k_t*K_g/(Rm*J_eq),0,0]';
-C = zeros(2,4);
-C(:,3:4) = -1*eye(2);
+C = [1,0,0,0;
+     0,0,-1,0];
 D = zeros(2,1);
 
 % V noise...to add
@@ -213,9 +213,10 @@ A(4,:) = [K_s1/J_1,0,-(K_s1+K_s2)/J_1,-B_1/J_1,K_s2/J_1,0];
 A(5,6) = 1;
 A(6,:) = [0,0,K_s2/J_2,0,-K_s2/J_2,-B_2/J_2];
 B = [0,eta_m*eta_g*k_t*K_g/(Rm*J_eq),0,0,0,0]';
-C = zeros(4,6);
-C(:,3:6) = -1*eye(4);
-D = zeros(4,1);
+C = [1,0,0,0,0,0;
+     0,0,-1,0,0,0;
+     0,0,0,0,-1,0];
+D = zeros(3,1);
 
 % V noise...to add
 if ts > 0 % Sample the model with sample time Ts
