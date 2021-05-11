@@ -19,7 +19,7 @@ end
 data_to_est = iddata( outputs, inputs, 0.002 );
 
 opt = greyestOptions('EnforceStability',true, 'WeightingFilter', [0.1,100] );
-opt.SearchOptions.MaxIterations = 600;
+opt.SearchOptions.MaxIterations = 200;
 greybox_id_1dof = greyest( data_to_est, nominal_sys_1dof, opt );
 greybox_id_1dof.Notes = "Dati con filtro a 25 Hz";
 greybox_id_1dof.Name = "greybox id 1dof";
@@ -62,11 +62,11 @@ titoli = { 'voltage_step_2dof_-10V.mat', 'voltage_step_2dof_-8V.mat', 'voltage_s
 
 load( titoli{1}, 'data' );
 inputs{1,1} = data.voltage';
-outputs{1,1} = [data.mass1_pos', data.mass1_vel', data.mass2_pos', data.mass2_vel'] ;
+outputs{1,1} = [int_potentiometer(data.motor_pos, data.time)',data.mass1_pos', data.mass2_pos'] ;
 for idx = 2:length( titoli )
     load( titoli{idx}, 'data' );
     inputs{1,idx} = data.voltage';
-    outputs{1,idx} = [data.mass1_pos', data.mass1_vel', data.mass2_pos', data.mass2_vel'] ;
+    outputs{1,idx} = [int_potentiometer(data.motor_pos, data.time)',data.mass1_pos', data.mass2_pos'] ;
 end
 
 data_to_est = iddata( outputs, inputs, 0.002 );
