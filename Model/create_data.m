@@ -87,6 +87,10 @@ if controller.active_technique>0
                 observer_string = "obs_";
             case 1
                 observer_string = "red_obs_";
+            case 2 
+                observer_string = "KF_";
+            case 3 
+                observer_string = "minKF_";
         end
         observer_string = strcat( observer_string, num2str(active_dof), "dof");
         data.observer.(observer_string) = controller.(observer_string);
