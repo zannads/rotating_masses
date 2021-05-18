@@ -82,18 +82,43 @@ if controller.active_technique>0
     
     if controller.active_technique > 8
         observer_string = "";
-        switch controller.active_observer
-            case 0
-                observer_string = "obs_";
-            case 1
-                observer_string = "red_obs_";
-            case 2 
-                observer_string = "KF_";
-            case 3 
+        if controller.active_observer < 3
+            switch controller.active_observer
+                case 0
+                    observer_string = "obs_";
+                case 1
+                    observer_string = "red_obs_";
+                case 2
+                    observer_string = "KF_";
+            end
+            observer_string = strcat( observer_string, num2str(active_dof), "dof");
+            data.observer.(observer_string) = controller.(observer_string);
+        else
+            observer_string = "KF_";
+            observer_string = strcat( observer_string, num2str(active_dof), "dof");
+            data.observer.(observer_string) = controller.(observer_string);
+            if active_dof == 1
                 observer_string = "minKF_";
+                observer_string = strcat( observer_string, num2str(active_dof), "dof_enc1");
+                data.observer.(observer_string) = controller.(observer_string);
+                observer_string = "minKF_";
+                observer_string = strcat( observer_string, num2str(active_dof), "dof_pot");
+                data.observer.(observer_string) = controller.(observer_string);
+            else
+                observer_string = "minKF_";
+                observer_string = strcat( observer_string, num2str(active_dof), "dof_enc2");
+                data.observer.(observer_string) = controller.(observer_string);
+                observer_string = "minKF_";
+                observer_string = strcat( observer_string, num2str(active_dof), "dof_pot");
+                data.observer.(observer_string) = controller.(observer_string);
+                observer_string = "minKF_";
+                observer_string = strcat( observer_string, num2str(active_dof), "dof_enc1");
+                data.observer.(observer_string) = controller.(observer_string);
+                observer_string = "minKF_";
+                observer_string = strcat( observer_string, num2str(active_dof), "dof_potenc1");
+                data.observer.(observer_string) = controller.(observer_string);
+            end
         end
-        observer_string = strcat( observer_string, num2str(active_dof), "dof");
-        data.observer.(observer_string) = controller.(observer_string);
     end
 end
 

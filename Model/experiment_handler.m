@@ -202,15 +202,27 @@ classdef experiment_handler
             if isfield( raw_data, 'observer' )
                 if ~isempty(raw_data.observer)
                     c = fieldnames( raw_data.observer );
-                    c = c{1};
-                    controller.(c) = raw_data.observer.(c);
-                    
-                    
-                    if c(1) == 'o'
-                             controller.active_observer = 0;
+                    if size(c, 1) == 1
+                        c = c{1};
+                        controller.(c) = raw_data.observer.(c);
+                       
+                        if c(1) == 'o'
+                            controller.active_observer = 0;
+                        elseif c(1) == 'r' %is for red observer
+                            controller.active_observer = 1;
+                        elseif c(1) == 'K'
+                            controller.active_observer = 2;
+                        else
+                            controller.active_observer = 3;
+                           disp( raw_data.notes );
+                        end
                     else
-                        %elseif c(1) = 'r' is for red observer
-                             controller.active_observer = 1;
+                        % da controllare la prossima volta con più
+                        % esperimenti
+                        controller.active_observer = 3;
+                        for idx = 1:length( c )
+                            controller.(c{idx}) = raw_data.observer.(c{idx});
+                        end
                     end
                 end
             end

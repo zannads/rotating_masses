@@ -64,11 +64,11 @@ R = 2e-8;
 
 [P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
 L = L';
-controller.minKF_1dof.L = L;
-controller.minKF_1dof.A = A_sys-L*C_sys;
-controller.minKF_1dof.B = [B_sys, L];
-controller.minKF_1dof.C = eye(4);
-controller.minKF_1dof.D = zeros(4,2);
+controller.minKF_1dof_enc1.L = L;
+controller.minKF_1dof_enc1.A = A_sys-L*C_sys;
+controller.minKF_1dof_enc1.B = [B_sys, L];
+controller.minKF_1dof_enc1.C = eye(4);
+controller.minKF_1dof_enc1.D = zeros(4,2);
 
 %% KF with 1 dof, minimum sensors potentiometer
 controller.active_observer = 3; 
@@ -161,11 +161,11 @@ R = 2e-8;
 
 [P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
 L = L';
-controller.minKF_2dof.L = L;
-controller.minKF_2dof.A = A_sys-L*C_sys;
-controller.minKF_2dof.B = [B_sys, L];
-controller.minKF_2dof.C = eye(6);
-controller.minKF_2dof.D = zeros(6,2);
+controller.minKF_2dof_enc2.L = L;
+controller.minKF_2dof_enc2.A = A_sys-L*C_sys;
+controller.minKF_2dof_enc2.B = [B_sys, L];
+controller.minKF_2dof_enc2.C = eye(6);
+controller.minKF_2dof_enc2.D = zeros(6,2);
 
 %% Kalman Filter 2 dof min sensor pot
 
