@@ -39,7 +39,7 @@
 %\renewcommand{\footnoterule}{}
 \usepackage{comment}
 
-\graphicspath{{images/model/}{images/sensors/}{images/TFcontrol_1dof/}{images/TFcontrol_2dof/}}
+\graphicspath{{images/model/}{images/sensors/}{images/TFcontrol_1dof/}{images/TFcontrol_2dof/}{images/4_observers/}{images/5_pole_placement/}{images/6_LQ/}{images/7_H_inf/}{images/8_conclusions/}}
 
 \usepackage{blkarray}
 \usepackage{multirow}
@@ -55,11 +55,19 @@
 
 \chapter{Problem statement}
 	\input{chapters/1_introduction}
-	
 \chapter{Model identification}
 	\input{chapters/2_system_model}
-
 \chapter{Controllers based on transfer functions}
 	%\input{chapters/3_siso_controllers}
+\chapter{State reconstruction}
+	\input{chapters/4_observers}
+\chapter{Pole placement}
+	\input{chapters/5_pole_placement}
+\chapter{Linear quadratic control}
+	\input{chapters/6_LQ}
+\chapter{\boldmath ${H_{\infty}}$ control}
+	\input{chapters/7_H_inf}
+\chapter{Conclusions}
+	\input{chapters/8_conclusions}
 
 \end{document}
