@@ -54,7 +54,7 @@ controller.KF_1dof.B = [B_sys, L];
 controller.KF_1dof.C = eye(4);
 controller.KF_1dof.D = zeros(4,3);
 
-%% KF with 1 dof, minimum sensors
+%% KF with 1 dof, minimum sensors encoder mass 1
 controller.active_observer = 3; 
 
 C_sys = [0,0,-1,0];
@@ -69,6 +69,22 @@ controller.minKF_1dof.A = A_sys-L*C_sys;
 controller.minKF_1dof.B = [B_sys, L];
 controller.minKF_1dof.C = eye(4);
 controller.minKF_1dof.D = zeros(4,2);
+
+%% KF with 1 dof, minimum sensors potentiometer
+controller.active_observer = 3; 
+
+C_sys = [1,0,0,0];
+
+Q = eye(4)*1e-8;
+R = 1e-6;
+
+[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+L = L';
+controller.minKF_1dof_pot.L = L;
+controller.minKF_1dof_pot.A = A_sys-L*C_sys;
+controller.minKF_1dof_pot.B = [B_sys, L];
+controller.minKF_1dof_pot.C = eye(4);
+controller.minKF_1dof_pot.D = zeros(4,2);
 
 %% Pole-placement x pos control + observer 1 dof
 
@@ -136,7 +152,7 @@ controller.KF_2dof.B = [B_sys, L];
 controller.KF_2dof.C = eye(6);
 controller.KF_2dof.D = zeros(6,4);
 
-%% Kalman Filter 2 dof min
+%% Kalman Filter 2 dof min sensor encoder 2 
 
 controller.active_observer = 3; 
 C_sys=[0,0,0,0,-1,0];
@@ -150,6 +166,52 @@ controller.minKF_2dof.A = A_sys-L*C_sys;
 controller.minKF_2dof.B = [B_sys, L];
 controller.minKF_2dof.C = eye(6);
 controller.minKF_2dof.D = zeros(6,2);
+
+%% Kalman Filter 2 dof min sensor pot
+
+controller.active_observer = 3; 
+C_sys=[1,0,0,0,0,0];
+Q = eye(6)*1e-6;
+R = 1e-6;
+
+[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+L = L';
+controller.minKF_2dof_pot.L = L;
+controller.minKF_2dof_pot.A = A_sys-L*C_sys;
+controller.minKF_2dof_pot.B = [B_sys, L];
+controller.minKF_2dof_pot.C = eye(6);
+controller.minKF_2dof_pot.D = zeros(6,2);
+
+%% Kalman Filter 2 dof min sensor encoder 1 
+
+controller.active_observer = 3; 
+C_sys=[0,0,-1,0,0,0];
+Q = eye(6)*1e-6;
+R = 2e-8;
+
+[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+L = L';
+controller.minKF_2dof_enc1.L = L;
+controller.minKF_2dof_enc1.A = A_sys-L*C_sys;
+controller.minKF_2dof_enc1.B = [B_sys, L];
+controller.minKF_2dof_enc1.C = eye(6);
+controller.minKF_2dof_enc1.D = zeros(6,2);
+
+%% Kalman Filter 2 dof min sensor pot + encoder 1 
+
+controller.active_observer = 3; 
+C_sys=[1,0,0,0,0,0;
+       0,0,-1,0,0,0];
+Q = eye(6)*1e-6;
+R = [1e-6, 0; 0,2e-8];
+
+[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+L = L';
+controller.minKF_2dof_potenc1.L = L;
+controller.minKF_2dof_potenc1.A = A_sys-L*C_sys;
+controller.minKF_2dof_potenc1.B = [B_sys, L];
+controller.minKF_2dof_potenc1.C = eye(6);
+controller.minKF_2dof_potenc1.D = zeros(6,3);
 %% Pole-placement x position control + observer 2 dof
 A_place = [A_sys, zeros(6,1);[0,0,0,0,1,0,0]];
 B_place = [B_sys;0];
