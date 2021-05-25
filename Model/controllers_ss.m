@@ -42,7 +42,7 @@ controller.obs_1dof.D = zeros(4,3);
 %% Kalman Filter 1 dof
 controller.active_observer = 2; 
 
-Q = eye(4)*1e-8;
+Q = eye(4)*1e-6;        % re-do experiments with 1e-6
 R = [1e-6, 0;
      0, 2e-8];
 

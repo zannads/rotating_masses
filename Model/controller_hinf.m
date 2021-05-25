@@ -3,7 +3,6 @@
 % w = [theta_1_ref; noise(x_y)]
 % z = [err; u; y];
 
-
 A_sys = greybox_id_1dof.A;
 B_sys = greybox_id_1dof.B;
 C_sys = greybox_id_1dof.C;
@@ -19,7 +18,7 @@ D_w = [zeros(2,4),          sqrt( R_tilde ) ];
 D_enc = [zeros(1,4),        0,  sqrt( encoder_var ) ];
 
 % w -> \dot x
-B_ext1 = [B_sys, B_w];
+B_ext1 = [zeros(4,1), B_w];
 
 % x -> z
 C_ext1 = [-C_control;       %meno della retroazione
@@ -51,28 +50,44 @@ C_ext = [C_ext1;
     
 D_ext = [D_ext11, D_ext12;
          D_ext21, D_ext22];
-    
 
-wB1=10; % desired closed-loop bandwidth
-AA1=1/10; % desired disturbance attenuation inside bandwidth
-M1=2 ; % desired bound on hinfnorm(S) & hinfnorm(T)
-W_S=(s/M1+wB1)/(s+wB1*AA1); % Sensitivity weight
-W_K=(0.0001*s+1)/(0.001*s+1); % Control weight can't be empty (d12).ne.0)
-W_T=(s+wB1/M1)/(AA1*s+wB1); % Complementary sensitivity weight
-figure; 
-bode( W_T );
-hold on;
-bode( W_S );
-bode( W_K );
-grid on;
-     
+T_desired = (1+s/1000)/(1+s/50);
+S_desired = 0.001*(1+s/0.01)/(1+s/50);
+K_desired = 10*(1+s/100)/(1+s/1000); %not used
+bode( K_desired ); grid on
+
+W_S = 1/S_desired;
+W_K = 1/K_desired;
+W_T = 1/T_desired;
+
+% bode(S_desired)
+% hold on
+% grid on
+bode(W_K)
+% bode(T_desired)
+
+% wB1=10; % desired closed-loop bandwidth
+% AA1=1/10; % desired disturbance attenuation inside bandwidth
+% M1=2 ; % desired bound on hinfnorm(S) & hinfnorm(T)
+% W_S=(s/M1+wB1)/(s+wB1*AA1); % Sensitivity weight
+% W_K=(0.0001*s+1)/(0.001*s+1); % Control weight can't be empty (d12).ne.0)
+% W_T=(s+wB1/M1)/(AA1*s+wB1); % Complementary sensitivity weight
+% figure; 
+% bode( W_T );
+% hold on;
+% bode( W_S );
+% bode( W_K );
+% grid on;
+
+controller.active_technique = 11;
+
 P = ss( A_ext, B_ext, C_ext, D_ext );
 % W_S = 1;
 % W_T = 1;
 % W_K = 0.01;
 % 
-% P = augw( P, blkdiag( W_S, W_S, W_S, W_S, W_S, W_S, W_S), ...
-%     blkdiag( W_K, W_K, W_K, W_K, W_K, W_K, W_K, W_K), ...
-%     blkdiag( W_T, W_T, W_T, W_T, W_T, W_T, W_T) );
+P = augw( P, blkdiag( W_S, W_S, W_S, W_S, W_S, W_S, W_S ), ...
+    blkdiag( W_K, W_K, W_K, W_K, W_K, W_K, W_K, W_K), ...
+    blkdiag( W_T, W_T, W_T, W_T, W_T, W_T, W_T) );
 
-[K, CL, gamma] = hinfsyn( P, 3, 1 )
+[controller.c11, CL, gamma] = hinfsyn( P, 3, 1 );

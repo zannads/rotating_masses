@@ -14,7 +14,8 @@ D_sys = zeros(2,1);
 % steady-state
 
 title = "KF 1dof";
-controller.active_observer = 2; % select best observer
+controller.active_observer = 2;
+% per fare exp. lungo con tutti minKF, usare exp.49 e active_observer > 2
 controller.active_technique = 9;
 
 Q = eye(4)*1e-6;
@@ -29,9 +30,19 @@ controller.KF_1dof.B = [B_sys, L];
 controller.KF_1dof.C = eye(4);
 controller.KF_1dof.D = zeros(4,3);
 
+A_place = [A_sys, zeros(4,1);-C_sys, 0];
+B_place = [B_sys;0];
+
+K = place( A_place, B_place, [-20, -50, ...
+    -40.7*(0.8+sin(acos(0.8))*1i), -40.7*(0.8-sin(acos(0.8))*1i), ...
+    -10] );
+
+controller.c9.K_x = K(1:4);
+controller.c9.K_v = K(end);
+
 %% 1-dof LQG control
 
-controller.active_observer = 3;
+controller.active_observer = 2;
 controller.active_technique = 9;
 
 Q = diag( [5, 0.01, 20, 0.01, 1500] );
@@ -55,7 +66,7 @@ C_sys = [1,0,0,0,0,0;
 
 %% 2-dof LQG control
 
-controller.active_observer = 3;
+controller.active_observer = 2;
 controller.active_technique = 10;
 
 Q = diag( [5, 0.01, 5, 0.01, 20, 0.01, 1500] );
