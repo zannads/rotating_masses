@@ -102,14 +102,14 @@ controller.c3.Nf = Nf_1 * Nf_2;
 %% Position: 
 %% step (exp.44), sinesweep (exp.48)
 controller.active_technique = 4;
-controller.c4.wc_v = 5;
+controller.c4.wc_v = 4;
 
 controller.c4.wn_num_p1 = 24.9;
 controller.c4.wn_den_p1 = 100;
 controller.c4.psi_num_p1 = 1.47e-01;
 controller.c4.psi_den_p1 = 0.72;
 
-controller.c4.kp_p=3; %????%
+controller.c4.kp_p = 2; %????%
 
 controller.c4.wn_num_p2 = 62.3;
 controller.c4.wn_den_p2 = 100;

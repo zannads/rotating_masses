@@ -14,11 +14,14 @@ D_sys = zeros(2,1);
 % steady-state
 
 title = "KF 1dof";
-controller.active_observer = 2;
+controller.active_observer = 3;
 % per fare exp. lungo con tutti minKF, usare exp.49 e active_observer > 2
 controller.active_technique = 9;
 
-Q = eye(4)*1e-6;
+Q = [1e-6,0,0,0;
+    0,1e-4,0,0;
+    0,0,1e-6,0;
+    0,0,0,1e-4]; %eye(4)*1e-6;
 R = [1e-6, 0;
      0, 2e-8];
 
@@ -30,7 +33,7 @@ controller.KF_1dof.B = [B_sys, L];
 controller.KF_1dof.C = eye(4);
 controller.KF_1dof.D = zeros(4,3);
 
-A_place = [A_sys, zeros(4,1);-C_sys, 0];
+A_place = [A_sys, zeros(4,1);[0,0,1,0],0];
 B_place = [B_sys;0];
 
 K = place( A_place, B_place, [-20, -50, ...
@@ -42,10 +45,10 @@ controller.c9.K_v = K(end);
 
 %% 1-dof LQG control
 
-controller.active_observer = 2;
+controller.active_observer = 3;
 controller.active_technique = 9;
 
-Q = diag( [5, 0.01, 20, 0.01, 1500] );
+Q = diag( [50, 0.005, 50, 0.005, 2000] );
 R = 0.5e-1;
 
 A_place = [A_sys, zeros(4,1);[0,0,1,0,0]];
@@ -53,6 +56,8 @@ B_place = [B_sys;0];
 
 K = lqr( A_place, B_place, Q, R );
 
+controller.c9.Q = Q;
+controller.c9.R = R;
 controller.c9.K_x = K(1:4);
 controller.c9.K_v = K(end);
 
@@ -66,10 +71,25 @@ C_sys = [1,0,0,0,0,0;
 
 %% 2-dof LQG control
 
-controller.active_observer = 2;
+controller.active_observer = 3;
 controller.active_technique = 10;
 
-Q = diag( [5, 0.01, 5, 0.01, 20, 0.01, 1500] );
+Q = diag( [1e-6, 1e-4, 1e-6, 1e-4, 1e-6, 1e-4] );
+R = [1e-6, 0, 0;
+     0, 2e-8, 0;
+     0, 0, 2e-8];
+
+[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+L = L';
+controller.KF_2dof.Q = Q;
+controller.KF_2dof.R = R;
+controller.KF_2dof.L = L;
+controller.KF_2dof.A = A_sys-L*C_sys;
+controller.KF_2dof.B = [B_sys, L];
+controller.KF_2dof.C = eye(6);
+controller.KF_2dof.D = zeros(6,4);
+
+Q = diag( [50, 0.005, 50, 0.005, 50, 0.005, 1500] );
 R = 0.5e-1;
 
 A_place = [A_sys, zeros(6,1);[0,0,0,0,1,0,0]];
@@ -77,5 +97,7 @@ B_place = [B_sys;0];
 
 K = lqr( A_place, B_place, Q, R );
 
+controller.c10.Q = Q;
+controller.c10.R = R;
 controller.c10.K_x = K(1:6);
 controller.c10.K_v = K(end);

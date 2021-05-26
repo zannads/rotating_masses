@@ -156,7 +156,7 @@ controller.KF_2dof.D = zeros(6,4);
 
 controller.active_observer = 3; 
 C_sys=[0,0,0,0,-1,0];
-Q = eye(6)*1e-6;
+Q = diag( [1e-6, 1e-4, 1e-6, 1e-4, 1e-6, 1e-4] );
 R = 2e-8;
 
 [P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
@@ -186,7 +186,7 @@ controller.minKF_2dof_pot.D = zeros(6,2);
 
 controller.active_observer = 3; 
 C_sys=[0,0,-1,0,0,0];
-Q = eye(6)*1e-6;
+Q = diag( [1e-6, 1e-4, 1e-6, 1e-4, 1e-6, 1e-4] );
 R = 2e-8;
 
 [P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
