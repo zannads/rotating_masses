@@ -1,0 +1,74 @@
+
+In next chapters, more advanced control techniques will be treated. All of them are based on the state-space realization of the system, so a reconstruction of the state is needed since some signals are not available because too noisy to be used (i.e. motor and mass speeds, derived by potentiometer and encorders position readings).
+
+\section{State observer}
+
+The gray-box models, identified in chapter~1, are sufficiently precise to be used for observers design. The state reconstruction is performed by using motor and masses position signals; poles of the closed-loop observer are placed in a prescribed position: they must be sufficiently far from the imaginary axis so that asymptotic stability is ensured~(even considering poles uncertainty) and, moreover, time settlement of the observer is satisfactorily low.
+
+\paragraph{1 d.o.f. system}
+
+In order to construct the observer, matrices A and C are needed. In case of 1-dof system, we have:
+
+\begin{equation}
+	A = 
+	\begin{bmatrix}
+		0 &1 & 0 & 0 \\
+		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m {K_g}^2}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 \\
+		0 & 0 & 0 & 1 \\
+		\frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}}{J_1} & -\frac{B_1}{J_1}
+	\end{bmatrix}
+	\qquad
+	C =
+	\begin{bmatrix}
+		1 & 0 & 0 & 0 \\
+		0 & 0 & -1 & 0
+	\end{bmatrix}
+\end{equation}
+It it notable that the encoder measures a mass motion in opposite sign with respect to the potentiometer measurement, hence~$-$~sign is needed.
+
+Closed-loop poles can be automatically placed in prescribed positions thanks to the Matlab function~\textit{place}\footnote{This function requires to locate poles in different positions. To this end, in order to place poles in a unique position, it is sufficient to move some of them of a small quantity.}.
+Our arbitrary choice is to construct L~gain such that poles are in~$-400\frac{rad}{s}$ on the complex plane, i.e. negative purely real.
+
+The estimated state dynamics, then, becomes
+\begin{equation}
+	\dot{\hat{x}}(t) = A\hat{x}(t) + Bu(t) + L [y(t) - C\hat{x}(t) - Du(t)] = (A-LC)\hat{x}(t) + (B-LD)u(t) + Ly(t)
+\end{equation}
+and its estimation error dynamics is asymptotically stable, as pole placement prescribed:
+\begin{equation}
+	\dot{e}(t) = (A-LC){e}(t)
+\end{equation}
+
+The necessary and sufficient condition to guarantee observer design and asymptotic stability is that pair~$(A,C)$ is observable. In this case, the rank of the observability matrix is 4, as the order of the system; hence this observer can be used.
+
+The initial position of the system, detected by the potentiometer, is subtracted to all position readings~(motor, first mass and, if connected, second mass); this causes a shift in state reconstruction that will never be recovered. All position set-points are referred to an absolute value in the middle of the electrical range of the potentiomenter, so at the very beginning an integral action will move the mass to that reference.
+
+In figure~\ref{fig:observer}, a position control (performed by pole-placement, introduced in next chapter) is reported. It can be seen that the position of motor and first mass are shifted with respect to their measurements because of the initial position; however, position reconstructions perfectly superimpose measurements, as expected. Concerning the speeds, mass velocity has a quite small delay with respect to the measured one (derived by the encoder), while motor speed is noisy probably because of potentiometer variance on readings; in any case, small differences on speed are not critical, since speed signals are not significantly weighted in next control techniques.
+\begin{figure*}[h]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{observer_1dof}
+	\caption{Observer reconstruction compared with available measurements}
+	\label{fig:observer}
+\end{figure*}
+
+\paragraph{2 d.o.f. system}
+
+Actually, the 2-dof observer is very similar to the previous one. Just matrices dimensions and available signals are different: in this case, in addition to potentiometer and first mass encoder, also the second mass position is available thanks to the last encoder. This means that matrix C has one more row:
+\begin{equation}
+	A = 
+	\begin{bmatrix}
+		0 &1 & 0 & 0 & 0 & 0 \\
+		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m {K_g}^2}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 & 0 & 0 \\
+		0 & 0 & 0 & 1 & 0 & 0 \\
+		\frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}+K_{s_2}}{J_1} & -\frac{B_1}{J_1} & \frac{K_{s_2}}{J_1} & 0 \\
+		0 & 0 & 0 & 0 & 0 & 1 \\
+		0 & 0 & \frac{K_{s_2}}{J_2} & 0 & -\frac{K_{s_2}}{J_2} & -\frac{B_2}{J_2}
+	\end{bmatrix}
+	C =
+	\begin{bmatrix}
+		1 & 0 & 0 & 0 & 0 & 0 \\
+		0 & 0 & -1 & 0 & 0 & 0  \\
+		0 & 0 & 0 & 0 & -1 & 0
+	\end{bmatrix}
+\end{equation}
+
+This time, poles have been located in different positions: 2 of them in~$-300\frac{rad}{s}$ and the other 4 in~$-400\frac{rad}{s}$. Also in this case, observability matrix of the pair~$(A,C)$ is full rank.

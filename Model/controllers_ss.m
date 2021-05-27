@@ -91,7 +91,7 @@ controller.minKF_1dof_pot.D = zeros(4,2);
 A_place = [A_sys, zeros(4,1);[0,0,1,0,0]];
 B_place = [B_sys;0];
 
-K = place( A_place, B_place, [-50, -60, -60.1, -40, -10] )
+K = place( A_place, B_place, [-50, -60, -60.1, -40, -10] );
 
 controller.c9.K_x = K(1:4);
 controller.c9.K_v = K(end);

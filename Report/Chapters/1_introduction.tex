@@ -24,7 +24,7 @@ The potentiometer is installed next to the gear, on the load side. It is a singl
 % potenziomentro comunque impreciso di per sé
 
 The total output range of the sensor should be ±5 V over the full 352° range.
-The first passage to obtain the motor position is converting the voltage measured in radiants:
+Ideally, the first passage to obtain the motor position is converting the voltage measured in radiant:
 \[
 	\theta_l = \bigl{(} V_{meas} - V_1 \bigr{)} \frac{352 \degree }{V_3 - V_1} \frac{\pi}{180 \degree }
 \]
@@ -36,14 +36,26 @@ The sensor is able to detect the position along only one turn, then an increment
 In particular, a Matlab script for post-processing elaboration of data has been written. This is able to recognize the end of a turn and the beginning of the next one; thanks to this, it remembers the number of revolutions and rearranges all the data according to that.
 
 Moreover, the gap of~$8 \degree$ can be fitted by interpolating the two values around it. Notice that this procedure works only in case the motor speed is quite constant in time.
-
-% figure script potentiometer
-Unfortunately it is visible that the sensor data are very imprecise: the slope of the curve is not continuous. For this reason, real time measurements for motor position and speed are not reliable; we use only the initial position because it is useful for controlling absolute position and  during simulations.
-\begin{figure*}
+\begin{figure*}[h]
 	\centering
 	\includegraphics[width=\columnwidth]{pote_recover}
 	\caption{Potentiometer data post-processing}
 \end{figure*}
+% figure script potentiometer
+
+Unfortunately it is visible that the sensor data are quite imprecise: the slope of the curve is not continuous. For this reason, real time measurements for motor position and speed are reliable only in its range of functioning.
+\begin{itemize}
+	\item gray-box model identification (after post-processing);
+	\item initial condition for absolute position control;
+	\item motor position measurement, for control in state-space form (range of reference is~$-\frac{352 \degree}{2} \, / +\frac{352 \degree}{2}$).
+\end{itemize}
+
+\subparagraph{Uncertainty and noise}
+Even when the system is steady, we can see that the motor position measurement oscillates; this is due to an error in voltage measurement performed by the ADC. It is treated as a white-noise, whose variance is determined in Matlab, using data collected in steady condition.
+
+\begin{align*}
+	\Theta_{pot} &\sim \Gamma \bigl{(} 0, 1e-6 \bigr{)}
+\end{align*}
 
 \paragraph{Encoder}
 

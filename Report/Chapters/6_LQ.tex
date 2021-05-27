@@ -1,0 +1,8 @@
+
+The controller structure derived from this technique is similar to the pole placement one; actually, a significant conceptual difference exists. In fact, the linear quadratic control~(LQ) is obtained by optimizing the cost function that includes both state and output, weighted by~$Q$ and~$R$ matrices respectively.
+
+The system response, such as settling time and transient shape, highly depends on mutual ratios between values in those matrices, that become design parameters. Many simulations in Simulink allowed us to find a possible trade-off among those parameters, just to perform an acceptable experiment in laboratory and, starting from that, improve performances by tuning.
+As done in pole placement, the system~(both in case of~1-dof and~2-dof) has been enlarged so that an integrator is able to nullify the steady-state error.
+
+\paragraph{1 d.o.f. system}
+

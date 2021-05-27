@@ -38,10 +38,10 @@ The physical model can be described by ordinary differential equations (ODEs), s
 \begin{equation}
 	\begin{bmatrix}
 		\dot{i} \\
-		\dot{\theta_l} \\
-		\ddot{\theta_l} \\
-		\dot{\theta_1} \\
-		\ddot{\theta_1}
+		\dot{\theta}_l \\
+		\ddot{\theta}_l \\
+		\dot{\theta}_1 \\
+		\ddot{\theta}_1
 	\end{bmatrix}
 	=
 	\begin{bmatrix}
@@ -54,9 +54,9 @@ The physical model can be described by ordinary differential equations (ODEs), s
 	\begin{bmatrix}
 		i \\
 		\theta_l \\
-		\theta_l \\
+		\dot{\theta}_l \\
 		\theta_1 \\
-		\theta_1
+		\dot{\theta}_1
 	\end{bmatrix}
 	+
 	\begin{bmatrix}
@@ -73,12 +73,12 @@ The physical model can be described by ordinary differential equations (ODEs), s
 \begin{equation}
 	\begin{bmatrix}
 		\dot{i} \\
-		\dot{\theta_l} \\
-		\ddot{\theta_l} \\
-		\dot{\theta_1} \\
-		\ddot{\theta_1} \\
-		\dot{\theta_2} \\
-		\ddot{\theta_2}
+		\dot{\theta}_l \\
+		\ddot{\theta}_l \\
+		\dot{\theta}_1 \\
+		\ddot{\theta}_1 \\
+		\dot{\theta}_2 \\
+		\ddot{\theta}_2
 	\end{bmatrix}
 	=
 	\begin{bmatrix}
@@ -93,11 +93,11 @@ The physical model can be described by ordinary differential equations (ODEs), s
 	\begin{bmatrix}
 		i \\
 		\theta_l \\
-		\theta_l \\
+		\dot{\theta}_l \\
 		\theta_1 \\
-		\theta_1 \\
+		\dot{\theta}_1 \\
 		\theta_2 \\
-		\theta_2
+		\dot{\theta}_2
 	\end{bmatrix}
 	+
 	\begin{bmatrix}
@@ -121,10 +121,10 @@ Since the current dynamics cannot be verified by experimental data, we have deci
 \textit{State-space representation of the reduced 1 d.o.f. system}
 \begin{equation}
 	\begin{bmatrix}
-		\dot{\theta_l} \\
-		\ddot{\theta_l} \\
-		\dot{\theta_1} \\
-		\ddot{\theta_1}
+		\dot{\theta}_l \\
+		\ddot{\theta}_l \\
+		\dot{\theta}_1 \\
+		\ddot{\theta}_1
 	\end{bmatrix}
 	=
 	\begin{bmatrix}
@@ -135,9 +135,9 @@ Since the current dynamics cannot be verified by experimental data, we have deci
 	\end{bmatrix}
 	\begin{bmatrix}
 		\theta_l \\
-		\theta_l \\
+		\dot{\theta}_l \\
 		\theta_1 \\
-		\theta_1
+		\dot{\theta}_1
 	\end{bmatrix}
 	+
 	\begin{bmatrix}
@@ -152,12 +152,12 @@ Since the current dynamics cannot be verified by experimental data, we have deci
 \textit{State-space representation of the reduced 2 d.o.f. system}
 \begin{equation}
 	\begin{bmatrix}
-		\dot{\theta_l} \\
-		\ddot{\theta_l} \\
-		\dot{\theta_1} \\
-		\ddot{\theta_1} \\
-		\dot{\theta_2} \\
-		\ddot{\theta_2}
+		\dot{\theta}_l \\
+		\ddot{\theta}_l \\
+		\dot{\theta}_1 \\
+		\ddot{\theta}_1 \\
+		\dot{\theta}_2 \\
+		\ddot{\theta}_2
 	\end{bmatrix}
 	=
 	\begin{bmatrix}
@@ -170,11 +170,11 @@ Since the current dynamics cannot be verified by experimental data, we have deci
 	\end{bmatrix}
 	\begin{bmatrix}
 		\theta_l \\
-		\theta_l \\
+		\dot{\theta}_1 \\
 		\theta_1 \\
-		\theta_1 \\
+		\dot{\theta}_1 \\
 		\theta_2 \\
-		\theta_2
+		\dot{\theta}_2
 	\end{bmatrix}
 	+
 	\begin{bmatrix}
@@ -265,11 +265,12 @@ It is important to remember that the speed measurement is noisy (the filter acts
 \section{Gray-box identification}
 
 \textit{Gray-box identification with a parametric error method of state-space time-domain} \\
-\par The advantage of using a gray-box approach is that it maintains the mathematical model structure and tunes parameters based on experimental data. The starting model is defined on the nominal parameters (as illustrated in Paragraph "Mathematical description"), whose uncertainties are a-prior specified: in this way, the identification can change parameters in a well defined and constrained range, preserving a physical meaning. Specifically, masses parameters (inertia~$J$, friction~$B$) uncertainty is fixed to ranges between~$10 \%$ and~$20 \%$; all the other parameters have an uncertainty range specified according to the reference manuals.
-% table: nominal and identified parameters
+\par The advantage of using a gray-box approach is that it maintains the mathematical model structure and tunes parameters based on experimental data. The starting model is defined on the nominal parameters (as illustrated in Paragraph "Mathematical description"), whose uncertainties are a-prior specified: in this way, the identification can change parameters in a well defined and constrained range, preserving a physical meaning. Specifically, masses parameters (inertia~$J$, friction~$B$) uncertainty is fixed manually~(the datasheet gives experimentally determined values); all the other parameters have an uncertainty range specified according to the reference manuals.
+% table: nominal and identified parameters, uncertainty of param
+% ragionare se controproducente !!!!!
 
-Operatively, we have collected all data experiments and estimated the model by means of the function~\textit{greyest()}. The used measurements include both position and speed of the masses: this allows to have a larger and differentiated set of data.
+Operatively, we have collected all data experiments and estimated the model by means of the function~\textit{greyest()}. The used measurements include the position of both motor and masses: this allows to have a larger and differentiated set of data.
 
-Identification results are very satisfactory: the precision of the model with respect to the position data is greater that~$99 \%$, while the velocity one is about~$85 \%$. It must be remembered that all data are affected by a noise, in particular the speed ones; about this, the Matlab function allows also to identify those noises, so that they can be separated from the dynamical model.
+Identification results are very satisfactory: the precision of the model with respect to the motor position data are between~$70 / 95\%$, while the masses positions precision is about~$75 / 99\%$. The lower values of precision are obtained with low speed experiments.
 
 The identified model has a resonance frequency located in between the nominal and black-box ones, as expected. Moreover, data collected in laboratory are very close to the simulation performed by using this identified model.

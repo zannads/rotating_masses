@@ -1,4 +1,4 @@
-After we have shown a set of possible solutions with the frequency controllers,we provide a now an approach in the state-space domain. This is possible thanks to the estimations made through the \textit{greyest} function by Matlab.\\
+After we have shown a set of possible solutions with the frequency controllers, we provide now an approach in the state-space domain. This is possible thanks to the estimations made through the \textit{greyest} function by Matlab.\\
 As shown in the previous chapter, we have built a full-state observer and kalman filters with different input sensor configurations, in order to simulate the reliability of the controller with respect to eventual faults. We will introduce now a pole placement technique taking as input the estimated states coming out from observer or kalman filters. Later, we will compare these solutions and we will choose the optimal configuration. The \textit{1-DOF} case will be analyzed at first and then we will study the \textit{2-DOF} one.
 
 \section{1-DOF}
@@ -7,10 +7,10 @@ A pole placement applied to the only four states of the system is not sufficient
 
 \begin{equation}
 	\begin{bmatrix}
-		\dot{\theta_l} \\
-		\ddot{\theta_l} \\
-		\dot{\theta_1} \\
-		\ddot{\theta_1} \\
+		\dot\theta_l \\
+		\ddot\theta_l \\
+		\dot\theta_1 \\
+		\ddot\theta_1 \\
 		\dot{v}
 	\end{bmatrix}
 	=
@@ -23,9 +23,9 @@ A pole placement applied to the only four states of the system is not sufficient
 	\end{bmatrix}
 	\begin{bmatrix}
 		\theta_l \\
-		\dot{\theta_l} \\
+		\dot{theta_l \\
 		\theta_1 \\
-		\dot{\theta_1} \\
+		\dot\theta_1 \\
 		v
 	\end{bmatrix}
 	+
@@ -39,7 +39,6 @@ A pole placement applied to the only four states of the system is not sufficient
 	V
 \end{equation}
 
-
 Now we check the controllability of this enlarged system by using \textit{ctrb} Matlab function.
 As exepcted it is fully controllable and now we can proceed by using the following scheme:
 \begin{figure*}[h]
@@ -51,7 +50,7 @@ As exepcted it is fully controllable and now we can proceed by using the followi
 
 \newpage
 
-In figure \ref{fig:block scheme with pole placement and state reconstraction}, the state estimator block represents either the observer or one of the kalman filters. 
+In figure \ref{fig:block scheme with pole placement and state reconstraction}, the state estimator block represents either the observer or one of the Kalman filters. 
 At this point we set the poles through the \textit{place} matlab function. In particular we decide to postpone the real poles to speed up the system, whereas concerning the complex ones we just enhance their damping coefficients. At the beginning we thought to turn them into real poles but the resulting control effort was very aggressive and it was not leading any significant improvement to the dynamics. The placed poles and the corresponing gain $K$ computed by the above-mentioned matlab function are written below:
 \\\\
 
@@ -101,7 +100,7 @@ We will provide now the comparison between the configurations made by the same p
 	\label{fig:Position step response with full Kalman filter}
 \end{figure*}
 
-As regards the step response, we can notice as the Kalman filter configuration is not as smooth as the observer one. This might be caused by a small uncertainty that our model has with respect to real system. By the way, both cases are considered acceptable. On the other hand, the kalman filter brings a significant improvement on the control action, resulting to be less noisy due to the filter robustness against the white noises.
+As regards the step response, we can notice as the Kalman filter configuration is not as smooth as the observer one. This might be caused by a small uncertainty that our model has with respect to real system. By the way, both cases are considered acceptable. On the other hand, the Kalman filter brings a significant improvement on the control action, resulting to be less noisy due to the filter robustness against the white noises.
 We are already satisfied by this performance and we do not need to speed it up, however other solutions will be provided later on with LQG.
 
 \section{2-DOF}
