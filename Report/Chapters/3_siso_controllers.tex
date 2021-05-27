@@ -98,7 +98,7 @@ Another aspect that has to be considered is the presence of very small oscillati
 \begin{figure*}[h]
 	\centering
 	\includegraphics[scale=0.4]{Sine1dof}
-	\caption{Sinesweep experiment from 0.1 Hz to 10 Hz in 100s}
+	\caption{Sineweep experiment from 0.1 Hz to 10 Hz in 100s}
 	\label{fig:sinesweep_PI_1dof}
 \end{figure*}
 
@@ -158,19 +158,20 @@ For the above-mentioned reasons, we use a switch logic that deactivates the inte
 \begin{figure*}[h]
 	\centering
 	\includegraphics[scale=0.4]{sine_pos_1dof}
-	\caption{Sinesweep experiment from 0.1 Hz to 1 Hz in 100s}
+	\caption{Sineweep experiment from 0.1 Hz to 1 Hz in 100s}
 	\label{fig:sinesweep_pos_1dof}
 \end{figure*}
 
 Also in this case, we use sinewseep experiment to estimate the bandwidth of the closed loop system. We can observe that the simulation and laboratory data are really close and the cutting frequency is around 5.5 rad/s for the simulated system and 4.5 rad/s for the real system.
 
 \newpage
+
 \section{2-DOF System}
 We consider as transfer function from voltage to the second mass speed:\\
 \\
 \[	
 G(s)=
-\frac{-1.244*10^{8}}{s^5+40.9*s^{4}+4833*s^{3}+1.686*10^{5}*s^{3}+3.327*10^{6}*s+7.355*10^{7}}
+\frac{-1.293*10^{8}}{s^5+40.9*s^{4}+4833*s^{3}+1.686*10^{5}*s^{3}+3.327*10^{6}*s+7.355*10^{7}}
 \]
 \\
 
@@ -217,11 +218,94 @@ R(s)=-wc_v
 \frac{\frac{s}{30.6}+1}{s}
 \]
 \\
-As in the 1-DOF scenario, the presence of the Notch Filter postpones the cutting frequency imposed by the PI, indeed the wcv written in the legends below, are referred to the same parameter written in R and not to the real bandwidth of the speed-loop.
+As in the 1-dof scenario, the presence of the Notch Filter postpones the cutting frequency imposed by the PI, indeed the $wc_v$ written in the legends below, are referred to the same parameter written in R and not to the real bandwidth of the speed-loop.
+As noticed in the 1-dof case, there are some periodic oscillations due to a change of the dynamic friction along the revolution of the masses. Right now the amplitude of these disturbances cannot be neglet anymore and we need so to find a solution to attenuate them as much as possible. In order to enhance the disturbance rejection, we impose a $wc_v$ high enough to obtain a large bandiwdth. On the other hand, we cannot set it at high frequencies, otherwise the phase margin would decrease dramatically. We find a good trade-off by imposing $wc_v$=5 rad/s.
+We now compare the simulation with laboratory data. In order to design the right controller, we added a disturbance on both torques (\textit{mass1} and \textit{mass2}) with fixed amplitude at 0.005 and frequency equal to the masses speed.
+\begin{figure*}[h]
+	\centering
+	\includegraphics[scale=0.4]{step10_noPF}
+	\caption{Step response with $wc_v=5 rad/s$}
+	\label{fig:step10_noPF}
+\end{figure*}
+\newline
+This solution is far to be acceptable due to its high oscillations during the transient. To keep large enough the bandwidth, we decide not to anticipate the $wc_v$, but to build a low-pass prefilter on the reference signal with cutting frequency at 7 rad/s. Thanks to this idea, our closed loop system will not be excited by high frequencies and we have two positive effects: no oscillations during the transiet and rejection of the resonances identification uncertainties. Indeed, the amplitudes of the oscillations at steady state are decreased and we consider them acceptable. 
 
+\newpage
+\begin{figure*}[h]
+	\centering
+\begin{subfigure}{0.4\columnwidth}
+	\includegraphics[width=\textwidth]{step10}
+	\subcaption{Step 10 rad/s}
+\end{subfigure}
+\begin{subfigure}{0.4\columnwidth}
+	\includegraphics[width=\textwidth]{step17}
+	\subcaption{Step 17 rad/s}
+\end{subfigure}
+\begin{subfigure}{0.4\columnwidth}
+	\includegraphics[width=\textwidth]{volt17}
+	\subcaption{Voltage related to a step of 17 rad/s}
+\end{subfigure}
+\caption{Speed control loop with  $wc_{v} $=5 rad/s with low-pass prefilter}
+\label{fig:PI_with_5}
+\end{figure*}
 
+As it is possible to notice in figure \ref{fig:PI_with_5}, the simulation and laboratory data are really close during the transient and the voltage never saturates. This solution is so satisfying. We plot now a sinesweep experiment without applying the prefilter to the closed loop system in order to understand the missmatch between our simulation and the real system in the range of frequency from 1 Hz to 10 Hz.
 
+\begin{figure*}[h]
+	\centering
+	\includegraphics[scale=0.4]{sine_PI}
+	\caption{Sineweep experiment from 1 Hz to 10 Hz in 100s}
+	\label{fig:sinesweep_speed_2dof}
+\end{figure*}
 
+From figure \ref{fig:sinesweep_speed_2dof}, we can observe how the overall frequencial behaviour of the simulation is similar to the real one. The only main difference arises around 75 seconds that correspond to a frequency around 25 rad/s. At this frequency there is the first resonance peak of our plant and we so suppose that the difference of the two responses could be given by an overestimation of the damping coefficient. As consequence, we did not compensate the whole resonance peak and this is the reason why it is present on the sinesweep experiment.
+\par
+As regards the controllability range, we test the system with a rampo with decreasing low speed, as already done for the 1-dof case. We can notice how the presence of small oscillations does not let us control the system at very low speed. For this reason the controllable speed belongs to two possible intervals: from -17 rad/s to -0.5 rad/s and from 0.5 rad/s to 17 rad/s.
+\begin{figure*}[h]
+	\centering
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{Ramp2dofa}
+		\subcaption{Entire experiment}
+	\end{subfigure}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{Ramp2dofb}
+		\subcaption{Detail at low speed}
+	\end{subfigure}
 
+	\caption{Ramp experiment from 17 rad/s to 0 rad/s in 100s}
+	\label{fig:Ramp2dof}
+\end{figure*}
 
+\newpage
+\subsection{Position Control Loop}
 
+Following the same reasoning of the 1-dof case, we use a cascade control strategy. We do not want to apply the lowpass prefilter anymore because of the change of the scheme: the reference singal does not enter directly to the speed closed loop. On the other hand, the inner loop without prefiler leads to a very oscillating dynamic. We decide so to reduce the $wc_v$ at 4 rad/s and we are allowed to do this also because the disturbance due to the dynamic friction does not arise significantly anymore, since we are controlling the position.
+In order to assure the frequency decoupling, we need to keep a low proportional gain of the outer loop. Indeed, we choose $k_p$ equal to 2 because we consider it a good tradeoff between a good settling time and an acceptable phase margin.
+\newline
+We plot now the laboratory data obtained trough this control startegy, comparing it with the simulation.
+\begin{figure*}[h]
+	\centering
+	\begin{subfigure}{0.48\columnwidth}
+		\includegraphics[width=\textwidth]{step_P_2dof}
+		\subcaption{Position}
+	\end{subfigure}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{speed_P_2dof}
+		\subcaption{Speed}
+	\end{subfigure}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{volt_P_2dof}
+		\subcaption{Voltage}
+	\end{subfigure}
+	\caption{Position control loop with $k_{p} =2$ with a position step of $\frac{\pi}{4}$}
+	\label{fig:P_2dof}
+\end{figure*}
+
+As it is possible to notice in figure \ref{fig:P_2dof}, the second mass does not reach the position reference. This behavior is casued by the same switch gate we applied in the 1-dof case.
+The mismatch between the simulation and the laboratory data is fully negligible, as it is shown through the sinesweep experiment in figure \ref{fig:sinesweep_pos_2dof}.
+\begin{figure*}[h]
+	\centering
+	\includegraphics[scale=0.4]{sine_P_2dof}
+	\caption{Sineweep experiment from 0.1 Hz to 1 Hz in 100s}
+	\label{fig:sinesweep_pos_2dof}
+\end{figure*}
