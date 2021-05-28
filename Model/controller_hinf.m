@@ -43,6 +43,14 @@ D_ext21 = [ eye(1),         zeros( 1, 6);
 D_ext22 = [ 0;
             D_sys];
 
+% A_ext = A_sys;
+% B_ext = [B_ext1, B_sys];
+% C_ext = [C_ext1;
+%          C_ext2];
+%     
+% D_ext = [D_ext11, D_ext12;
+%          D_ext21, D_ext22];
+
 A_ext = A_sys;
 B_ext = [B_ext1, B_sys];
 C_ext = [C_ext1;
@@ -51,8 +59,10 @@ C_ext = [C_ext1;
 D_ext = [D_ext11, D_ext12;
          D_ext21, D_ext22];
 
+%% Design by using linmod
+
 T_desired = (1+s/1000)/(1+s/50);
-S_desired = 0.001*(1+s/0.01)/(1+s/50);
+S_desired = 0.001*(1+s/0.01)/(1+s/10);
 K_desired = 10*(1+s/100)/(1+s/1000); %not used
 bode( K_desired ); grid on
 
@@ -63,7 +73,7 @@ W_T = 1/T_desired;
 % bode(S_desired)
 % hold on
 % grid on
-bode(W_K)
+% bode(W_K)
 % bode(T_desired)
 
 % wB1=10; % desired closed-loop bandwidth
@@ -75,19 +85,20 @@ bode(W_K)
 % figure; 
 % bode( W_T );
 % hold on;
-% bode( W_S );
+bode( W_S );
 % bode( W_K );
 % grid on;
 
 controller.active_technique = 11;
 
-P = ss( A_ext, B_ext, C_ext, D_ext );
-% W_S = 1;
+[ A_Hinf, B_Hinf, C_Hinf, D_Hinf ] = linmod( 'Hinf_design' );
+P = ss( A_Hinf, B_Hinf, C_Hinf, D_Hinf );
+% W_S = 10;
 % W_T = 1;
 % W_K = 0.01;
 % 
-P = augw( P, blkdiag( W_S, W_S, W_S, W_S, W_S, W_S, W_S ), ...
-    blkdiag( W_K, W_K, W_K, W_K, W_K, W_K, W_K, W_K), ...
-    blkdiag( W_T, W_T, W_T, W_T, W_T, W_T, W_T) );
+% P = augw( P, blkdiag( [],[],[],[] ), ...
+%     blkdiag( [],[] ), ...
+%     blkdiag( W_T,W_T,W_T,W_T ) );
 
-[controller.c11, CL, gamma] = hinfsyn( P, 3, 1 );
+[controller.c11, CL, gamma] = hinfsyn( P, 2, 1 );
