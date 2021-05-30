@@ -5,8 +5,6 @@ A_sys = greybox_id_1dof.A;
 B_sys = greybox_id_1dof.B;
 C_sys = [1,0,0,0;
         0,0,-1,0];
-D_sys = zeros(2,1);
-
 % observer
 L = place( A_sys', C_sys', -[400 400.1 400.2 400.3] )';
 controller.obs_1dof.L = L;
@@ -40,59 +38,77 @@ controller.obs_1dof.D = zeros(4,3);
 % controller.red_obs_1dof.D = zeros(2,3);
 
 %% Kalman Filter 1 dof
-controller.active_observer = 2; 
 
-Q = eye(4)*1e-6;        % re-do experiments with 1e-6
-R = [1e-6, 0;
-     0, 2e-8];
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4] ); 
+R_tilde = [1e-6, 0;
+           0, 2e-8];
 
-[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
 L = L';
 controller.KF_1dof.L = L;
+controller.KF_1dof.Q = Q_tilde;
+controller.KF_1dof.R = R_tilde;
 controller.KF_1dof.A = A_sys-L*C_sys;
 controller.KF_1dof.B = [B_sys, L];
 controller.KF_1dof.C = eye(4);
 controller.KF_1dof.D = zeros(4,3);
 
 %% KF with 1 dof, minimum sensors encoder mass 1
-controller.active_observer = 3; 
 
 C_sys = [0,0,-1,0];
 
-Q = eye(4)*1e-8;
-R = 2e-8;
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4] );
+R_tilde = 2e-8;
 
-[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
 L = L';
 controller.minKF_1dof_enc1.L = L;
+controller.minKF_1dof_enc1.Q = Q_tilde;
+controller.minKF_1dof_enc1.R = R_tilde;
 controller.minKF_1dof_enc1.A = A_sys-L*C_sys;
 controller.minKF_1dof_enc1.B = [B_sys, L];
 controller.minKF_1dof_enc1.C = eye(4);
 controller.minKF_1dof_enc1.D = zeros(4,2);
 
 %% KF with 1 dof, minimum sensors potentiometer
-controller.active_observer = 3; 
 
 C_sys = [1,0,0,0];
 
-Q = eye(4)*1e-8;
-R = 1e-6;
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4] );
+R_tilde = 1e-6;
 
-[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
 L = L';
 controller.minKF_1dof_pot.L = L;
+controller.minKF_1dof_pot.Q = Q_tilde;
+controller.minKF_1dof_pot.R = R_tilde;
 controller.minKF_1dof_pot.A = A_sys-L*C_sys;
 controller.minKF_1dof_pot.B = [B_sys, L];
 controller.minKF_1dof_pot.C = eye(4);
 controller.minKF_1dof_pot.D = zeros(4,2);
 
-%% Pole-placement x pos control + observer 1 dof
+%% Pole-placement x pos control based on theta 1 error
 
 A_place = [A_sys, zeros(4,1);[0,0,1,0,0]];
 B_place = [B_sys;0];
 
 K = place( A_place, B_place, [-50, -60, -60.1, -40, -10] );
 
+controller.c9.K_x = K(1:4);
+controller.c9.K_v = K(end);
+
+%% LQ x pos control based on theta 1 error
+
+Q = diag( [50, 0.1, 50, 0.1, 3000] );
+R = 0.8;
+
+A_place = [A_sys, zeros(4,1);[0,0,1,0,0]];
+B_place = [B_sys;0];
+
+K = lqr( A_place, B_place, Q, R );
+
+controller.c9.Q = Q;
+controller.c9.R = R;
 controller.c9.K_x = K(1:4);
 controller.c9.K_v = K(end);
 
@@ -137,16 +153,17 @@ controller.obs_2dof.D = zeros(6,4);
 % controller.red_obs_2dof.D = zeros(2,5);
 
 %% Kalman Filter 2 dof
-controller.active_observer = 2; 
 
-Q = eye(6)*1e-6;
-R = [1e-6, 0, 0;
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4, 1e-8, 1e-4] );
+R_tilde = [1e-6, 0, 0;
      0, 2e-8, 0;
      0, 0, 2e-8];
 
-[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
 L = L';
 controller.KF_2dof.L = L;
+controller.KF_2dof.Q = Q_tilde;
+controller.KF_2dof.R = R_tilde;
 controller.KF_2dof.A = A_sys-L*C_sys;
 controller.KF_2dof.B = [B_sys, L];
 controller.KF_2dof.C = eye(6);
@@ -154,29 +171,68 @@ controller.KF_2dof.D = zeros(6,4);
 
 %% Kalman Filter 2 dof min sensor encoder 2 
 
-controller.active_observer = 3; 
 C_sys=[0,0,0,0,-1,0];
-Q = diag( [1e-6, 1e-4, 1e-6, 1e-4, 1e-6, 1e-4] );
-R = 2e-8;
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4, 1e-8, 1e-4] );
+R_tilde = 2e-8;
 
-[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
 L = L';
 controller.minKF_2dof_enc2.L = L;
+controller.minKF_2dof_enc2.Q = Q_tilde;
+controller.minKF_2dof_enc2.R = R_tilde;
 controller.minKF_2dof_enc2.A = A_sys-L*C_sys;
 controller.minKF_2dof_enc2.B = [B_sys, L];
 controller.minKF_2dof_enc2.C = eye(6);
 controller.minKF_2dof_enc2.D = zeros(6,2);
 
+%% Kalman Filter 2 dof min sensor pot + encoder 2
+
+C_sys=[1,0,0,0,0,0;
+       0,0,0,0,-1,0];
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4, 1e-8, 1e-4] );
+R_tilde = [1e-6, 0; 0,2e-8];
+
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
+L = L';
+controller.minKF_2dof_potenc2.L = L;
+controller.minKF_2dof_potenc2.Q = Q_tilde;
+controller.minKF_2dof_potenc2.R = R_tilde;
+controller.minKF_2dof_potenc2.A = A_sys-L*C_sys;
+controller.minKF_2dof_potenc2.B = [B_sys, L];
+controller.minKF_2dof_potenc2.C = eye(6);
+controller.minKF_2dof_potenc2.D = zeros(6,3);
+
+
+%% Kalman Filter 2 dof min sensor enccoder 1 + encoder 2
+
+C_sys=[0,0,-1,0,0,0;
+       0,0,0,0,-1,0];
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4, 1e-8, 1e-4] );
+R_tilde = [2e-8, 0; 0,2e-8];
+
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
+L = L';
+controller.minKF_2dof_enc1enc2.L = L;
+controller.minKF_2dof_enc1enc2.Q = Q_tilde;
+controller.minKF_2dof_enc1enc2.R = R_tilde;
+controller.minKF_2dof_enc1enc2.A = A_sys-L*C_sys;
+controller.minKF_2dof_enc1enc2.B = [B_sys, L];
+controller.minKF_2dof_enc1enc2.C = eye(6);
+controller.minKF_2dof_enc1enc2.D = zeros(6,3);
+
+
 %% Kalman Filter 2 dof min sensor pot
 
-controller.active_observer = 3; 
-C_sys=[1,0,0,0,0,0];
-Q = eye(6)*1e-6;
-R = 1e-6;
 
-[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+C_sys=[1,0,0,0,0,0];
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4, 1e-8, 1e-4] );
+R_tilde = 1e-6;
+
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
 L = L';
 controller.minKF_2dof_pot.L = L;
+controller.minKF_2dof_pot.Q = Q_tilde;
+controller.minKF_2dof_pot.R = R_tilde;
 controller.minKF_2dof_pot.A = A_sys-L*C_sys;
 controller.minKF_2dof_pot.B = [B_sys, L];
 controller.minKF_2dof_pot.C = eye(6);
@@ -184,14 +240,16 @@ controller.minKF_2dof_pot.D = zeros(6,2);
 
 %% Kalman Filter 2 dof min sensor encoder 1 
 
-controller.active_observer = 3; 
-C_sys=[0,0,-1,0,0,0];
-Q = diag( [1e-6, 1e-4, 1e-6, 1e-4, 1e-6, 1e-4] );
-R = 2e-8;
 
-[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+C_sys=[0,0,-1,0,0,0];
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4, 1e-8, 1e-4] );
+R_tilde = 2e-8;
+
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
 L = L';
 controller.minKF_2dof_enc1.L = L;
+controller.minKF_2dof_enc1.Q = Q_tilde;
+controller.minKF_2dof_enc1.R = R_tilde;
 controller.minKF_2dof_enc1.A = A_sys-L*C_sys;
 controller.minKF_2dof_enc1.B = [B_sys, L];
 controller.minKF_2dof_enc1.C = eye(6);
@@ -199,20 +257,22 @@ controller.minKF_2dof_enc1.D = zeros(6,2);
 
 %% Kalman Filter 2 dof min sensor pot + encoder 1 
 
-controller.active_observer = 3; 
 C_sys=[1,0,0,0,0,0;
        0,0,-1,0,0,0];
-Q = eye(6)*1e-6;
-R = [1e-6, 0; 0,2e-8];
+Q_tilde = diag( [0.3e-4, 1e-2, 1e-8, 1e-4, 1e-8, 1e-4] );
+R_tilde = [1e-6, 0; 0,2e-8];
 
-[P, L, autovals, info] = icare( A_sys', C_sys', Q, R );
+[~, L, ~, ~] = icare( A_sys', C_sys', Q_tilde, R_tilde );
 L = L';
 controller.minKF_2dof_potenc1.L = L;
+controller.minKF_2dof_potenc1.Q = Q_tilde;
+controller.minKF_2dof_potenc1.R = R_tilde;
 controller.minKF_2dof_potenc1.A = A_sys-L*C_sys;
 controller.minKF_2dof_potenc1.B = [B_sys, L];
 controller.minKF_2dof_potenc1.C = eye(6);
 controller.minKF_2dof_potenc1.D = zeros(6,3);
-%% Pole-placement x position control + observer 2 dof
+
+%% Pole-placement x position control based on theta2 error
 A_place = [A_sys, zeros(6,1);[0,0,0,0,1,0,0]];
 B_place = [B_sys;0];
 
@@ -223,6 +283,21 @@ K = place( A_place, B_place, [-10, -34.9, ...
 controller.c10.K_x = K(1:6);
 controller.c10.K_v = K(end);
 
+%% LQ x position control based on theta2 feedback
+
+Q = diag( [10, 0.8, 10, 0.8, 80, 0.8, 4500] );
+R = 2.5;
+
+A_place = [A_sys, zeros(6,1);[0,0,0,0,1,0,0]];
+B_place = [B_sys;0];
+
+K = lqr( A_place, B_place, Q, R );
+
+controller.c10.Q = Q;
+controller.c10.R = R;
+controller.c10.K_x = K(1:6);
+controller.c10.K_v = K(end);
+
 %% to avoid misunderstandings delete support variables
 clear A_sys B_sys C_sys D_sys
-clear A_place B_place K
+clear A_place B_place K Q R L Q_tilde R_tilde

@@ -117,6 +117,12 @@ if controller.active_technique>0
                 observer_string = "minKF_";
                 observer_string = strcat( observer_string, num2str(active_dof), "dof_potenc1");
                 data.observer.(observer_string) = controller.(observer_string);
+                observer_string = "minKF_";
+                observer_string = strcat( observer_string, num2str(active_dof), "dof_potenc2");
+                data.observer.(observer_string) = controller.(observer_string);
+                observer_string = "minKF_";
+                observer_string = strcat( observer_string, num2str(active_dof), "dof_enc1enc2");
+                data.observer.(observer_string) = controller.(observer_string);
             end
         end
     end
