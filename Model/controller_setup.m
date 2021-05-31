@@ -35,6 +35,8 @@ controller.c2.psi_num=2.96e-2;
 controller.c2.wn_den= 40.7;
 controller.c2.psi_den=0.72;
 
+controller.c2.Pf = 1;
+
 % PI-structure
 controller.c2.ki_v = controller.c2.wc_v;
 controller.c2.kp_v = controller.c2.wc_v/19;
