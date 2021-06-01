@@ -1,7 +1,9 @@
 %% 1 dof Hinf 
-% y = Cx = [theta_1_ref, theta_l; -theta_1];
-% w = [theta_1_ref; noise(x_y)]
-% z = [err; u; y];
+% y = [err, theta_l; theta_1];
+% w = [theta_1_ref; noise_x; noise_y]
+% z = [err; u; y1];
+
+sensors_parameters;
 
 A_sys = greybox_id_1dof.A;
 B_sys = greybox_id_1dof.B;
@@ -47,7 +49,7 @@ W_u = tf( [1, 0.1], [1, 150] ) ;
 W_u.InputName = 'u';
 W_u.OutputName = 'e2';
 
-Desired_T1 = 0.001*tf( [1, 2000], [1, 10] );
+Desired_T1 = 0.01*tf( [1, 200], [1, 10] );
 W_t1 = 1/Desired_T1;
 W_t1.InputName = 'y1';
 W_t1.OutputName = 'e3';
@@ -61,14 +63,14 @@ aug_output = {'e1', 'e2', 'e3', 'e', 'yl', 'y1'};
 
 aug_P = connect( P, W_e, W_u, W_t1, er, aug_input, aug_output );
 
-[controller.c11, ~, gamma] = hinfsyn( aug_P, 3, 1 )
+[controller.c11, ~, gamma] = hinfsyn( aug_P, 3, 1 );
 
 %out = sim( 'Hinf_design.slx' );
 
 %% 2 dof Hinf 
-% y = Cx = [theta_1_ref; theta_l; -theta_1; -theta_2];
-% w = [theta_1_ref; noise(x_y)]
-% z = [err; u; y];
+% y = [err, theta_l; theta_1; theta_2];
+% w = [theta_2_ref; noise_x; noise_y]
+% z = [err; u; y2];
 
 A_sys = greybox_id_2dof.A;
 B_sys = greybox_id_2dof.B;
@@ -110,15 +112,14 @@ W_e = 1/Desired_E;
 W_e.InputName = 'e';
 W_e.OutputName = 'e1';
 
-W_u = 3*tf( [1, 0.1], [1, 150] ) ;
+W_u = tf( [1, 0.1], [1, 150] ) ;
 W_u.InputName = 'u';
 W_u.OutputName = 'e2';
 
-Desired_T2 = 0.001*tf( [1, 2000], [1, 10] );
+Desired_T2 = 0.01*tf( [1, 200], [1, 10] );
 W_t2 = 1/Desired_T2;
 W_t2.InputName = 'y2';
 W_t2.OutputName = 'e3';
-
 
 P = ss( A_ext, [B_ext1, B_ext2], C_ext, [D_ext1, D_ext2] );
 P.InputName = {'r', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9', 'u'};
@@ -129,4 +130,4 @@ aug_output = {'e1', 'e2', 'e3', 'e', 'yl', 'y1', 'y2'};
 
 aug_P = connect( P, W_e, W_u, W_t2, er, aug_input, aug_output );
 
-[controller.c12, ~, gamma] = hinfsyn( aug_P, 4, 1 )
+[controller.c12, ~, gamma] = hinfsyn( aug_P, 4, 1 );

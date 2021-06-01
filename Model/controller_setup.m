@@ -196,6 +196,8 @@ controller.c8.kp_p = 2.2;
 %% State-space controllers
 
 controllers_ss;
+controller_hinf;
+controller_robustfault;
 
 %% to avoid misunderstandings delete support variables
 clear Nfp1 Nfp2
