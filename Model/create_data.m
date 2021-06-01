@@ -128,6 +128,10 @@ if controller.active_technique>0
     end
 end
 
+if rcontroller_is_active
+    data.rcontroller = rcontroller;
+end
+
 disp( 'Do you want to insert some notes? ' );
 data.notes = string(input( '', 's'));
 
