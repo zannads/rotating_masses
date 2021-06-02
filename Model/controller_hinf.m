@@ -107,27 +107,34 @@ D_ext2 = D_sys;
 
 er = sumblk( 'e = r-y2' );
 
-Desired_E = tf( [1, 0.01], [1, 30] );
+Desired_E = 2*tf( [1, 0.01], [1, 30] );
 W_e = 1/Desired_E;
 W_e.InputName = 'e';
 W_e.OutputName = 'e1';
 
-W_u = tf( [1, 0.1], [1, 150] ) ;
+Desired_u = 2 * tf( [1 30],[1 10] ) * tf( [1 50],[1 300] );
+
+W_u = tf(0.9);
 W_u.InputName = 'u';
 W_u.OutputName = 'e2';
+
+Desired_T1 = 0.01*tf( [1, 200], [1, 10] );
+W_t1 = 1/Desired_T1;
+W_t1.InputName = 'y1';
+W_t1.OutputName = 'e3';
 
 Desired_T2 = 0.01*tf( [1, 200], [1, 10] );
 W_t2 = 1/Desired_T2;
 W_t2.InputName = 'y2';
-W_t2.OutputName = 'e3';
+W_t2.OutputName = 'e4';
 
 P = ss( A_ext, [B_ext1, B_ext2], C_ext, [D_ext1, D_ext2] );
 P.InputName = {'r', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9', 'u'};
 P.OutputName = {'yl', 'y1', 'y2' };
 
 aug_input = {'r', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9', 'u'};
-aug_output = {'e1', 'e2', 'e3', 'e', 'yl', 'y1', 'y2'};
+aug_output = {'e1', 'e2', 'e3','e4', 'e', 'yl', 'y1', 'y2'};
 
-aug_P = connect( P, W_e, W_u, W_t2, er, aug_input, aug_output );
+aug_P = connect( P, W_e, W_u, W_t1 ,W_t2, er, aug_input, aug_output );
 
 [controller.c12, ~, gamma] = hinfsyn( aug_P, 4, 1 );

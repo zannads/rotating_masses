@@ -1,3 +1,4 @@
+
 After we have shown a set of possible solutions with the frequency controllers, we provide now an approach in the state-space domain. This is possible thanks to the estimations made through the \textit{greyest} function by Matlab.\\
 As shown in the previous chapter, we have built a full-state observer and kalman filters with different input sensor configurations, in order to simulate the reliability of the controller with respect to eventual faults. We will introduce now a pole placement technique taking as input the estimated states coming out from observer or kalman filters. Later, we will compare these solutions and we will choose the optimal configuration. The \textit{1-DOF} case will be analyzed at first and then we will study the \textit{2-DOF} one.
 
@@ -23,7 +24,7 @@ A pole placement applied to the only four states of the system is not sufficient
 	\end{bmatrix}
 	\begin{bmatrix}
 		\theta_l \\
-		\dot{theta_l \\
+		\dot\theta_l \\
 		\theta_1 \\
 		\dot\theta_1 \\
 		v
@@ -48,7 +49,7 @@ As exepcted it is fully controllable and now we can proceed by using the followi
 	\label{fig:block scheme with pole placement and state reconstraction}
 \end{figure*}
 
-\newpage
+% \newpage
 
 In figure \ref{fig:block scheme with pole placement and state reconstraction}, the state estimator block represents either the observer or one of the Kalman filters. 
 At this point we set the poles through the \textit{place} matlab function. In particular we decide to postpone the real poles to speed up the system, whereas concerning the complex ones we just enhance their damping coefficients. At the beginning we thought to turn them into real poles but the resulting control effort was very aggressive and it was not leading any significant improvement to the dynamics. The placed poles and the corresponing gain $K$ computed by the above-mentioned matlab function are written below:
@@ -59,7 +60,7 @@ At this point we set the poles through the \textit{place} matlab function. In pa
 	\begin{bmatrix}
 		-20 \\ -50 \\ -40.1*(0.8+\sin(\arccos(0.8))*i) \\ -40.1*(0.8-\sin(\arccos(0.8))*i) \\-10  
 	\end{bmatrix}
-		K_x^{T} =
+	K_x^{T} =
 	\begin{bmatrix}
 		185.9405 \\  3.5059 \\ -125.8645 \\   0.1222
 	\end{bmatrix}
@@ -146,7 +147,7 @@ As before, we enlarge the system in order to reach the position reference. The o
 		0 
 	\end{bmatrix}
 	V
- \end{equation}
+\end{equation}
 
 
 \begin{figure*}[h]
@@ -212,4 +213,3 @@ Also in this case, we decide not to force the complex poles to real ones, but we
 	\end{subfigure}
 	\caption{Position step response with Kalman filter (second mass enconder only)}
 \end{figure*}
-

@@ -225,8 +225,8 @@ rcontroller.c10.t2.K_v = K(end);
 
 % LQR slow
 
-Q = diag( [10, 0.1, 10, 0.1, 10, 0.1, 50] );
-R = 10;
+Q = diag( [10, 0.1, 10, 0.1, 10, 0.1, 20] );
+R = 40;
 
 A_place = [A_sys, zeros(6,1);[0,0,0,0,1,0,0]];
 B_place = [B_sys;0];
