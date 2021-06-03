@@ -50,6 +50,9 @@
 	\begin{center}\large#1\end{center}
 	\vskip0.5em}}
 %opening
+\usepackage[acronym]{glossaries}
+\newacronym{1-dof}{\textit{1-dof}}{1 Degree of Freedom}
+\newacronym{2-dof}{\textit{2-dof}}{2 Degree of Freedom}
 
 \begin{document}
 
@@ -63,7 +66,7 @@
 		\input{chapters/4_observers}
 	\chapter{Pole placement}
 	  	\input{chapters/5_pole_placement}
-	\chapter{Linear quadratic control}
+	\chapter{Linear-quadratic regulator}
 		\input{chapters/6_LQ}
 	\chapter{\boldmath ${H_{\infty}}$ control}
 		\input{chapters/7_H_inf}
