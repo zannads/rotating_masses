@@ -4,7 +4,7 @@
 % Cenni al experiment_handler
 The set of experiments and data collected in the laboratory requires a systemathic way to organize and manage them. Hence, Matlab functions have been designed: they help us in defining new experiments, which control techinque using, which data types recording and analysing.
 
-\section{Available sensors}
+\section{Available sensors} \label{sec:sensors}
 
 The setup includes three sensors: a potentiometer on the motor shaft and an encoder for each mass.
 
@@ -33,7 +33,7 @@ Ideally, the first passage to obtain the motor position is converting the voltag
 Actually, a variation of the voltage range must be considered: at the ends of the potentiometer sensor, voltage reading is not exactely $\pm 5V$, due to resistance variations from the nominal value. By observing the data collected, the usual maximum and minimum voltages are respectively~$V_3=4.67 \ V$ and~$V_1=-4.88 \ V$.
 
 The sensor is able to detect the position along only one turn, then an incremental position that considers also the number of turns must be computed via software.
-In particular, a Matlab script for post-processing elaboration of data has been written. This is able to recognize the end of a turn and the beginning of the next one; thanks to this, it remembers the number of revolutions and rearranges all the data according to that.
+In particular, a MATLAB script for post-processing elaboration of data has been written. This is able to recognize the end of a turn and the beginning of the next one; thanks to this, it remembers the number of revolutions and rearranges all the data according to that.
 
 Moreover, the gap of~$8 \degree$ can be fitted by interpolating the two values around it. Notice that this procedure works only in case the motor speed is quite constant in time.
 \begin{figure*}[h]
@@ -70,27 +70,29 @@ The~$y$ signal is the processed one by the following Matlab function:
 	persistent buffer;
 	persistent oldy;
 	if isempty(oldu)
-	oldu=0;
-	oldy = 0;
-	buffer = 0;
+		oldu=0;
+		oldy = 0;
+		buffer = 0;
 	end
 	
 	% subtract the very first value of the experiment
 	if u~=0 & oldu==0 
-	oldu=u;
+		oldu=u;
 	end
 	y=u-oldu;
 	
+	% count buffer overflows
 	if ( y - oldy > 33000 )
-	buffer = buffer-1;
+		buffer = buffer-1;
 	elseif ( y - oldy < - 33000 )
-	buffer = buffer+1;
+		buffer = buffer+1;
 	end
 	oldy = y;
 	
+	% add the pulses lost to overflow 
 	y = y + buffer*2^16;
 \end{verbatim}
-This code is able to impose the initial condition of the masses position to~$0$ (notice that the buffer is not reset after an experiment, hence an incorrect value at the motion starting of the following experiment would be given). Moreover, it must be considered that the buffer storage has dimention 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the Matlab function is able to overcome this problem by returning a greater number. The result is the correct relative motion from the beginning of the experiment.
+This code is able to impose the initial condition of the masses position to 0 (is to be noted that the buffer is not reset after an experiment, hence it will result in an incorrect value at the beginning of the motion of the following experiment). Moreover, it must be considered that the buffer storage has dimention 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the MATLAB function is able to overcome this problem by returning a greater number. The result is the correct relative motion from the beginning of the experiment.
 
 \subparagraph{Uncertainty and noise}
 
@@ -108,7 +110,7 @@ Thus, each measurement can be seen as a uniform distribution of probability betw
 
 The speed of the two masses is obtainable by derivating the measument of the encoders. It is done thanks to the \textit{Discrete Derivative} Simulink block, that differentiates two consecutive values with respect to the sampling time:
 \[
-	\dot{\theta_l} = \frac{ \theta_{enc}(t) - \theta_{enc}(t-1)}{T_s}
+	\dot{\theta_1} = \frac{ \theta_{enc}(t) - \theta_{enc}(t-1)}{T_s}
 \]
 Due to the uncertainty of the encoder, the speed derivation is noisy, according to the following:
 \begin{align*}

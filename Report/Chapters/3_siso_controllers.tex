@@ -1,8 +1,8 @@
-\section{1-DOF System}
-We consider as transfer function from voltage to the mass speed:\\
+\section{1-d.o.f. system}
+Consider the transfer function from voltage to the mass speed:\\
 \\
 \[	
-G(s)=
+G_{v, \dot \theta_1}(s)=
 \frac{-5.618*10^{4}}{{s^3+21.45*s^{2}}+1699*s+3.149*10^{4}}
 \]
 \\
@@ -20,7 +20,7 @@ G(s)=
 	\label{fig:G(s)1dof}
 \end{figure*}
 
-As it is possible to notice in figure \ref{fig:G(s)1dof}, there is a couple of complex conjugated poles with low damping coefficient. We decide so to apply a notch filter, thanks to which we are able to delete these poles and substitute them with a couple of complex conjugated poles at the same frequency but with a damping coefficent equal to 0.72. We decide not to alter too much the behavior of the plant not to have a too aggressive control action, for this reason we do not impose real poles or high frequency poles.
+It is possible to notice in figure \ref{fig:G(s)1dof}, that there is a couple of complex conjugated poles with low damping coefficient. The proposed solution is to apply a notch filter, thanks to which it is possible to delete these poles and substitute them with a couple of complex conjugated poles at the same frequency, but with a damping coefficent equal to 0.72. It has been decided not to alter too much the behavior of the plant to avoid too aggressive control actions, for this reason notch poles haven't been imposed as real poles or as high frequency poles.
 
 \begin{figure*}[h]
 	\centering
@@ -37,13 +37,13 @@ As it is possible to notice in figure \ref{fig:G(s)1dof}, there is a couple of c
 \end{figure*}
 
 
-Applying the notch filter represented in figure \ref{fig:Plant G(s)with Notch Filter1}(a), we obtain the plant $G_{tot}$(s) of figure \ref{fig:Plant G(s)with Notch Filter1}(b) that is the system we are going to control.
+Applying the notch filter represented in figure \ref{fig:Plant G(s)with Notch Filter1}(a), the controller now sees the plant $G_{tot}$(s) of figure \ref{fig:Plant G(s)with Notch Filter1}(b).
 
 
 
 \newpage
 \subsection{Speed Control Loop}
-We choose as regulator the PI controller enriched with an anti-windup structure, with which we cancel out the real frequency pole at 19 rad/s. \\
+The selected controller structure is the PI, enriched with an anti-windup structure, that cancels out the real frequency pole at 19 rad/s. \\
 \\
 \[
 R(s)=-k_v
@@ -52,7 +52,7 @@ R(s)=-k_v
 \newline
 Where $k_{v}=\frac{wc_{v}}{G(0)}$.
 \\
- From now on we will use $k_v$ as the parameter set inside of the PI regulator and not to define the real bandwidth of the speed loop, which is indicated by $wc_v$.
+ From now on $k_v$ will be used as the parameter of the PI regulator, while the bandwidth of the speed loop is indicated by $wc_v$.
 \\
 \begin{figure*}[h]
 	\centering
@@ -68,11 +68,11 @@ Where $k_{v}=\frac{wc_{v}}{G(0)}$.
 	\label{fig:Bode and Step PI 10}
 \end{figure*}
 \\
-This closed loop system would lead us to the step response of the figure \ref{fig:Bode and Step PI 10}. 
-Even if this response could be considered acceptable, we have to remember that this is just a simulation and the real system might have a lower phase margin. In order to have a more robust control system, it is so necessary to increase the phase margin by reducing the cutting frequency. 
-\newline After many tests at the laboratory we choose for the best configuration which is obtained by setting $k_v=4.5$. We consider this solution a good trade-off between the settling time and the robustness of the closed loop system.
-We consider one of the worst case scenarios, that is the step from -17 rad/s to 17 rad/s, and then we apply a step of 10 rad/s. The first one lets us to asses the voltage saturation while the second one the transient after an ordinary step.
-We plot them comparing the simulation and the data collected in the laboratory.
+Simulations shows that the closed loop system should have a step response as in figure \ref{fig:Bode and Step PI 10}. 
+Even if this response could be considered acceptable, the simulation may have a higher phase margin than the real system. In order to have a more robust control system, it is necessary to reduce the cutting frequency to increase the phase margin. 
+\newline Many tests in the laboratory have been perfomed before selecting $k_v=4.5$ as the value that fits the best the control purpose. This solution is a good trade-off between the settling time and the robustness of the closed loop system.
+To test it, it has been applied one of the worst case scenarios, that is the step from -17 rad/s to 17 rad/s, and then a smaller step of 10 rad/s. The first one allows to asses the voltage saturation in the worst case, while the second one can be representative of the transient for an ordinary step.
+In figure \cref{fig:PI with 4.5} is shown the comparison between the simulation and the data collected in the laboratory on the real system.
 
 \newpage
 
@@ -94,10 +94,14 @@ We plot them comparing the simulation and the data collected in the laboratory.
 	\label{fig:PI with 4.5}
 \end{figure*}
 
-We plot now a sinesweep experiment thanks to which we are able to evaluate the bandwidth of the closed loop system and a ramp reference with a decreasing slope that lets us test the controllability range, especially for what concerns the low speeds. 
-Analizing both the step and the sinesweep responses, respectively figure \ref{fig:PI with 4.5} and figure \ref{fig:sinesweep_PI_1dof}, we notice that our simulation does not follow exactly the laboratory data. This difference is caused by a not perfect identification of the real system. Indeed, estimating the bandwidth from the sinesweep experiment, we obtain two different crossover frequencies: our simulation around 8 rad/s and the laboratory data around 12 rad/s. We computed this values starting from the theory, for which the attenuation at the cutting frequency is -3dB. Moreover, we cannot neglet the fact we are controlling the speed, which is obtained through a derivation of the position of the encoder and so these bandwidth values are not fully reliable.Furthermore, we suppose that the dominant pole, which we estimated being at 19 rad/s, could lays at lower frequencies and additionally we have a small resonance uncertainty, explaining the difference between the two bandwidths. As regards the dominant pole issue, the difference is mainly highlighted by the step response overshoot, while the resonance uncertainty is observable through the small oscillations at the end of the transient that are not well compensated by the notch filter.
-Another aspect that has to be considered is the presence of very small oscillations, their frequencies are equal to the speed, so we suppose that it depends on a change of the dynamic friction coefficient value along the revolution. As a matter of fact, this undesired behaviour can be neglected, since the amplitude of the above-mentioned oscillations is very small. In the case in which we would like to attenuate them, we should increase the bandwidth of the loop to counteract them on time. By using just a PI this is not possible, because if we increase the cutting frequency, we face significant oscillations, that cannot be accepted. To avoid this behavior, we could just put a low pass prefilter on the reference signal, in this way a possible step on the speed reference would be made smoother and just small oscillations should arise. This solution will be analized with more details in the 2-DOF case, in which these oscillations at the steady state cannot be neglected.
-\newpage
+The \cref{fig:sinesweep_PI_1dof} and \cref{fig:Ramp1dof} shows the response of the closed loop system to a sinesweep, experiment that allows to evaluate the bandwidth of it, and to a ramp reference with a decreasing slope, that permits to asses the controllability range, especially for what concerns the low speeds. \\
+The analysis of both the step and the sinesweep responses, respectively figure \ref{fig:PI with 4.5} and figure \ref{fig:sinesweep_PI_1dof}, it appears that simulations do not follow exactly the data collected in the laboratory. This difference is caused by a non perfect identification of the real system. Indeed, an estimation of the bandwidth from the sinesweep experiment is performed, two different crossover frequencies are obtained: the simulation places it around 8 rad/s and the real system one appears to be around 12 rad/s. This values have been computed starting from the theory, for which the attenuation at the cutting frequency is -3dB.\\ 
+Moreover, it cannot be negleted the fact that this is a speed controller. Speed measurement is obtained through the derivation of the position of the encoder. Thus, these bandwidth values are not fully reliable because of uncertainty in measurement. 
+Furthermore, the dominant pole, which has been estimated at 19 rad/s, could lay at lower frequencies. Some small resonance uncertainty are present, too. This two aspects can explain the difference between the two bandwidths. \\
+As regards the dominant pole issue, the difference is mainly highlighted by the step response overshoot, this behaviour is due to a lower phase margin in the real system than the estimated one. The pole being at lower frequencies can explain the loss phase margin that is not take into account. \\
+Instead, the resonance uncertainty is observable through the small oscillations at the end of the transient that are not well compensated by the notch filter.\\
+Another aspect that has to be considered, it is the presence of very small oscillations at steady state. Their frequencies are equal to the speed, a possible explanation can be a change of the dynamic friction coefficient value along the revolution. As a matter of fact, this undesired behaviour can be neglected, since the amplitude of the above-mentioned oscillations is very small. In case is necessary to attenuate them, the bandwidth of the loop should be increased to counteract them on time. By using just a PI as controller this is not possible, because increasing the cutting frequency results in lower phase margin and significant oscillations to the step response, that cannot be accepted. \\
+A solution to avoid this behavior to steps in the reference signals could be that of placing a low pass pre-filter on the reference signal. In this way a step on the speed reference would result in a smoother reference signal and smaller oscillations will arise. This solution is analized with more details in the 2-d.o.f. case, in which these oscillations at the steady state cannot be neglected.
 \begin{figure*}[h]
 	\centering
 	\includegraphics[scale=0.4]{Sine1dof}
@@ -119,11 +123,11 @@ Another aspect that has to be considered is the presence of very small oscillati
 	\label{fig:Ramp1dof}
 \end{figure*}
 
-Thanks to the ramp experiment, we have verified that our regulator can control the system even at very low speed. This result is very satisfying, because of the wide controllability range, which goes from -17.5 rad/s to -0.3 rad/s and from 0.3 rad/s to 17.5 rad/s.
+Thanks to the ramp experiment, it has been verified that this regulator can control the system even at very low speed. This result is very satisfying, because of the wide controllability range, which goes from -17.5 rad/s to -0.3 rad/s and from 0.3 rad/s to 17.5 rad/s.
 
 \newpage
 \subsection{Position Control Loop}
-To control the position, we decide to use a cascade strategy: the inner loop controls the speed, whereas the outer one the position. For the first loop we use the same PI structure as explained above, while the position is regulated by using a proportional controller. It is important to remark that the cutting frequency of the position and the speed one must be far enough (about one decade) to assure the frequency decoupling of the two loops. As consequence if we maintain the cutting frequency of the speed loop as decided before ($k_v$=4.5 that corresponds to a bandwidth of 12 rad/s, as estimated in the sinesweep in figure \ref{fig:sinesweep_PI_1dof}), a first possible solution is reached by setting the position cutting frequency equal to 1.4 rad/s. This case is represented in the figure \ref{fig:Bode and Step P 1.4}. From these plots we can see that the overall system is very robust but also very slow.
+To control the position, a cascade control strategy is applied: the inner loop controls the speed, whereas the outer one the position. For the first loop it is used the same PI structure as the previous section, while the position is regulated by using a proportional controller. It is important to remark that the cutting frequency of the position and the speed one must be far enough (about one decade) to assure the frequency decoupling of the two loops. As consequence if it is maintained the cutting frequency of the speed loop as decided before ($k_v$=4.5 that corresponds to a bandwidth of 12 rad/s, as estimated in the sinesweep in figure \ref{fig:sinesweep_PI_1dof}), a first possible solution is reached by setting the position cutting frequency equal to 1.4 rad/s. This case is represented in the figure \ref{fig:Bode and Step P 1.4}. From these plots it emerges that the overall system is very robust but also very slow.
 
 \begin{figure*}[h]
 	\centering
@@ -137,7 +141,7 @@ To control the position, we decide to use a cascade strategy: the inner loop con
 	\label{fig:Bode and Step P 1.4}
 \end{figure*}
 
-On the other hand, we can accept even a ratio between the speed cutting frequency and the position one up to 20 \%. In this scenario we can fix the proportional gain in order to have a bandwidth around 3 rad/s, and we can notice that the position loop is not so influenced by the inner one.
+On the other hand, the ratio between the speed cutting frequency and the position one can be pushed up to 20 \%. In this scenario, the proportional gain can be fixed in order to have a bandwidth around 3 rad/s. Despite not having a complete frequency decoupling the position loop is not influenced a lot by the inner one.
 
 
 \begin{figure*}[h]
@@ -155,8 +159,8 @@ On the other hand, we can accept even a ratio between the speed cutting frequenc
 \end{figure*}
 
 Due to the friction, the position reached by the mass is not exactly the reference one. The controller integrates this small error and the control input raises slowly. Because the static friction coefficient is higher than the dynamic one, the load will move only after a few seconds, during which the controller has kept integrating the error asking for an increasing control action.
-Once that the input is enough large to counteract the static friction, the load moves and the friction decreases, making the applied control input stronger than what needed. The result is that the load moves over the reference, generating an error that is even bigger than the original one.
-For the above-mentioned reasons, we use a switch logic that deactivates the integrative action of the inner loop whenever the position error is smaller than a threshold equal to 0.85 degrees. On the other hand, we are not able to reach the reference since we use only the proportional action.
+Once that the input is large enough to counteract the static friction, the load moves and the friction drops, making the applied control input stronger than what needed. The result is that the load moves over the reference, generating an error that is even bigger than the original one.
+For the above-mentioned reasons, a logic switch has been implemented. Its purpose is that of deactivate the integrative action of the inner loop whenever the position error is smaller than a threshold equal to 0.85 degrees. On the other hand, it is not possible to zero error at steady state since only the proportional action is in place.
 
 \begin{figure*}[h]
 	\centering
@@ -165,15 +169,15 @@ For the above-mentioned reasons, we use a switch logic that deactivates the inte
 	\label{fig:sinesweep_pos_1dof}
 \end{figure*}
 
-Also in this case, we use sinewseep experiment to estimate the bandwidth of the closed loop system. We can observe that the simulation and laboratory data are really close and the cutting frequency is around 5.5 rad/s for the simulated system and 4.5 rad/s for the real system. (?????)
+Also in this case, a sinewseep experiment is performed to estimate the bandwidth of the closed loop system. The simulation and laboratory data are really close and the cutting frequency is around 5.5 rad/s for the simulated system and 4.5 rad/s for the real system. (?????)
 
 \newpage
 
-\section{2-DOF System}
-We consider as transfer function from voltage to the second mass speed:\\
+\section{2-d.o.f. system}
+Consider the transfer function from voltage to the second mass speed:\\
 \\
 \[	
-G(s)=
+G_{v,\dot{\theta}_2}(s)=
 \frac{-1.293*10^{8}}{s^5+40.9*s^{4}+4833*s^{3}+1.686*10^{5}*s^{3}+3.327*10^{6}*s+7.355*10^{7}}
 \]
 \\
@@ -192,7 +196,7 @@ G(s)=
 	\label{fig:G(s)2dof}
 \end{figure*}
 
-As it is possible to notice in figure \ref{fig:G(s)2dof}, there is a couple of complex conjugated poles with low damping coefficient. We decide so to apply a notch filter, thanks to which we are able to delete these poles and substitute them with a couple of complex conjugated poles at frequency 100 rad/s and a damping coefficient equal to 0.72. The reason why we decide to postpone the poles frequency instead of using the original one is explain in the speed control loop section.
+As it is possible to notice in figure \ref{fig:G(s)2dof}, there are now two couples of complex conjugated poles with low damping coefficient. A similar solution to the 1-d.o.f. problem has been applied, it is used a notch filter to delete these poles and substitute them with a couple of complex conjugated poles, this time at frequency 100 rad/s and a damping coefficient equal to 0.72. The reason why it has been decided to postpone the poles frequency instead of using the original one is explain in the speed control loop section.
 
 
 \begin{figure*}[h]
@@ -210,11 +214,11 @@ As it is possible to notice in figure \ref{fig:G(s)2dof}, there is a couple of c
 \end{figure*}
 
 
-Applying the notch filter represented in figure \ref{fig:Plant G(s)with Notch Filter2}(a), we obtain the plant $G_{tot}$(s) of figure \ref{fig:Plant G(s)with Notch Filter2}(b) that is the one we are going to control.
+Applying the notch filter represented in figure \ref{fig:Plant G(s)with Notch Filter2}(a), the controller sees the plant $G_{tot}$(s) of figure \ref{fig:Plant G(s)with Notch Filter2}(b).
 
 \newpage 
 \subsection{Speed Control Loop}
-We use a PI-regulator enriched with an anti-wind-up structure; we decided then to cancel out the real pole at 30.6 rad/s.
+The controller structure is the PI, enriched with an anti-wind-up structure; as before, the zero of the PI controller cancels out the real pole at 30.6 rad/s.
 \\
 \[
 R(s)=-k_v
@@ -222,8 +226,8 @@ R(s)=-k_v
 \]
 \\
 
-As noticed in the 1-dof case, there are some periodic oscillations due to a change of the dynamic friction along the revolution of the masses. Right now the amplitude of these disturbances cannot be neglet anymore and we need so to find a solution to attenuate them as much as possible. In order to enhance the disturbance rejection, we impose a $wc_v$ high enough to obtain a large bandiwdth. On the other hand, we cannot set it at high frequencies, otherwise the phase margin would decrease dramatically. We find a good trade-off by imposing $k_v$=5.
-We now compare the simulation with laboratory data. In order to design the right controller, we added a disturbance on both torques (\textit{mass1} and \textit{mass2}) with fixed amplitude at 0.005 and frequency equal to the masses speed.
+As noticed in the 1-dof case, there are some periodic oscillations due to a change of the dynamic friction along the revolution of the masses. Right now the amplitude of these disturbances cannot be neglected anymore and a solution to attenuate them as much as possible needs to be found. In order to enhance the disturbance rejection, a $wc_v$ high enough to obtain a large bandiwdth is required. On the other hand, it is not possible toset it at high frequencies, otherwise the phase margin would decrease dramatically. A good trade-off is imposing $k_v$=5.
+ In order to design the right controller, in the simulation scheme it has been added a disturbance acting on both torques (\textit{mass1} and \textit{mass2}) with fixed amplitude at 0.005 and frequency equal to the masses speed to simulate this change of the dynamic friction during the revolution.
 \begin{figure*}[h]
 	\centering
 	\includegraphics[scale=0.4]{step10_noPF}
@@ -231,7 +235,7 @@ We now compare the simulation with laboratory data. In order to design the right
 	\label{fig:step10_noPF}
 \end{figure*}
 \newline
-This solution is far to be acceptable due to its high oscillations during the transient. To keep large enough the bandwidth, we decide not to anticipate the $wc_v$, but to build a low-pass prefilter on the reference signal with cutting frequency at 7 rad/s. Thanks to this idea, our closed loop system will not be excited by high frequencies and we have two positive effects: no oscillations during the transiet and rejection of the resonances identification uncertainties. Indeed, the amplitudes of the oscillations at steady state are decreased and we consider them acceptable. 
+This solution is far to be acceptable due to its high oscillations during the transient. To keep large enough the bandwidth, it has been decided not to anticipate the $wc_v$, but to build a low-pass prefilter on the reference signal with cutting frequency at 7 rad/s. Thanks to this solution, the closed loop system will not be excited by high frequencies and two other positive effects appear: no oscillations during the transient and rejection of the resonances identification uncertainties. Indeed, the amplitudes of the oscillations at steady state are decreased and now can be consider acceptable. 
 
 \newpage
 \begin{figure*}[h]
@@ -252,7 +256,7 @@ This solution is far to be acceptable due to its high oscillations during the tr
 \label{fig:PI_with_5}
 \end{figure*}
 
-As it is possible to notice in figure \ref{fig:PI_with_5}, the simulation and laboratory data are really close during the transient and the voltage never saturates. This solution is so satisfying. We plot now a sinesweep experiment without applying the prefilter to the closed loop system in order to understand the missmatch between our simulation and the real system in the range of frequency from 1 Hz to 10 Hz.
+As it is possible to notice in figure \ref{fig:PI_with_5}, the simulation and laboratory data are really close during the transient and the voltage never saturates. This solution satisfies the requirements. The \cref{fig:sinesweep_speed_2dof} shows the response to a sinesweep without applying the prefilter to the reference.  This is useful to understand the mismatch between the simulation and the real system in the range of frequency from 1 Hz to 10 Hz.
 
 \begin{figure*}[h]
 	\centering
@@ -261,9 +265,10 @@ As it is possible to notice in figure \ref{fig:PI_with_5}, the simulation and la
 	\label{fig:sinesweep_speed_2dof}
 \end{figure*}
 
-From figure \ref{fig:sinesweep_speed_2dof}, we can observe how the overall frequencial behaviour of the simulation is similar to the real one. The only main difference arises around 75 seconds that corresponds to a frequency around 25 rad/s. At this frequency there is the first resonance peak of our plant and we so suppose that the difference of the two responses could be given by an overestimation of the damping coefficient. As consequence, we did not compensate the whole resonance peak and this is the reason why it is present on the sinesweep experiment.
+From \cref{fig:sinesweep_speed_2dof}, it appears that the overall frequencial behaviour of the simulation is similar to the real one. The main difference arises around 75 seconds that corresponds to a frequency around 25 rad/s. At this frequency there is the first resonance peak of the plant. An explantaion to this different behaviour could be an overestimation of the damping coefficient. As consequence, the whole resonance peak has not been compensated completely and the sinesweep experiment shows it very well.
+(???)
 \par
-As regards the controllability range, we test the system with a ramp with decreasing low speed, as already done for the 1-dof case. We can notice how the presence of small oscillations does not let us control the system at very low speed. For this reason the controllable speed belongs to two possible intervals: from -17 rad/s to -0.5 rad/s and from 0.5 rad/s to 17 rad/s.
+As it has been done for the 1-d.o.f. system, the controllability range is tested with a ramp with decreasing low speed. In this case, the presence of small oscillations prevents the control the system at very low speed. For this reason the controllable speed belongs to two possible intervals: from -17 rad/s to -0.5 rad/s and from 0.5 rad/s to 17 rad/s.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
@@ -282,10 +287,10 @@ As regards the controllability range, we test the system with a ramp with decrea
 \newpage
 \subsection{Position Control Loop}
 
-Following the same reasoning of the 1-dof case, we use a cascade control strategy. We do not want to apply the lowpass prefilter anymore because of the change of the scheme: the reference signal does not enter directly to the speed closed loop. On the other hand, the inner loop without prefiler leads to a very oscillating dynamic. We decide so to reduce the $k_v$ at 4 and we are allowed to do this also because the disturbance due to the dynamic friction does not arise significantly anymore, since we are controlling the position.
-In order to assure the frequency decoupling, we need to keep a low proportional gain of the outer loop. Indeed, we choose $k_p$ equal to 2 because we consider it a good tradeoff between a good settling time and an acceptable phase margin.
+Following the same reasoning of the 1-dof case, a cascade control strategy is used. The low pass filter solution is avoided, because of the change of the scheme: the reference signal does not enter directly to the speed closed loop, but is generated by the outer loop. On the other hand, the inner loop without prefiler leads to a very oscillating dynamic. Thus, the $k_v$ coefficient of the PI controller has been set to 4. Despite decreasing the bandwith and the disturbance rejection, the solution works fine anyway because the disturbance due to the dynamic friction does not arise significantly anymore, since the system is controlled with position reference.
+In order to assure the frequency decoupling, a low proportional gain of the outer loop is needed. Indeed, $k_p$ has been set to 2 because it is a good tradeoff between a good settling time and an acceptable phase margin.
 \newline
-We plot now the laboratory data obtained trough this control startegy, comparing it with the simulation.
+Here it possible to see the comparison between the laboratory data obtained with this control startegy and the simulation.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.48\columnwidth}
@@ -304,9 +309,9 @@ We plot now the laboratory data obtained trough this control startegy, comparing
 	\label{fig:P_2dof}
 \end{figure*}
 
-From the figure \ref{fig:P_2dof}(c), we can observe the presence of two voltage spikes, which do not influence neither the position or the speed of the mass. As done in the 1-DOF position control, we apply a switch control strategy to overcome the static friction issue, by disabling the integrator. We suppose that this switch might be the cause of those spikes, indeed these events arise whenever the switch is activated. 
-It is possible to notice in figure \ref{fig:P_2dof}, the second mass does not reach the position reference due to the above-mentioned switch gate.
-The mismatch between the simulation and the laboratory data is fully negligible, as it is shown through the sinesweep experiment in figure \ref{fig:sinesweep_pos_2dof}.
+From \cref{fig:P_2dof}(c), it can observed the presence of two voltage spikes, which do not influence neither the position or the speed of the mass. As done in the 1-d.o.d position control, a logic switch is inserted in the PI controller to overcome the static friction issue, by disabling the integrator. This switch might be the cause of those spikes, indeed, these events arise whenever the switch is activated. 
+It is possible to notice in \cref{fig:P_2dof}, that the second mass does not reach the position reference due to the above-mentioned switch gate.
+The mismatch between the simulation and the laboratory data is fully negligible, as it is shown through the sinesweep experiment in \cref{fig:sinesweep_pos_2dof}.
 \begin{figure*}[h]
 	\centering
 	\includegraphics[scale=0.4]{sine_P_2dof}
