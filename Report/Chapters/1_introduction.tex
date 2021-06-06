@@ -2,7 +2,7 @@
 \paragraph{Experiments preparation and data collection}
 
 % Cenni al experiment_handler
-The set of experiments and data collected in the laboratory requires a systemathic way to organize and manage them. Hence, Matlab functions have been designed: they help us in defining new experiments, which control techinque using, which data types recording and analysing.
+The set of experiments and data collected in the laboratory requires a systemathic way to organize and manage them. Hence, Matlab functions have been designed: they help us in defining new experiments, which control techinque using, which data types recording and analysing, which Simulink simulation performing.
 
 \section{Available sensors} \label{sec:sensors}
 
@@ -43,7 +43,8 @@ Moreover, the gap of~$8 \degree$ can be fitted by interpolating the two values a
 \end{figure*}
 % figure script potentiometer
 
-Unfortunately it is visible that the sensor data are quite imprecise: the slope of the curve is not continuous. For this reason, real time measurements for motor position and speed are reliable only in its range of functioning.
+Unfortunately it is visible that the sensor data are quite imprecise: the slope of the curve is not continuous. For this reason, real time measurements for motor position and speed are reliable only in its range of functioning; so, potentiometer usage is limited to these goals:
+
 \begin{itemize}
 	\item gray-box model identification (after post-processing);
 	\item initial condition for absolute position control;

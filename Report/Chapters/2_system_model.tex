@@ -19,12 +19,12 @@ The physical model can be described by ordinary differential equations (ODEs), s
 	\end{align}
 \end{subequations}
 
-\textit{Model of the 1-d.o.f. system}
+\textit{Model of the \acrshort{1-dof} system}
 \begin{equation}
 	J_1 \ddot{\theta}_1 + B_1 \dot{\theta}_1 = K_{s_1} ( \theta_l - \theta_1 )
 \end{equation}
 
-\textit{Model of the 2 d.o.f. system}
+\textit{Model of the \acrshort{2-dof} system}
 \begin{subequations}
 	\begin{align}
 		J_1 \ddot{\theta}_1 + B_1 \dot{\theta}_1 &= K_{s_1} ( \theta_l - \theta_1 ) - K_{s_2} ( \theta_1 - \theta_2 ) \\
@@ -271,4 +271,4 @@ Operatively, data experiments have been collected and the estimation of the mode
 
 Identification results are very satisfactory: the precision of the model with respect to the motor position data are between~$70 / 95\%$, while the masses positions precision is about~$75 / 99\%$. The lower values of precision are obtained with low speed experiments.
 
-The identified model has a resonance frequency located in between the nominal and black-box ones, as expected. Moreover, data collected in laboratory are very close to the simulation performed by using this identified model.
+The identified model has a resonance frequency located in between the nominal and black-box ones, as expected. Moreover, data collected in laboratory are very close to the simulation performed by using this identified model, thus, all the controllers are based on this identification.

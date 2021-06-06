@@ -20,7 +20,7 @@ G_{v, \dot \theta_1}(s)=
 	\label{fig:G(s)1dof}
 \end{figure*}
 
-It is possible to notice in figure \ref{fig:G(s)1dof}, that there is a couple of complex conjugated poles with low damping coefficient. The proposed solution is to apply a notch filter, thanks to which it is possible to delete these poles and substitute them with a couple of complex conjugated poles at the same frequency, but with a damping coefficent equal to 0.72. It has been decided not to alter too much the behavior of the plant to avoid too aggressive control actions, for this reason notch poles haven't been imposed as real poles or as high frequency poles.
+It is possible to notice in \cref{fig:G(s)1dof}, that there is a couple of complex conjugated poles with low damping coefficient. The proposed solution is to apply a notch filter, thanks to which it is possible to delete these poles and substitute them with a couple of complex conjugated poles at the same frequency, but with a damping coefficent equal to 0.72. It has been decided not to alter too much the behavior of the plant to avoid too aggressive control actions, for this reason notch poles haven't been imposed as real poles or as high frequency poles.
 
 \begin{figure*}[h]
 	\centering
@@ -37,7 +37,7 @@ It is possible to notice in figure \ref{fig:G(s)1dof}, that there is a couple of
 \end{figure*}
 
 
-Applying the notch filter represented in figure \ref{fig:Plant G(s)with Notch Filter1}(a), the controller now sees the plant $G_{tot}$(s) of figure \ref{fig:Plant G(s)with Notch Filter1}(b).
+Applying the notch filter represented in \cref{fig:Plant G(s)with Notch Filter1}(a), the controller now sees the plant $G_{tot}$(s) of \cref{fig:Plant G(s)with Notch Filter1}(b).
 
 
 
@@ -196,7 +196,7 @@ G_{v,\dot{\theta}_2}(s)=
 	\label{fig:G(s)2dof}
 \end{figure*}
 
-As it is possible to notice in figure \ref{fig:G(s)2dof}, there are now two couples of complex conjugated poles with low damping coefficient. A similar solution to the 1-d.o.f. problem has been applied, it is used a notch filter to delete these poles and substitute them with a couple of complex conjugated poles, this time at frequency 100 rad/s and a damping coefficient equal to 0.72. The reason why it has been decided to postpone the poles frequency instead of using the original one is explain in the speed control loop section.
+As it is possible to notice in \cref{fig:G(s)2dof}, there are now two couples of complex conjugated poles with low damping coefficient. A similar solution to the 1-d.o.f. problem has been applied, it is used a notch filter to delete these poles and substitute them with a couple of complex conjugated poles, this time at frequency 100 rad/s and a damping coefficient equal to 0.72. The reason why it has been decided to postpone the poles frequency instead of using the original one is explain in the speed control loop section.
 
 
 \begin{figure*}[h]
@@ -214,7 +214,7 @@ As it is possible to notice in figure \ref{fig:G(s)2dof}, there are now two coup
 \end{figure*}
 
 
-Applying the notch filter represented in figure \ref{fig:Plant G(s)with Notch Filter2}(a), the controller sees the plant $G_{tot}$(s) of figure \ref{fig:Plant G(s)with Notch Filter2}(b).
+Applying the notch filter represented in \cref{fig:Plant G(s)with Notch Filter2}(a), the controller sees the plant $G_{tot}$(s) of \cref{fig:Plant G(s)with Notch Filter2}(b).
 
 \newpage 
 \subsection{Speed Control Loop}
