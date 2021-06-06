@@ -52,7 +52,7 @@ R(s)=-k_v
 \newline
 Where $k_{v}=\frac{wc_{v}}{G(0)}$.
 \\
- From now on $k_v$ will be used as the parameter of the PI regulator, while the bandwidth of the speed loop is indicated by $wc_v$.
+ From now on $k_v$ will be used as the parameter of the PI regulator, while the bandwidth of the speed loop is indicated by $wc_v$. We try now to simulate the system by imposing $wc_v$= 10 rad/s to understand the behavior of our model.
 \\
 \begin{figure*}[h]
 	\centering
@@ -68,8 +68,8 @@ Where $k_{v}=\frac{wc_{v}}{G(0)}$.
 	\label{fig:Bode and Step PI 10}
 \end{figure*}
 \\
-Simulations shows that the closed loop system should have a step response as in figure \ref{fig:Bode and Step PI 10}. 
-Even if this response could be considered acceptable, the simulation may have a higher phase margin than the real system. In order to have a more robust control system, it is necessary to reduce the cutting frequency to increase the phase margin. 
+Simulation shows that the closed loop system should have a step response as in figure \ref{fig:Bode and Step PI 10}. 
+Even if this response could be considered acceptable, the simulation may have a higher phase margin than the real system. In order to have a more robust control system, it is necessary to reduce the cutting frequency to increase the phase margin. Moreover, this simulation has been done without the saturation of the voltage, which will be considered below.
 \newline Many tests in the laboratory have been perfomed before selecting $k_v=4.5$ as the value that fits the best the control purpose. This solution is a good trade-off between the settling time and the robustness of the closed loop system.
 To test it, it has been applied one of the worst case scenarios, that is the step from -17 rad/s to 17 rad/s, and then a smaller step of 10 rad/s. The first one allows to asses the voltage saturation in the worst case, while the second one can be representative of the transient for an ordinary step.
 In figure \cref{fig:PI with 4.5} is shown the comparison between the simulation and the data collected in the laboratory on the real system.

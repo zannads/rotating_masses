@@ -166,14 +166,14 @@ Moreover, while the characteristic of the encoder, that is a direct measurement 
 In \cref{fig:kf_2dof} it is possible to see how, despite a drift in the potentiometer measurement around the second step, the reconstructed state is more related to the measurement coming from the encoders than that of the potentiometer. This happens because the noise variance of the shaft measurement is 50 times bigger than that of the encoders, making its measurement almost useless. 
 
 \paragraph{Faulty sensor estimation}
-The setup that has been used up to this point has been making use of all  the possible measurements, but after the the analysis of the reconstructed state with the kalman filter there was still a point to be analyzed. What would be the performance and the reliabilty of the system in case the encoder, that is the most rimportnat measurement, doesn't work anymore. \\
+The setup that has been used up to this point has been making use of all  the possible measurements, but after the the analysis of the reconstructed state with the kalman filter there was still a point to be analyzed. What would be the performance and the reliabilty of the system in case the encoder, that is the most important measurement, doesn't work anymore. \\
 This actually happened for real during some laboratory experiment; the encoder from the second mass disconnected from the shaft and couldn't produce any results for some time. \\ 
 Thus, for both systems, different state reconstructors have been developed, always based on Kalman filtering and using different combinations of the available sensors. \\
 The element that change in the design of the different filters are the matrices $C$ and $D_w$. Based on the combination of sensors, different rows of the orignal $C$ and $D_w$ matrices are selected. \\
 From a first analysis, all the possible setups produce an observable system, thus, applying kalman filter with the minimum number of sensor is possible in every configuration. \\
 The results that are produced from these configurations can be summarized in two types. \\ 
 The first can be called encoder based solution, this means that even if the measurement from the potentiometer is available, it is almost automatically discarded in favour of the encoder one. As mentioned in the previous section, this happens because the potentiometer variance is much more bigger then that one of the encoder and Riccati equations produce results that depends mostly on the lowest one. All the solutions where at least one encoder is used, produce this result and generate a state estimator with a time constant very low, allowing to push the control action to high speeds.\\
-On the other hand, the solution that makes use of only the potentiometer, both in 1-d.o.f. and 2-d.o.f, generates a differnet type of filter. When only the potentiometer is used, the system matrices for the output equation (example is based on 2-d.o.f.) becomes 
+On the other hand, the solution that makes use of only the potentiometer, both in 1-d.o.f. and 2-d.o.f, generates a different type of filter. When only the potentiometer is used, the system matrices for the output equation (example is based on 2-d.o.f.) becomes 
 \begin{equation}
 	C = \begin{bmatrix}
 		1 & 0 & 0 & 0 & 0 & 0
