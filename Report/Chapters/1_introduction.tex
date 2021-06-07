@@ -1,28 +1,35 @@
 
+\section{System configuration}
+
+The system consists in a DC~motor that moves one~(\acrshort{1-dof}) or two masses in cascade~(\acrshort{2-dof}). The physical connection between motor and mass (or masses, in case the second one is used), is guaranteed by a torsional spring.
+A voltage amplifier, driven by the DAQ board, gives the input to the system; a maximum value of~$\pm 10 \ V$ can be supplied. The DAQ board is also linked to the available sensors, whose measurements are received and saved by Simulink.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\columnwidth]{system_photo}
+	\caption{System set-up}
+\end{figure}
+
 \paragraph{Experiments preparation and data collection}
 
 % Cenni al experiment_handler
-The set of experiments and data collected in the laboratory requires a systemathic way to organize and manage them. Hence, Matlab functions have been designed: they help us in defining new experiments, which control techinque using, which data types recording and analysing, which Simulink simulation performing.
+The set of experiments and data collected in the laboratory requires a systemathic way to organize and manage them\footnote{Instructions to use files and simulations are written in \textit{readme.txt}, in .zip folder.}. Hence, Matlab functions have been designed: they help us in defining new experiments, which control techinque using, which data types recording and analysing, which Simulink simulation performing.
 
 \section{Available sensors} \label{sec:sensors}
 
 The setup includes three sensors: a potentiometer on the motor shaft and an encoder for each mass.
+\begin{wrapfigure}{r}{0.3\textwidth}
+	\includegraphics[width=0.25\textwidth]{potentiometer_scheme}
+	\caption{Potentiometer electrical scheme}
+\end{wrapfigure}
 
 \paragraph{Potentiometer}
-
-The potentiometer is installed next to the gear, on the load side. It is a single turn~$10 \ k\Omega$ sensor with no physical stops and has an electrical range of 352°; by definition, this sensor provides an absolute position measurement. \\
-\begin{figure*}[h]
-	\centering
-	\includegraphics[width=0.4\columnwidth]{potentiometer_scheme}
-	\caption{Potentiometer electrical scheme}
-\end{figure*}
+The potentiometer is installed next to the gear, on the load side. It is a single turn~$10 \ k\Omega$ sensor with no physical stops and has an electrical range of 352°; by definition, this sensor provides an absolute position measurement.
 % trasformazione volt->rad fallita: non viene letta +-5V ma di meno
 % tolto il modulo, per avere posizione incrementale su più giri
 % interpolazione dei punti mancanti negli 8° di buco
 % osservazione che pendenza della posizione è scorretta (causa tensione imprecisa)
 % impossibilità di usare potenziometro come sensore di posizione/velocità durante il funzionamento, ma solo come posizione iniziale
 % potenziomentro comunque impreciso di per sé
-
 The total output range of the sensor should be ±5 V over the full 352° range.
 Ideally, the first passage to obtain the motor position is converting the voltage measured in radiant:
 \[
@@ -53,10 +60,10 @@ Unfortunately it is visible that the sensor data are quite imprecise: the slope 
 
 \subparagraph{Uncertainty and noise}
 Even when the system is steady, we can see that the motor position measurement oscillates; this is due to an error in voltage measurement performed by the ADC. It is treated as a white-noise, whose variance is determined in Matlab, using data collected in steady condition.
-
 \begin{align*}
 	\Theta_{pot} &\sim \Gamma \bigl{(} 0, 1e-6 \bigr{)}
 \end{align*}
+Speed derived by this measurement would be too noisy (variance is in the order of magniduted of~$1 rad/s$). So, it is impossible to use this variable for control and plots.
 
 \paragraph{Encoder}
 
@@ -64,36 +71,7 @@ The encoder is a digital sensor that reads angular motions. It generates a pulse
 \[
 	\theta_x = \frac{2\pi}{4096} \ y \qquad x={1,2}
 \]
-The~$y$ signal is the processed one by the following Matlab function:
-\begin{verbatim}
-	function y = fcn(u)
-	persistent oldu;
-	persistent buffer;
-	persistent oldy;
-	if isempty(oldu)
-		oldu=0;
-		oldy = 0;
-		buffer = 0;
-	end
-	
-	% subtract the very first value of the experiment
-	if u~=0 & oldu==0 
-		oldu=u;
-	end
-	y=u-oldu;
-	
-	% count buffer overflows
-	if ( y - oldy > 33000 )
-		buffer = buffer-1;
-	elseif ( y - oldy < - 33000 )
-		buffer = buffer+1;
-	end
-	oldy = y;
-	
-	% add the pulses lost to overflow 
-	y = y + buffer*2^16;
-\end{verbatim}
-This code is able to impose the initial condition of the masses position to 0 (is to be noted that the buffer is not reset after an experiment, hence it will result in an incorrect value at the beginning of the motion of the following experiment). Moreover, it must be considered that the buffer storage has dimention 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the MATLAB function is able to overcome this problem by returning a greater number. The result is the correct relative motion from the beginning of the experiment.
+The~$y$ signal is processed by a Matlab function that imposes the initial condition of the masses position to 0 (is to be noted that the buffer is not reset after an experiment, hence it will result in an incorrect value at the beginning of the motion of the following experiment). Moreover, it must be considered that the buffer storage has dimension 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the MATLAB function is able to overcome this problem by returning a greater number. The result is the correct relative motion from the beginning of the experiment.
 
 \subparagraph{Uncertainty and noise}
 

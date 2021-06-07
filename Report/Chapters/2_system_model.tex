@@ -257,8 +257,9 @@ In this way, both module and phase Bode diagrams are very similar to the mathema
 
 Following this approach, it has been observed that the resonance frequency of the identified model is lower that the nominal one, as the damping too.
 Those differences can be immediately seen is the laboratory experiments: in particular, the ones with variable frequency sine wave. \\
-It is important to remember that the speed measurement is noisy (the filter acts at very high frequency), because of the derivation from the encoder data. Hence, obtaining the position, by integrating the speed estimated by this model, would generate a drift that increases in time. \\
+It is important to remember that the speed measurement is noisy (the filter acts at very high frequency), because of the derivation from encoder data. Hence, obtaining the position, by integrating the speed estimated by this model, would generate a drift that increases in time.
 
+Instead, trying to directly estimate~$G_{V,\theta_1}$ is not possible, since the black-box algorithm cannot place the integrator.
 
 \section{Gray-box identification} \label{sec:gray_b_id}
 
@@ -271,4 +272,10 @@ Operatively, data experiments have been collected and the estimation of the mode
 
 Identification results are very satisfactory: the precision of the model with respect to the motor position data are between~$70 / 95\%$, while the masses positions precision is about~$75 / 99\%$. The lower values of precision are obtained with low speed experiments.
 
-The identified model has a resonance frequency located in between the nominal and black-box ones, as expected. Moreover, data collected in laboratory are very close to the simulation performed by using this identified model, thus, all the controllers are based on this identification.
+The identified model has a resonance frequency located in between the nominal and black-box ones, as expected. Moreover, data collected in laboratory are very close to the simulation performed by using this identified model, thus, all the controllers are based on this identification. A confirm of the goodness of the identified model is the open-loop experiment at first mass anti-resonance frequency: in \cref{fig:antiresonance}, it is clear that, while the second mass has big oscillations, the first one is almost motionless. For the first mass, the magnitude should be about~$-20 dB$, indeed the oscillation amplitude is about 10 times smaller than applied voltage, while for the second at the same frequency it is around~$0 dB$, so oscillations amplitude is very close to applied voltage.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\columnwidth]{antiresonance_test}
+	\caption{Sine-wave voltage: anti-resonance frequency}
+	\label{fig:antiresonance}
+\end{figure}

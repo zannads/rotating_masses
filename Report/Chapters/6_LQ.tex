@@ -157,21 +157,12 @@ The additional parameters make the tuning more complicated. Here, a higher weigh
 	R = 2.5
 \end{equation}
 
-In figure~\ref{fig:2dof_LQ_classicKF}, a comparison between simulation and experiment is visible. An improvement with respect to the~\acrshort{1-dof} case exists: no oscillations are present in the transient.
+In figure~\ref{fig:2dof_LQ_classicKF}, a comparison between simulation and experiment is visible. An improvement with respect to the~\acrshort{1-dof} case exists: no oscillations are present in the transient. Also other experiments have been performed in laboratory sessions, where settling time was shorter, but oscillations were not negligible because of a non-optimal tuning of matrices~$Q$ and ~$R$.
 
 \subparagraph{Sensors not available: minimum Kalman Filters}
 
 In this case, separate experiments are shown (figure~\ref{fig:2dof_LQ_minKF}) focusing on single step, so that the transients are more visible. It can be seen that all of them are very similar, meaning that the system is observable by using any of the proposed sensor combinations. \\
-An issue appears by using Kalman Filter with potentiometer only: after a few seconds, an instability occurs and the experiment fails. There is a numerical reason for this, in fact from the mathematical viewpoint the \acrshort{2-dof}~system should be observable also from the potentiometer (checked by \textit{obsv}~Matlab function), but in practice it is not: performing the \textit{SVD} decomposition (result in~\ref{eq:2dof_minKF_pot_svd}), it is clear that at least two eigenvalues are negligible with respect to the dominant one.
-\begin{equation}
-	S = diag
-	\bigl{(}
-	\begin{bmatrix}
-		4037,2 & 876.7 & 34.7 & 5.5 & 1 & 0.6
-	\end{bmatrix}
-	\bigr{)}
-	\label{eq:2dof_minKF_pot_svd}
-\end{equation}
+An issue appears by using Kalman Filter with potentiometer only: after a few seconds, an instability occurs and the experiment fails. There is a numerical reason for this, in fact from the mathematical viewpoint the \acrshort{2-dof}~system should be observable also from the potentiometer (checked by \textit{obsv}~Matlab function), but in practice it is not: as explained in \cref{SVD_explaination}, it is clear that at least two eigenvectors are not linearly independent.
 This means that the only potentiometer is not sufficient for the state reconstruction and, so, for the control of the \acrshort{2-dof}~system.
 
 \begin{figure*}
