@@ -56,13 +56,54 @@
 \newacronym{1-dof}{\textit{1-d.o.f.}}{1 Degree of Freedom}
 \newacronym{2-dof}{\textit{2-d.o.f.}}{2 Degree of Freedom}
 
-% title in preamble, ingrandire il carattere
-\title{Ciao}
-\author{Noi}
-\date{Oggi}
 
 \begin{document}
-	\maketitle
+	
+	% Inizio del Frontespizio
+	
+	\thispagestyle{empty}
+	\enlargethispage{60mm}
+	\begin{center}
+		\Large{\textsc{Politecnico di Milano}}\\
+		%\vspace{5mm}
+		
+		%\vspace{5mm}
+		\large{Automation and Control Engineering}\\
+		\vspace{7mm}
+		\begin{figure}[h]
+			\begin{center}
+				\includegraphics[scale=1]{polimi_logo}
+			\end{center}
+		\end{figure}
+		\vspace{10mm}
+		
+		% titolo della tesi
+		\begin{LARGE}
+			\bf Rotating Masses
+		\end{LARGE}
+		\vspace{60mm}
+		
+		% relatore
+		\begin{flushleft}
+			\begin{tabular}{l l }
+				MaRiRoZa Team: \\
+				\textit{Marata Franceso 10545813} \\
+				\textit{Riboldi Giacomo 10538207} \\
+				\textit{Romagnoli Luca 10520375} \\
+				\textit{Zanutto Dennis 10566985} \\
+			\end{tabular}
+		\end{flushleft}
+		\vspace{15mm}
+		
+		% autore/autori
+		
+		\vspace{43mm}
+		{\large{Academic Year 2020-2021}}
+	\end{center}
+	
+	% Fine del Frontespizio
+	\newpage
+	
 	\tableofcontents
 	\chapter{Problem statement}
 		\input{chapters/1_introduction}
