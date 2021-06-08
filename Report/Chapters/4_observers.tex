@@ -5,7 +5,7 @@ In next chapters, more advanced control techniques will be treated. All of them 
 
 The gray-box models, identified in \cref{sec:gray_b_id}, are sufficiently precise to be used for observers design. The state reconstruction is performed by using motor and masses position signals; poles of the closed-loop observer are placed in a prescribed position: they must be sufficiently far from the imaginary axis so that asymptotic stability is ensured~(even considering poles uncertainty) and, moreover, time settlement of the observer is satisfactorily low.
 
-\paragraph{\acrshort{1-dof} system}
+\paragraph{\acrshort{1-dof}\ system}
 
 In order to construct the observer, matrices A and C are needed~(where C matrix identifies the available signals, paying attention to those sign). In case of \acrshort{1-dof} system:
 
@@ -46,7 +46,7 @@ The initial position of the system, detected by the potentiometer, is subtracted
 In \cref{fig:observer_1dof}, a position control (performed by pole-placement, introduced in next chapter) is reported. It can be seen that the position of motor and first mass are shifted with respect to their measurements because of the initial position; however, position reconstructions perfectly superimpose measurements, as expected.\\
 Concerning the speeds, mass velocity is a bit different from the measured one~(derived by the encoder), while motor speed is noisy because of potentiometer high variance; in any case, small differences on speed are not critical, since speed signals are not significantly weighted in next control techniques.
 
-\paragraph{\acrshort{2-dof} system}
+\paragraph{\acrshort{2-dof}\ system}
 
 Actually, the \acrshort{2-dof} observer structure is very similar to the previous one; matrices dimensions and available signals are different: in this case, in addition to potentiometer and first mass encoder, also the second mass position is available thanks to the last encoder. This means that matrix C has one more row:
 \begin{equation}

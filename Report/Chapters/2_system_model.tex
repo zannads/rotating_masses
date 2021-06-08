@@ -8,23 +8,32 @@ The physical model can be described by ordinary differential equations (ODEs), s
 \end{figure*}
 
 % Equazioni componenti
-\textit{Model of the motor and gear box}
+\noindent \textit{Model of the motor and gear box}
 \begin{subequations}
-	\begin{align}
-		V &= R_m i + L_m \frac{d}{dt}i + k_m \dot{\theta}_m \\
-		\tau_m &= \eta_m k_t i \\
-		\tau_{ml} &= \eta_g K_g \tau_m = \eta_m \eta_g K_g k_t i\\
-		&= -J_m \ddot{\theta}_l - B_m \dot{\theta}_l - K_{s1} ( \theta_l - \theta_1 ) \qquad  \theta_l = \frac {1}{K_g} \theta_m \\
-		\label{fig:model_equations}
-	\end{align}
+	\begin{equation}
+		V = R_m i + L_m \frac{d}{dt}i + k_m \dot{\theta}_m
+	\end{equation}
+	\begin{equation}
+		\tau_m = \eta_m k_t i
+	\end{equation}
+	\begin{equation}
+		\begin{split}
+			\qquad
+			\tau_{ml} &= \eta_g K_g \tau_m = \eta_m \eta_g K_g k_t i \\
+			&= -J_m \ddot{\theta}_l - B_m \dot{\theta}_l - K_{s1} ( \theta_l - \theta_1 )
+			\qquad 
+			\theta_l = \frac {1}{K_g} \theta_m
+		\end{split}
+	\end{equation}
+	\label{fig:model_equations}
 \end{subequations}
 
-\textit{Model of the \acrshort{1-dof} system}
+\noindent \textit{Model of the \acrshort{1-dof}\ system}
 \begin{equation}
 	J_1 \ddot{\theta}_1 + B_1 \dot{\theta}_1 = K_{s_1} ( \theta_l - \theta_1 )
 \end{equation}
 
-\textit{Model of the \acrshort{2-dof} system}
+\noindent \textit{Model of the \acrshort{2-dof}\ system}
 \begin{subequations}
 	\begin{align}
 		J_1 \ddot{\theta}_1 + B_1 \dot{\theta}_1 &= K_{s_1} ( \theta_l - \theta_1 ) - K_{s_2} ( \theta_1 - \theta_2 ) \\
@@ -33,7 +42,7 @@ The physical model can be described by ordinary differential equations (ODEs), s
 \end{subequations}
 
 % Forma di stato
-\textit{State-space representation of the complete 1 d.o.f. system}
+\noindent \textit{State-space representation of the complete \acrshort{1-dof}\ system}
 \begin{equation}
 	\begin{bmatrix}
 		\dot{i} \\
@@ -68,7 +77,7 @@ The physical model can be described by ordinary differential equations (ODEs), s
 	V
 \end{equation}
 
-\textit{State-space representation of the complete 2 d.o.f. system}
+\noindent \textit{State-space representation of the complete \acrshort{2-dof}\ system}
 \begin{equation}
 	\begin{bmatrix}
 		\dot{i} \\
@@ -111,13 +120,13 @@ The physical model can be described by ordinary differential equations (ODEs), s
 	V
 \end{equation}
 
-From this mathematical formulation, it is easy to check (thanks to MATLAB functions  \textit{ctrb} e \textit{obsv}) the controllability by means of the voltage applied to the motor and the system observability.
+From this mathematical formulation, it is easy to check (thanks to Matlab functions  \textit{ctrb} e \textit{obsv}) the controllability by means of the voltage applied to the motor and the system observability.
 The system having just one rotating mass is controllable only in two state variables over five: surely, one of those is the current (directly affected by the input), the other is one among the remaining. On the other hand, the observability matrix~$M_O$ is full rank; however, it must be considered that the current~$i$ dynamics is extremely rapid (the time constant is defined as~$\tau_i = \frac{L_m}{R_m} = 7.56\ 10^{-5} \ s$), then the sampling time~($T_s = 2 ms$) prevents its observation even with a current sensor installed on the motor.
-Similarly to this case, it can be expected that also the 2-d.o.f. system is not fully controllable. \\
+Similarly to this case, it can be expected that also the \acrshort{2-dof}\ system is not fully controllable. \\
 
 Since the current dynamics cannot be verified by experimental data, we have decided to ignore it~(the rest of the model is not significantly affected by that, since its transient is definitely negligible): in the following model, the current statically depends on the input voltage and the electromotive force (back-emf).\\
 % Forma di stato ridotta
-\textit{State-space representation of the reduced 1-d.o.f. system}
+\noindent \textit{State-space representation of the reduced \acrshort{1-dof}\ system}
 \begin{equation}
 	\begin{bmatrix}
 		\dot{\theta}_l \\
@@ -128,7 +137,7 @@ Since the current dynamics cannot be verified by experimental data, we have deci
 	=
 	\begin{bmatrix}
 		0 &1 & 0 & 0 \\
-		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m {K_g}^2}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 \\
+		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m K^2_g}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 \\
 		0 & 0 & 0 & 1 \\
 		\frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}}{J_1} & -\frac{B_1}{J_1}
 	\end{bmatrix}
@@ -148,7 +157,7 @@ Since the current dynamics cannot be verified by experimental data, we have deci
 	V
 \end{equation}
 
-\textit{State-space representation of the reduced 2-d.o.f. system}
+\noindent \textit{State-space representation of the reduced \acrshort{2-dof}\ system}
 \begin{equation}
 	\begin{bmatrix}
 		\dot{\theta}_l \\
@@ -161,7 +170,7 @@ Since the current dynamics cannot be verified by experimental data, we have deci
 	=
 	\begin{bmatrix}
 		0 &1 & 0 & 0 & 0 & 0 \\
-		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m {K_g}^2}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 & 0 & 0 \\
+		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m K^2_g}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 & 0 & 0 \\
 		0 & 0 & 0 & 1 & 0 & 0 \\
 		\frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}+K_{s_2}}{J_1} & -\frac{B_1}{J_1} & \frac{K_{s_2}}{J_1} & 0 \\
 		0 & 0 & 0 & 0 & 0 & 1 \\
@@ -208,54 +217,36 @@ A solution to this problem is to untie our approach from the purely mathematical
 
 \section{Black-box identification}
 
-\textit{Black-box identification with a parametric method of TF in time-domain} \\
+A black-box approach totally loses a connection to the mathematical model and its physical dimensions; on the contrary, it is exclusively based on data collected by experiments in laboratory.
+For this reason, it is reasonable to estimate only the transfer function of our interest (according to the design of the controller of speed, designed later):~$G_{V,\dot{\theta}_1}$ or~$G_{V,\dot{\theta}_2}$, meaning the transfer functions from the voltage (input) and the masses speed.
 
-\par A black-box approach totally loses a connection to the mathematical model and its physical dimensions; on the contrary, it is exclusively based on data collected by experiments in laboratory.
-For this reason, it is reasonable to estimate only the transfer function of our interest (according to the design of the controller of speed, designed later):~$G_{V,\dot{\theta}_1}$ or~$G_{V,\dot{\theta}_2}$, meaning the transfer functions from the voltage (input) and the masses speed. \\
+Masses speeds (generated by the derivation of encoder data) are collected in a set of experiments by using the Matlab functions~\textit{iddata()} e~\textit{merge()}. So, the obtained data are the input of the~\textit{tfest()} function: the obtained output is the identified black-box model.
 
-Masses speeds (generated by the derivation of encoder data) are collected in a set of experiments by using the Matlab functions~\textit{iddata()} e~\textit{merge()}. So, the obtained data are the input of the~\textit{tfest()} function: the obtained output is the identified black-box model. \\
+\paragraph{Order of the transfer function}
 
 Keeping in mind that the transfer function only sees observable and controllable poles, a first method to impose the number of poles in the identification function is looking at the computer results: if the obtained transfer function does not change by adding more poles, then the order of the system has been obtained.
-By this procedure, it has been found a~$3^{rd}$ order transfer function, with 2 positive-real part zeros: in this way, the phase loss at high frequency of the nominal and empirical models coincide. On the other hand, the gain at that frequency is much less inclined.
-
-\begin{figure*}[h]
+By this procedure, it has been found a~$3^{rd}$ order transfer function ($5^{th}$ order for \acrshort{2-dof}\ case), with 2 positive-real part zeros: in this way, the phase loss at high frequency of the nominal and empirical models coincide. On the other hand, the gain at that frequency is much less inclined.
+\begin{figure}[h]
 	\centering
-	\includegraphics[width=\columnwidth]{black_1dof_withZeros}
-	\caption{1-dof system. Transfer functions comparison, with zeros in blackbox}
-\end{figure*}
-\begin{figure*}[h]
-	\centering
-	\begin{subfigure}{\columnwidth}
-%		\includegraphics[width=\columnwidth]{black_2dof_withZeros}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\columnwidth]{black_1dof_comparison}
+		\subcaption{\acrshort{1-dof}\ case}
 	\end{subfigure}
-	\begin{subfigure}{\columnwidth}
-		\includegraphics[width=\columnwidth]{black_1dof_withZeros}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\columnwidth]{black_2dof_comparison}
+		\subcaption{\acrshort{2-dof}\ case}
 	\end{subfigure}
-	\caption{2-dof system. Transfer functions comparison, with zeros in blackbox}
-\end{figure*}
+	\caption{Comparison of black-boxes with and without zeros}
+	\label{fig:black_comparison}
+\end{figure}
 
-To overcome this problem, it has been decided to impose the number of both poles and zeros, to be equal to the transfer function structure computed from the white-box model. Therefore, the 1 dof system has 3 poles and 0 zeros, while the 2 dof system has 5 poles and 0 zeros.
-In addition to the physical model poles, it must be considered the low-pass filter for the speed measurement noise. \\
+To overcome this problem, it has been decided to impose the number of both poles and zeros, to be equal to the transfer function structure computed from the white-box model. Therefore, the \acrshort{1-dof}\ system has 3 poles and 0 zeros, while the \acrshort{2-dof}\ system has 5 poles and 0 zeros.
+In addition to the physical model poles, it must be considered the low-pass filter for the speed measurement noise.  A comparison between identifications with and without zeros is shown in \cref{fig:black_comparison}.
 In this way, both module and phase Bode diagrams are very similar to the mathematical ones at every frequency.
 
-\begin{figure*}[h]
-	\centering
-	\includegraphics[width=\columnwidth]{1dof_g_v_w1}
-	\caption{1-dof system. Transfer functions comparison, no zeros in blackbox}
-\end{figure*}
+\paragraph{Resulting model}
 
-\begin{figure*}[h]
-	\centering
-	\begin{subfigure}{0.45\columnwidth}
-		\includegraphics[width=\textwidth]{2dof_g_v_w1}
-	\end{subfigure}
-	\begin{subfigure}{0.45\columnwidth}
-		\includegraphics[width=\textwidth]{2dof_g_v_w2}
-	\end{subfigure}
-	\caption{2-dof system. Transfer functions comparison, no zeros in blackbox}
-\end{figure*}
-
-Following this approach, it has been observed that the resonance frequency of the identified model is lower that the nominal one, as the damping too.
+Following this approach, it has been observed that the resonance frequency of the identified model is lower that the nominal one, as the damping too (in \cref{fig:allModels_comparison}, nominal models are compared with no-zeros black-boxes).
 Those differences can be immediately seen is the laboratory experiments: in particular, the ones with variable frequency sine wave. \\
 It is important to remember that the speed measurement is noisy (the filter acts at very high frequency), because of the derivation from encoder data. Hence, obtaining the position, by integrating the speed estimated by this model, would generate a drift that increases in time.
 
@@ -263,7 +254,6 @@ Instead, trying to directly estimate~$G_{V,\theta_1}$ is not possible, since the
 
 \section{Gray-box identification} \label{sec:gray_b_id}
 
-\textit{Gray-box identification with a parametric error method of state-space time-domain} \\
 \par The advantage of using a gray-box approach is that it maintains the mathematical model structure and tunes parameters based on experimental data. The starting model is defined on the nominal parameters (as illustrated in Paragraph "Mathematical description"), whose uncertainties are a-prior specified: in this way, the identification can change parameters in a well defined and constrained range, preserving a physical meaning. Specifically, masses parameters (inertia~$J$, friction~$B$) uncertainty is fixed manually~(the datasheet gives experimentally determined values); all the other parameters have an uncertainty range specified according to the reference manuals.
 % table: nominal and identified parameters, uncertainty of param
 % ragionare se controproducente !!!!!
@@ -272,10 +262,33 @@ Operatively, data experiments have been collected and the estimation of the mode
 
 Identification results are very satisfactory: the precision of the model with respect to the motor position data are between~$70 / 95\%$, while the masses positions precision is about~$75 / 99\%$. The lower values of precision are obtained with low speed experiments.
 
-The identified model has a resonance frequency located in between the nominal and black-box ones, as expected. Moreover, data collected in laboratory are very close to the simulation performed by using this identified model, thus, all the controllers are based on this identification. A confirm of the goodness of the identified model is the open-loop experiment at first mass anti-resonance frequency: in \cref{fig:antiresonance}, it is clear that, while the second mass has big oscillations, the first one is almost motionless. For the first mass, the magnitude should be about~$-20 dB$, indeed the oscillation amplitude is about 10 times smaller than applied voltage, while for the second at the same frequency it is around~$0 dB$, so oscillations amplitude is very close to applied voltage.
-\begin{figure}
+The identified model has a resonance frequency located in between the nominal and black-box ones, as expected~(see \cref{fig:allModels_comparison}). Moreover, data collected in laboratory are very close to the simulation performed by using this identified model, thus, all the controllers are based on this identification. A confirm of the goodness of the identified model is the open-loop experiment at first mass anti-resonance frequency: in \cref{fig:antiresonance} it is clear that, while the second mass has big oscillations, the first one is almost motionless. For the first mass, the magnitude should be about~$-20 dB$, indeed the oscillation amplitude is about 10 times smaller than applied voltage, while for the second at the same frequency it is around~$0 dB$, so oscillations amplitude is very close to applied voltage.
+\begin{figure}[h]
 	\centering
-	\includegraphics[width=0.6\columnwidth]{antiresonance_test}
-	\caption{Sine-wave voltage: anti-resonance frequency}
+	\includegraphics[width=0.7\columnwidth]{antiresonance_test}
+	\caption{Open-loop experiment: sine-wave at anti-resonance frequency}
 	\label{fig:antiresonance}
+\end{figure}
+
+\begin{figure}[b]
+	\centering
+	\begin{subfigure}{\columnwidth}
+		\centering
+		\includegraphics[width=0.6\textwidth]{1dof_g_v_w1}
+		\subcaption{\acrshort{1-dof}\ case: $G_{V,\dot\theta_1}$}
+	\end{subfigure}
+	\\
+	\begin{subfigure}{\columnwidth}
+		\centering
+		\includegraphics[width=0.6\textwidth]{2dof_g_v_w1}
+		\subcaption{\acrshort{2-dof}\ case: $G_{V,\dot\theta_1}$ (black-box id.\ not performed)}
+	\end{subfigure}
+	\\
+	\begin{subfigure}{\columnwidth}
+		\centering
+		\includegraphics[width=0.6\textwidth]{2dof_g_v_w2}
+		\subcaption{\acrshort{2-dof}\ case: $G_{V,\dot\theta_2}$}
+	\end{subfigure}
+	\caption{Comparison between nominal model, black-box id.\ and white-box id.}
+	\label{fig:allModels_comparison}
 \end{figure}

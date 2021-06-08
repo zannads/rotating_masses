@@ -1,11 +1,21 @@
 
 \section{System configuration}
 
-The system consists in a DC~motor that moves one~(\acrshort{1-dof}) or two masses in cascade~(\acrshort{2-dof}). The physical connection between motor and mass (or masses, in case the second one is used), is guaranteed by a torsional spring.
-A voltage amplifier, driven by the DAQ board, gives the input to the system; a maximum value of~$\pm 10 \ V$ can be supplied. The DAQ board is also linked to the available sensors, whose measurements are received and saved by Simulink.
+The system consists in a DC~motor that moves one~(\acrshort{1-dof}) or two masses in cascade~(\acrshort{2-dof}). The physical connection between motor and mass (or masses, in case the second one is used), is guaranteed by a torsional spring~(\cref{fig:system_setup}).
+A voltage amplifier, driven by the DAQ board, gives the input to the system; a maximum value of~$\pm 10 \ V$ can be supplied. The DAQ board is also linked to the available sensors, whose measurements are received and saved by Simulink. The complete electric scheme is shown in \cref{fig:wiring}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.6\columnwidth]{system_photo}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{system_photo}
+		\subcaption{Mechanical components set-up}
+		\label{fig:system_setup}
+	\end{subfigure}
+	\begin{subfigure}{0.45\columnwidth}
+		\centering
+		\includegraphics[width=0.7\textwidth]{Wiring}
+		\subcaption{Electic sheme of DAQ, amplifier and sensors}
+		\label{fig:wiring}
+	\end{subfigure}
 	\caption{System set-up}
 \end{figure}
 
@@ -14,13 +24,16 @@ A voltage amplifier, driven by the DAQ board, gives the input to the system; a m
 % Cenni al experiment_handler
 The set of experiments and data collected in the laboratory requires a systemathic way to organize and manage them\footnote{Instructions to use files and simulations are written in \textit{readme.txt}, in .zip folder.}. Hence, Matlab functions have been designed: they help us in defining new experiments, which control techinque using, which data types recording and analysing, which Simulink simulation performing.
 
-\section{Available sensors} \label{sec:sensors}
+\section{Available sensors}
+\label{sec:sensors}
 
-The setup includes three sensors: a potentiometer on the motor shaft and an encoder for each mass.
 \begin{wrapfigure}{r}{0.3\textwidth}
-	\includegraphics[width=0.25\textwidth]{potentiometer_scheme}
+	\centering
+	\includegraphics[width=0.25\columnwidth]{potentiometer_scheme}
 	\caption{Potentiometer electrical scheme}
 \end{wrapfigure}
+
+The setup includes three sensors: a potentiometer on the motor shaft and an encoder for each mass. Connections are in~\cref{fig:wiring}.
 
 \paragraph{Potentiometer}
 The potentiometer is installed next to the gear, on the load side. It is a single turn~$10 \ k\Omega$ sensor with no physical stops and has an electrical range of 352°; by definition, this sensor provides an absolute position measurement.
@@ -45,7 +58,7 @@ In particular, a MATLAB script for post-processing elaboration of data has been 
 Moreover, the gap of~$8 \degree$ can be fitted by interpolating the two values around it. Notice that this procedure works only in case the motor speed is quite constant in time.
 \begin{figure*}[h]
 	\centering
-	\includegraphics[width=\columnwidth]{pote_recover}
+	\includegraphics[width=0.8\columnwidth]{pote_recover}
 	\caption{Potentiometer data post-processing}
 \end{figure*}
 % figure script potentiometer
