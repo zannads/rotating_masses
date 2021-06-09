@@ -20,7 +20,17 @@
 
 \usepackage{pgfplots} 
 \usepackage{booktabs} 
-\usepackage{tabularx} 
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	filecolor=black,      
+	urlcolor=black,
+	linktoc=all,
+	pdftitle={Rotating Masses - group B},
+	pdfpagemode=FullScreen,
+}
+\usepackage{tabularx}
 
 \usepackage{siunitx}
 \usepackage{multicol,lipsum} 
@@ -51,11 +61,9 @@
 		\par\end{center}
 	\begin{center}\large#1\end{center}
 	\vskip0.5em}}
-%opening
 \usepackage[acronym]{glossaries}
-\newacronym{1-dof}{\textit{1-d.o.f.}}{1 Degree of Freedom}
-\newacronym{2-dof}{\textit{2-d.o.f.}}{2 Degree of Freedom}
-
+\newcommand\onedof{\textit{1-d.o.f.}}
+\newcommand\twodof{\textit{2-d.o.f.}}
 
 \begin{document}
 	
@@ -85,19 +93,21 @@
 		
 		% relatore
 		\begin{flushleft}
-			\begin{tabular}{l l }
-				MaRiRoZa Team: \\
-				\textit{Marata Franceso 10545813} \\
-				\textit{Riboldi Giacomo 10538207} \\
-				\textit{Romagnoli Luca 10520375} \\
-				\textit{Zanutto Dennis 10566985} \\
+			MaRiRoZa Team:
+			\newline
+			\newline
+			\begin{tabular}{ll}
+				\textit{Marata Franceso} & 10545813 \\
+				\textit{Riboldi Giacomo} & 10538207 \\
+				\textit{Romagnoli Luca} & 10520375 \\
+				\textit{Zanutto Dennis} & 10566985 \\
 			\end{tabular}
 		\end{flushleft}
 		\vspace{15mm}
 		
 		% autore/autori
 		
-		\vspace{43mm}
+		\vspace{25mm}
 		{\large{Academic Year 2020-2021}}
 	\end{center}
 	

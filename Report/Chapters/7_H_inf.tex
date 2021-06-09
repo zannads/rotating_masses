@@ -1,14 +1,14 @@
-The ${H_{\infty}}$ control technique is an optimization-based approach composed of two main stages. In the first one, we formulate a minimization norm problem of the closed-loop system between specific signals that we will discuss later on. Then, in the second stage, we solve the optimizazion problem based on the \textit{generalized plant}.
+The ${H_{\infty}}$ control technique is an optimization-based approach composed of two main stages. In the first one, we formulate a minimization norm problem of the closed-loop system between specific signals that we will discuss later on. Then, in the second stage, we solve the optimization problem based on the \textit{generalized plant}.
 \newline
 Our aim is to design a \textit{K} to attenuate the influence of $\omega$ on the signals $z$ in the closed-loop system. In particular, the \textit{generalized plant} has two inputs, $\omega$ and $u$, and two outputs, $z$ and $y$:
 \begin{itemize}
-	\item \boldmath$\omega$ represents the exogenous input. In our case, it is composed of several signals as the position reference one and the state and measurement noise. As regards the torque disturbances discussed in the frequency domain chapter, we do not consider them because they become significant only when the masses are rotating at steady state. Indeed, in the position control we neglect this behaviour since the masses are stopped after the transient.
+	\item \boldmath$\omega$ represents the exogenous input. In our case, it is composed of several signals as the position reference one and the state and measurement noise. As regards the torque disturbances discussed in the frequency domain chapter, we do not consider them because they become significant only when the masses are rotating at steady state. Indeed, in the position control we neglect this behavior since the masses are stopped after the transient.
 	\item \boldmath$u$ is the control input and thanks to it we are able to handle the effect of $\omega$ on $z$.
 	\item \boldmath$z$ is the regulated output, which are required to be kept \textit{small}. This signal is so made by the output of the shaping functions, that we will describe later on.
 	\item \boldmath$y$ is the measured output and thanks to it the system is able to obtain the information about the effect of $\omega$.
 \end{itemize}
 
-\section{\acrshort{1-dof}\ system}
+\section{\onedof\ system}
 The system is made by four states and two sensors, that are a potentiometer and an encoder. Their noises are respectively indicated as vectors $n_x$ of dimension 4 and $n_y$ of dimension 2. Indeed, $\omega$ will be of dimension 7:
 
 \begin{equation}
@@ -115,9 +115,9 @@ Starting from this reasoning, we tune the weighting function empirically at the 
  	\label{fig:posH1dof}
  \end{figure*}
 
-Due to a lack of time, the final result is not satisfactory, but we suppose that if we could have applied the solution obtained in the 2-DOF case, in which we spent more time, the result would have been acceptable.
+Due to a lack of time, the final result is not satisfactory, but we suppose that if we could have applied the solution obtained in the \twodof~case, in which we spent more time, the result would have been acceptable.
 \newpage
-\section{\acrshort{2-dof}\ system}
+\section{\twodof\ system}
 In this scenario, the system states are 6 and the sensors are 3, for this reason $\omega$ is composed of 10 signals:
 
 \begin{equation}
@@ -127,7 +127,7 @@ In this scenario, the system states are 6 and the sensors are 3, for this reason
 	\end{bmatrix}
 \end{equation}
 
-Coherently with the 1-DOF case, we build the variances matrices keeping the same values:
+Coherently with the \onedof~case, we build the variances matrices keeping the same values:
 
 \begin{equation}
 	\tilde{Q}=
@@ -182,7 +182,7 @@ The reasoning followed to design these functions is the same written above and t
 	\caption{Weighting functions}
 \end{figure*}
 
-From the plots in figure \ref{fig:posH2dof}, we can notice a significant improvement with respect to the solution of the 1-DOF scenario. Although there are a few oscillations, we can consider this result acceptable. Most likely there exist better solutions, but due to lack of time we did not manage to explore them.
+From the plots in figure \ref{fig:posH2dof}, we can notice a significant improvement with respect to the solution of the \onedof\ scenario. Although there are a few oscillations, we can consider this result acceptable. Most likely there exist better solutions, but due to lack of time we did not manage to explore them.
 
  \begin{figure*}[h]
 	\centering

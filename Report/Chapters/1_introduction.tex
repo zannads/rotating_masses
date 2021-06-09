@@ -1,8 +1,8 @@
 
 \section{System configuration}
 
-The system consists in a DC~motor that moves one~(\acrshort{1-dof}) or two masses in cascade~(\acrshort{2-dof}). The physical connection between motor and mass (or masses, in case the second one is used), is guaranteed by a torsional spring~(\cref{fig:system_setup}).
-A voltage amplifier, driven by the DAQ board, gives the input to the system; a maximum value of~$\pm 10 \ V$ can be supplied. The DAQ board is also linked to the available sensors, whose measurements are received and saved by Simulink. The complete electric scheme is shown in \cref{fig:wiring}
+The system consists in a DC~motor that moves one~(\onedof) or two masses in cascade~(\twodof). The physical connection between motor and mass (or masses, in case the second one is used), is guaranteed by a torsional spring~(\cref{fig:system_setup}).
+A voltage amplifier, driven by the DAQ board, gives the input to the system (a maximum value of~$\pm 10 \ V$ can be supplied). The DAQ board is also linked to the available sensors, whose measurements are received and saved by Simulink. The complete electric scheme is shown in \cref{fig:wiring}
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
@@ -22,7 +22,7 @@ A voltage amplifier, driven by the DAQ board, gives the input to the system; a m
 \paragraph{Experiments preparation and data collection}
 
 % Cenni al experiment_handler
-The set of experiments and data collected in the laboratory requires a systemathic way to organize and manage them\footnote{Instructions to use files and simulations are written in \textit{readme.txt}, in .zip folder.}. Hence, Matlab functions have been designed: they help us in defining new experiments, which control techinque using, which data types recording and analysing, which Simulink simulation performing.
+The set of experiments and data collected in the laboratory requires a systematic way to organize and manage them\footnote{Instructions to use files and simulations are written in \textit{readme.txt}, in .zip folder.}. Hence, Matlab functions have been designed: they help us in defining new experiments, which control technique using, which data types recording and analyzing, which Simulink simulation performing.
 
 \section{Available sensors}
 \label{sec:sensors}
@@ -36,26 +36,26 @@ The set of experiments and data collected in the laboratory requires a systemath
 The setup includes three sensors: a potentiometer on the motor shaft and an encoder for each mass. Connections are in~\cref{fig:wiring}.
 
 \paragraph{Potentiometer}
-The potentiometer is installed next to the gear, on the load side. It is a single turn~$10 \ k\Omega$ sensor with no physical stops and has an electrical range of 352°; by definition, this sensor provides an absolute position measurement.
+The potentiometer is installed next to the gear, on the load side. It is a single turn~$10 \ k\Omega$ sensor with no physical stops and has an electrical range of~$352\degree$; by definition, this sensor provides an absolute position measurement.
 % trasformazione volt->rad fallita: non viene letta +-5V ma di meno
 % tolto il modulo, per avere posizione incrementale su più giri
 % interpolazione dei punti mancanti negli 8° di buco
 % osservazione che pendenza della posizione è scorretta (causa tensione imprecisa)
 % impossibilità di usare potenziometro come sensore di posizione/velocità durante il funzionamento, ma solo come posizione iniziale
 % potenziomentro comunque impreciso di per sé
-The total output range of the sensor should be ±5 V over the full 352° range.
+The total output range of the sensor should be~$\pm 5\ V$ over the full~$352\degree$ range.
 Ideally, the first passage to obtain the motor position is converting the voltage measured in radiant:
 \[
 	\theta_l = \bigl{(} V_{meas} - V_1 \bigr{)} \frac{352 \degree }{V_3 - V_1} \frac{\pi}{180 \degree }
 \]
 
 \subparagraph{Sensor calibration}
-Actually, a variation of the voltage range must be considered: at the ends of the potentiometer sensor, voltage reading is not exactely $\pm 5V$, due to resistance variations from the nominal value. By observing the data collected, the usual maximum and minimum voltages are respectively~$V_3=4.67 \ V$ and~$V_1=-4.88 \ V$.
+Actually, a variation of the voltage range must be considered: at the ends of the potentiometer sensor, voltage reading is not exactly $\pm 5V$ because of the resistance variations from the nominal value. By observing the data collected, the usual maximum and minimum voltages are respectively~$V_3=4.67 \ V$ and~$V_1=-4.88 \ V$.
 
 The sensor is able to detect the position along only one turn, then an incremental position that considers also the number of turns must be computed via software.
 In particular, a MATLAB script for post-processing elaboration of data has been written. This is able to recognize the end of a turn and the beginning of the next one; thanks to this, it remembers the number of revolutions and rearranges all the data according to that.
 
-Moreover, the gap of~$8 \degree$ can be fitted by interpolating the two values around it. Notice that this procedure works only in case the motor speed is quite constant in time.
+Moreover, the gap of~$8 \degree$ can be fitted by interpolating the two values around it. Notice that this procedure only works in case the motor speed is quite constant in time.
 \begin{figure*}[h]
 	\centering
 	\includegraphics[width=0.8\columnwidth]{pote_recover}
@@ -76,7 +76,7 @@ Even when the system is steady, we can see that the motor position measurement o
 \begin{align*}
 	\Theta_{pot} &\sim \Gamma \bigl{(} 0, 1e-6 \bigr{)}
 \end{align*}
-Speed derived by this measurement would be too noisy (variance is in the order of magniduted of~$1 rad/s$). So, it is impossible to use this variable for control and plots.
+Speed derived by this measurement would be too noisy (variance is in the order of magnitude of~$1\ rad/s$). So, it is impossible to use this variable for control and plots.
 
 \paragraph{Encoder}
 
@@ -84,7 +84,7 @@ The encoder is a digital sensor that reads angular motions. It generates a pulse
 \[
 	\theta_x = \frac{2\pi}{4096} \ y \qquad x={1,2}
 \]
-The~$y$ signal is processed by a Matlab function that imposes the initial condition of the masses position to 0 (is to be noted that the buffer is not reset after an experiment, hence it will result in an incorrect value at the beginning of the motion of the following experiment). Moreover, it must be considered that the buffer storage has dimension 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the MATLAB function is able to overcome this problem by returning a greater number. The result is the correct relative motion from the beginning of the experiment.
+The~$y$ signal is processed by a Matlab function that imposes the initial condition of the masses position to 0 (is to be noted that the buffer is not reset after an experiment, hence it will result in an incorrect value at the beginning of the motion of the following experiment). Moreover, it must be considered that the buffer storage has dimension 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the MATLAB function is able to overcome this problem by returning the next correct number. The result is the correct relative motion from the beginning of the experiment.
 
 \subparagraph{Uncertainty and noise}
 
@@ -93,22 +93,26 @@ The digital encoder has a resolution determined by the number of pulses per revo
 	R = \frac{1}{4096}
 \]
 Thus, each measurement can be seen as a uniform distribution of probability between the two adjacent pulses; the distance of the true position from the measured one can be expressed as a Gaussian probability distribution function, whose variance defines the measurement uncertainty:
-\begin{align*}
-	U &= \frac{(2R)^2}{12} \\
-	\Theta_{enc} &\sim \Gamma \bigl{(} 0,\frac{(2R)^2}{12} \bigr{)} = \Gamma \bigl{(} 0, 2e-8 \bigr{)}
-\end{align*}
+\[
+	U = \frac{(2R)^2}{12}
+\]
+\[
+	\Theta_{enc} \sim \Gamma \bigl{(} 0,\frac{(2R)^2}{12} \bigr{)} = \Gamma \bigl{(} 0, 2e-8 \bigr{)}
+\]
 
 \subparagraph{Speed}
 
-The speed of the two masses is obtainable by derivating the measument of the encoders. It is done thanks to the \textit{Discrete Derivative} Simulink block, that differentiates two consecutive values with respect to the sampling time:
+The speed of the two masses is obtainable by derivating the measurement of the encoders. It is done thanks to the \textit{Discrete Derivative} Simulink block, that differentiates two consecutive values with respect to the sampling time:
 \[
 	\dot{\theta_1} = \frac{ \theta_{enc}(t) - \theta_{enc}(t-1)}{T_s}
 \]
 Due to the uncertainty of the encoder, the speed derivation is noisy, according to the following:
-\begin{align*}
-	U &= \frac{2(2R)^2}{12 {T_s}^2 } \\
-	\dot{\Theta}_{enc}	&\sim \Gamma \bigl{(} 0,\frac{(2R)^2}{12 \ {T_s}^2} \bigr{)} + \Gamma \bigl{(} 0,\frac{(2R)^2}{12 \ {T_s}^2} \bigr{)} = \Gamma \bigl{(} 0, 0.001 \bigr{)}
-\end{align*}
+\[
+	U = \frac{2(2R)^2}{12 {T_s}^2 }
+\]
+\[
+	\dot{\Theta}_{enc}	\sim \Gamma \bigl{(} 0,\frac{(2R)^2}{12 \ {T_s}^2} \bigr{)} + \Gamma \bigl{(} 0,\frac{(2R)^2}{12 \ {T_s}^2} \bigr{)} = \Gamma \bigl{(} 0, 0.001 \bigr{)}
+\]
 The uncertainty of the speed is extremely higher that the position one, so a low-pass filter is needed in order to reduce the measurement noise. The cutting frequency of the filter is determined by the higher resonance frequency of the system (shown later), such that the measurement is accurate up to that value:
 \[
 	F_{lp} = \frac{ \omega_f }{ s+\omega_f} \qquad \omega_f=25Hz=157.08 rad/s

@@ -1,5 +1,5 @@
 
-\section{\acrshort{1-dof}\ system}
+\section{\onedof\ system}
 Consider the transfer function from voltage to the mass speed:\\
 \\
 \[	
@@ -99,7 +99,7 @@ As regards the dominant pole issue, the difference is mainly highlighted by the 
 Instead, the resonance uncertainty is observable through the small oscillations at the end of the transient that are not well compensated by the notch filter. \\
 
 Another aspect that has to be considered is the presence of very small oscillations at steady state. Their frequencies are equal to the speed, a possible explanation can be a change of the dynamic friction coefficient value along the revolution. As a matter of fact, this undesired behavior can be neglected, since the amplitude of the above-mentioned oscillations is very small. In case is necessary to attenuate them, the bandwidth of the loop should be increased to counteract them on time. By using just a PI as controller this is not possible, because increasing the cutting frequency results in lower phase margin and significant oscillations to the step response, that cannot be accepted. \\
-To avoid this behavior to steps in the reference signals, a solution could be placing a low-pass pre-filter on the reference signal. In this way, a step on the speed reference would result in a smoother reference signal and smaller oscillations will arise. This solution is analyzed with more details in the \acrshort{2-dof}\ case, where these oscillations at the steady state cannot be neglected.
+To avoid this behavior to steps in the reference signals, a solution could be placing a low-pass pre-filter on the reference signal. In this way, a step on the speed reference would result in a smoother reference signal and smaller oscillations will arise. This solution is analyzed with more details in the \twodof\ case, where these oscillations at the steady state cannot be neglected.
 \begin{figure*}[h]
 	\centering
 	\includegraphics[scale=0.4]{Sine1dof}
@@ -169,7 +169,7 @@ For the above-mentioned reasons, a logic switch has been implemented. Its purpos
 
 Also in this case, a sinewseep experiment is performed to estimate the bandwidth of the closed loop system. The simulation and laboratory data are really close and the cutting frequency is around~$5.5\ rad/s$ for the simulated system and~$4.5\ rad/s$ for the real system.
 
-\section{\acrshort{2-dof}\ system}
+\section{\twodof\ system}
 Consider the transfer function from voltage to the second mass speed:
 \[
 G_{v,\dot{\theta}_2}(s)=
@@ -188,7 +188,7 @@ G_{v,\dot{\theta}_2}(s)=
 	\label{fig:G(s)2dof}
 \end{figure*}
 
-As it is possible to notice in \cref{fig:G(s)2dof}, there are now two couples of complex conjugated poles with low damping coefficient. A similar solution to the \acrshort{1-dof}\ problem has been applied, it is used a notch filter to delete these poles and substitute them with a couple of complex conjugated poles, this time at frequency~$100\ rad/s$ and a damping coefficient equal to~$0.72$. The reason why it has been decided to postpone the poles frequency instead of using the original one is explain in the speed control loop section.
+As it is possible to notice in \cref{fig:G(s)2dof}, there are now two couples of complex conjugated poles with low damping coefficient. A similar solution to the \onedof\ problem has been applied, it is used a notch filter to delete these poles and substitute them with a couple of complex conjugated poles, this time at frequency~$100\ rad/s$ and a damping coefficient equal to~$0.72$. The reason why it has been decided to postpone the poles frequency instead of using the original one is explain in the speed control loop section.
 
 
 \begin{figure*}[h]
@@ -217,7 +217,7 @@ R(s)=-k_v
 \frac{\frac{s}{30.6}+1}{s}
 \]
 
-As noticed in the \acrshort{1-dof}~case, there are some periodic oscillations due to a change of the dynamic friction along the revolution of the masses. Right now the amplitude of these disturbances cannot be neglected anymore and a solution to attenuate them as much as possible needs to be found. In order to enhance the disturbance rejection, a~$w_{c,v}$ high enough to obtain a large bandwidth is required. On the other hand, it is not possible to set it at high frequencies, otherwise the phase margin would decrease dramatically. A good trade-off is imposing~$k_v=5$.
+As noticed in the \onedof~case, there are some periodic oscillations due to a change of the dynamic friction along the revolution of the masses. Right now the amplitude of these disturbances cannot be neglected anymore and a solution to attenuate them as much as possible needs to be found. In order to enhance the disturbance rejection, a~$w_{c,v}$ high enough to obtain a large bandwidth is required. On the other hand, it is not possible to set it at high frequencies, otherwise the phase margin would decrease dramatically. A good trade-off is imposing~$k_v=5$.
  In order to design the right controller, in the simulation scheme it has been added a disturbance acting on both torques (\textit{mass1} and \textit{mass2}) with fixed amplitude at~$0.005$ and frequency equal to the masses speed to simulate this change of the dynamic friction during the revolution.
 \begin{figure*}[h]
 	\centering
@@ -258,7 +258,7 @@ As it is possible to notice in figure \ref{fig:PI_with_5}, the simulation and la
 
 From \cref{fig:sinesweep_speed_2dof}, it appears that the overall frequencial behavior of the simulation is similar to the real one. The main difference arises around 75 seconds that corresponds to a frequency around~$25\ rad/s$. At this frequency there is the first resonance peak of the plant. An explanation to this different behavior could be an overestimation of the damping coefficient. As consequence, the whole resonance peak has not been compensated completely and the sinesweep experiment shows it very well. \\
 
-As it has been done for the \acrshort{1-dof}\ system, the controllability range is tested with a ramp with decreasing low speed. In this case, the presence of small oscillations prevents the control the system at very low speed. For this reason the controllable speed belongs to two possible intervals: from~$-17\ rad/s$ to~$-0.5\ rad/s$ and from~$0.5\ rad/s$ to~$17\ rad/s$.
+As it has been done for the \onedof\ system, the controllability range is tested with a ramp with decreasing low speed. In this case, the presence of small oscillations prevents the control the system at very low speed. For this reason the controllable speed belongs to two possible intervals: from~$-17\ rad/s$ to~$-0.5\ rad/s$ and from~$0.5\ rad/s$ to~$17\ rad/s$.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
@@ -277,7 +277,7 @@ As it has been done for the \acrshort{1-dof}\ system, the controllability range 
 \newpage
 \subsection{Position Control Loop}
 
-Following the same reasoning of the \acrshort{1-dof}~case, a cascade control strategy is used. The low-pass filter solution is avoided, because of the change of the scheme: the reference signal does not enter directly to the speed closed loop, but is generated by the outer loop. On the other hand, the inner loop without pre-filter leads to a very oscillating dynamic. Thus, the~$k_v$ coefficient of the PI controller has been set to~$4$. Despite decreasing the bandwidth and the disturbance rejection, the solution works fine anyway because the disturbance due to the dynamic friction does not arise significantly anymore, since the system is controlled with position reference.
+Following the same reasoning of the \onedof~case, a cascade control strategy is used. The low-pass filter solution is avoided, because of the change of the scheme: the reference signal does not enter directly to the speed closed loop, but is generated by the outer loop. On the other hand, the inner loop without pre-filter leads to a very oscillating dynamic. Thus, the~$k_v$ coefficient of the PI controller has been set to~$4$. Despite decreasing the bandwidth and the disturbance rejection, the solution works fine anyway because the disturbance due to the dynamic friction does not arise significantly anymore, since the system is controlled with position reference.
 In order to assure the frequency decoupling, a low proportional gain of the outer loop is needed. Indeed,~$k_p$ has been set to~$2$ because it is a good trade-off between a good settling time and an acceptable phase margin.
 \newline
 Here it possible to see the comparison between the laboratory data obtained with this control strategy and the simulation.
@@ -299,7 +299,7 @@ Here it possible to see the comparison between the laboratory data obtained with
 	\label{fig:P_2dof}
 \end{figure*}
 
-From \cref{fig:P_2dof}(c), it can observed the presence of two voltage spikes, which do not influence neither the position or the speed of the mass. As done in the \acrshort{1-dof}\ position control, a logic switch is inserted in the PI controller to overcome the static friction issue, by disabling the integrator. This switch might be the cause of those spikes, indeed, these events arise whenever the switch is activated. 
+From \cref{fig:P_2dof}(c), it can observed the presence of two voltage spikes, which do not influence neither the position or the speed of the mass. As done in the \onedof\ position control, a logic switch is inserted in the PI controller to overcome the static friction issue, by disabling the integrator. This switch might be the cause of those spikes, indeed, these events arise whenever the switch is activated. 
 It is possible to notice in \cref{fig:P_2dof}, that the second mass does not reach the position reference due to the above-mentioned switch gate.
 The mismatch between the simulation and the laboratory data is fully negligible, as it is shown through the sinesweep experiment in \cref{fig:sinesweep_pos_2dof}.
 \begin{figure*}[h]

@@ -5,9 +5,9 @@ In next chapters, more advanced control techniques will be treated. All of them 
 
 The gray-box models, identified in \cref{sec:gray_b_id}, are sufficiently precise to be used for observers design. The state reconstruction is performed by using motor and masses position signals; poles of the closed-loop observer are placed in a prescribed position: they must be sufficiently far from the imaginary axis so that asymptotic stability is ensured~(even considering poles uncertainty) and, moreover, time settlement of the observer is satisfactorily low.
 
-\paragraph{\acrshort{1-dof}\ system}
+\paragraph{\onedof\ system}
 
-In order to construct the observer, matrices A and C are needed~(where C matrix identifies the available signals, paying attention to those sign). In case of \acrshort{1-dof} system:
+In order to construct the observer, matrices A and C are needed~(where C matrix identifies the available signals, paying attention to those sign). In case of \onedof\ system:
 
 \begin{equation}
 	A = 
@@ -46,9 +46,9 @@ The initial position of the system, detected by the potentiometer, is subtracted
 In \cref{fig:observer_1dof}, a position control (performed by pole-placement, introduced in next chapter) is reported. It can be seen that the position of motor and first mass are shifted with respect to their measurements because of the initial position; however, position reconstructions perfectly superimpose measurements, as expected.\\
 Concerning the speeds, mass velocity is a bit different from the measured one~(derived by the encoder), while motor speed is noisy because of potentiometer high variance; in any case, small differences on speed are not critical, since speed signals are not significantly weighted in next control techniques.
 
-\paragraph{\acrshort{2-dof}\ system}
+\paragraph{\twodof\ system}
 
-Actually, the \acrshort{2-dof} observer structure is very similar to the previous one; matrices dimensions and available signals are different: in this case, in addition to potentiometer and first mass encoder, also the second mass position is available thanks to the last encoder. This means that matrix C has one more row:
+Actually, the \twodof\ observer structure is very similar to the previous one; matrices dimensions and available signals are different: in this case, in addition to potentiometer and first mass encoder, also the second mass position is available thanks to the last encoder. This means that matrix C has one more row:
 \begin{equation}
 	A = 
 	\begin{bmatrix}
@@ -68,18 +68,18 @@ Actually, the \acrshort{2-dof} observer structure is very similar to the previou
 \label{eqn:2dof_mat_obs}
 \end{equation}
 
-This time, poles have been located in different positions: 2 of them in~$-300 \, rad/s$ and the other 4 in~$-400 \, rad/s$. Also in this case, $\mathit{O}$ matrix of the pair~$(A,C)$ is full rank. As in the~\acrshort{1-dof} case, a comparison between measured and reconstructed signals (figure~\ref{fig:observer_2dof}) shows that positions are very precisely estimated, while speeds are noisy and shifted in time.
+This time, poles have been located in different positions: 2 of them in~$-300 \, rad/s$ and the other 4 in~$-400 \, rad/s$. Also in this case, $\mathit{O}$ matrix of the pair~$(A,C)$ is full rank. As in the~\onedof\ case, a comparison between measured and reconstructed signals (figure~\ref{fig:observer_2dof}) shows that positions are very precisely estimated, while speeds are noisy and shifted in time.
 
 \begin{figure*}
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
 		\includegraphics[width=\textwidth]{observer_1dof}
-		\subcaption{\acrshort{1-dof} case}
+		\subcaption{\onedof case}
 		\label{fig:observer_1dof}
 	\end{subfigure}
 	\begin{subfigure}{0.45\columnwidth}
 		\includegraphics[width=\textwidth]{observer_2dof}
-		\subcaption{\acrshort{2-dof} case}
+		\subcaption{\twodof\ case}
 		\label{fig:observer_2dof}
 	\end{subfigure}
 	\caption{Observer reconstruction compared to available measurements}
@@ -138,7 +138,7 @@ Then,
 \end{equation}
 
 \paragraph{Full sensors use}
-Given the above definition of the problem, the \acrshort{1-dof}. and the \acrshort{2-dof} systems generate similar solutions and make use of the same matrices as in \cref{eqn:1dof_mat_obs} and \cref{eqn:2dof_mat_obs}.
+Given the above definition of the problem, the \onedof. and the \twodof\ systems generate similar solutions and make use of the same matrices as in \cref{eqn:1dof_mat_obs} and \cref{eqn:2dof_mat_obs}.
 The $Q_y$ matrix is defined based on the variances computed at \cref{sec:sensors} and it is kept constant through all the development of this tool. 
 On the other hand, matrix $Q_x$ doesn't depend directly on some physical properties and can be used to tune the filter. 
 This means that by varying the parameters in this matrix, the solutions of the filtering problem change. \\
@@ -158,7 +158,7 @@ The obtained model can simulate much better the position of the masses then that
 	\end{bmatrix} 
 	\label{eqn:b_w_d_w}
 \end{equation}
-For the \acrshort{2-dof} system the matrices have the same values, but their size is extended.\\
+For the \twodof\ system the matrices have the same values, but their size is extended.\\
 The results of \cref{eqn:riccati_kf} and \cref{eqn:kf_gain} place the poles of the filters in positions where the dominant time constants are around $0.02 s$, that is fast enough for our settling time goals. \\
 
 From an analysis of the reconstructed states, it emerges that indeed these are less sensitive to measurement noise then the observers solution. This reflects in improved control signals when state feedback control law are used. \\
@@ -186,7 +186,7 @@ The results that are produced from these configurations can be summarized in two
 
 The first can be called encoder based solution, this means that even if the measurement from the potentiometer is available, it is almost automatically discarded in favor of the encoder one. As mentioned in the previous section, this happens because the potentiometer variance is much more bigger then that one of the encoder and Riccati equations produce results that depends mostly on the lowest one. All the solutions where at least one encoder is used, produce this result and generate a state estimator with a time constant very low, allowing to push the control action to high speeds.\\
 
-On the other hand, the solution that makes use of only the potentiometer, both in \acrshort{1-dof} and \acrshort{2-dof}, generates a different type of filter. When only the potentiometer is used, the system matrices for the output equation (example is based on \acrshort{2-dof}) becomes 
+On the other hand, the solution that makes use of only the potentiometer, both in \onedof\ and \twodof, generates a different type of filter. When only the potentiometer is used, the system matrices for the output equation (example is based on \twodof) becomes 
 \begin{equation}
 	C = \begin{bmatrix}
 		1 & 0 & 0 & 0 & 0 & 0
@@ -199,18 +199,18 @@ The Riccati equation that solves the filtering problem for this system produce m
 
 In order to be able to use also this setup the control action needs to be slowed down, otherwise different controllers should be tuned based on the availability of the sensors and logic switches could select the more appropriate controller.\\
 
-Some tests with a switch that selects the different state re-constructors have been performed. The results are not satisfying. In the \acrshort{1-dof} setup, when the controller passes from the Kalman filter with all the sensors to the one with only the encoder, this isn't a problem and the system keeps following the reference, but when it starts to use the estimation derived only by the potentiometer, it diverges.This diverging behavior is not caused by an unstable mode of the controller, but it is due to a couple of reasons. When the controller is switched the estimation changes instantaneously and so does the control action. When the two estimates are quite closed, like between the classic filter and the one with only the encoder, this sudden change results in a very small step in the voltage applied. Instead, when the estimations differ a lot, this voltage step may be too big and the saturation block limits the control action. This triggers an unstable effect, with the voltage being applied continuously at the two saturation limits. The controller is unable to revert this, trying to apply bigger and bigger control actions to bring the state back to reference, but being limited by the saturation block. To avoid this effect, that couldn't be compensated in an easy way, the observers have been tested one at the time. \\
+Some tests with a switch that selects the different state re-constructors have been performed. The results are not satisfying. In the \onedof\ setup, when the controller passes from the Kalman filter with all the sensors to the one with only the encoder, this isn't a problem and the system keeps following the reference, but when it starts to use the estimation derived only by the potentiometer, it diverges.This diverging behavior is not caused by an unstable mode of the controller, but it is due to a couple of reasons. When the controller is switched the estimation changes instantaneously and so does the control action. When the two estimates are quite closed, like between the classic filter and the one with only the encoder, this sudden change results in a very small step in the voltage applied. Instead, when the estimations differ a lot, this voltage step may be too big and the saturation block limits the control action. This triggers an unstable effect, with the voltage being applied continuously at the two saturation limits. The controller is unable to revert this, trying to apply bigger and bigger control actions to bring the state back to reference, but being limited by the saturation block. To avoid this effect, that couldn't be compensated in an easy way, the observers have been tested one at the time. \\
 
-The results confirm partially the hypothesis, the filters with at least one encoder for the \acrshort{1-dof} and at least 2 sensors for the \acrshort{2-dof}  system works well and can use the fastest controller.\\
-Moreover, the \acrshort{1-dof} system can be controlled estimating the states from only the potentiometer measurement, but with the condition of slowing down the controller.\\
+The results confirm partially the hypothesis, the filters with at least one encoder for the \onedof and at least 2 sensors for the \twodof\ system works well and can use the fastest controller.\\
+Moreover, the \onedof\ system can be controlled estimating the states from only the potentiometer measurement, but with the condition of slowing down the controller.\\
 
-On the other hand, for the \acrshort{2-dof} setup it was not possible to control it using only the potentiometer, despite being able to reconstruct the states using only one of the two encoders.
+On the other hand, for the \twodof\ setup it was not possible to control it using only the potentiometer, despite being able to reconstruct the states using only one of the two encoders.
 In this case the reason is not completely caused by the high variance of the sensor, but it can be found in the observabilty matrix. This is full rank for all the possible combination of used measurements, but this result is obtained numerically on MATLAB. This means that even a small difference in the order of a thousands between the eigenvectors will produce a full rank matrix, so the rank analysis is not completely reliable. \\ 
 
 To grasp this aspect, the following procedure has been followed. The rank of a matrix is the number of linearly independent eigenvectors.
 \label{SVD_explaination}
-Using SVD, it possible to extract the eigenvectors of a matrix. This method is applied to the observabilty matrix of different configurations. The numbers in the eigenvectors of the observability matrix smaller then a thousand can be neglected and therefore they are set to zero. For the setups using only the encoders or more than one sensor the remaining vectors are clearly linearly independent (each couple of vectors has just 2 elements different from zero), while for the \acrshort{2-dof} system using only the potentiometer they appear to be more involved (there are some vectors that have up to 4 elements different from zero), hence they are not perfectly linearly independent.
-Here it is possible to see the result of this analysis for the eigenvectors of the observality matrix of the \acrshort{2-dof} system with only the encoder on the last mass or with only the potentiometer. 
+Using SVD, it possible to extract the eigenvectors of a matrix. This method is applied to the observabilty matrix of different configurations. The numbers in the eigenvectors of the observability matrix smaller then a thousand can be neglected and therefore they are set to zero. For the setups using only the encoders or more than one sensor the remaining vectors are clearly linearly independent (each couple of vectors has just 2 elements different from zero), while for the \twodof\ system using only the potentiometer they appear to be more involved (there are some vectors that have up to 4 elements different from zero), hence they are not perfectly linearly independent.
+Here it is possible to see the result of this analysis for the eigenvectors of the observality matrix of the \twodof\ system with only the encoder on the last mass or with only the potentiometer. 
 \begin{equation}
 	e_{O_{\theta_{2}}}= \begin{bmatrix}
 		0& 0 & 0 & 0 		& -0.708 & -0.706 \\

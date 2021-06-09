@@ -1,8 +1,8 @@
 
 After we have shown a set of possible solutions with the frequency controllers, we provide now an approach in the state-space domain. This is possible thanks to the estimations made through the \textit{greyest} function by Matlab.\\
-As shown in the previous chapter, we have built a full-state observer and Kalman Filters with different input sensor configurations, in order to simulate the reliability of the controller with respect to eventual faults. We will introduce now a pole placement technique taking as input the estimated states coming out from observer or Kalman Filters. Later, we will compare these solutions and we will choose the optimal configuration. The \acrshort{1-dof}\ case will be analyzed at first and then we will study the \acrshort{2-dof}\ one.
+As shown in the previous chapter, we have built a full-state observer and Kalman Filters with different input sensor configurations, in order to simulate the reliability of the controller with respect to eventual faults. We will introduce now a pole placement technique taking as input the estimated states coming out from observer or Kalman Filters. Later, we will compare these solutions and we will choose the optimal configuration. The \onedof\ case will be analyzed at first and then we will study the \twodof\ one.
 
-\section{\acrshort{1-dof}\ system}
+\section{\onedof\ system}
 The estimated states are so $\hat\theta_l$, $\dot{\hat\theta}_l$, $\hat\theta_1$, $\dot{\hat\theta}_1$. 
 A pole placement applied to the only four states of the system is not sufficient to reach the reference; to overcome this problem we decided to apply an integrator. A possible solution is to enlarge the system, adding a state $v(t)$; the resulting enlarged state-space system is the following one:
 \begin{equation}
@@ -44,7 +44,7 @@ As expected it is fully controllable and now we can proceed by using the followi
 \begin{figure*}[h]
 	\centering
 	\includegraphics[width=0.7\textwidth]{pp_1dof}
-	\caption{\acrshort{1-dof}\ block-scheme, with pole placement and state reconstruction}
+	\caption{\onedof\ block-scheme, with pole placement and state reconstruction}
 	\label{fig:1_dof block scheme pp + obs}
 \end{figure*}
 
@@ -98,8 +98,8 @@ We will provide now the comparison between the configurations made by the same p
 As regards the step response, we can notice as the Kalman filter configuration is not as smooth as the observer one. This might be caused by a delay in Kalman Filter state estimation. By the way, both cases are considered acceptable. On the other hand, the Kalman filter brings a significant improvement on the control action, resulting to be less noisy due to the filter robustness against the white noises.
 We are already satisfied by this performance and we do not need to speed it up, however other solutions will be provided later on with LQG.
 
-\section{\acrshort{2-dof}\ system}
-As before, we enlarge the system in order to reach the position reference. The overall enlarged state-space system and the closed control loop scheme are definitely similar to the \acrshort{1-dof}\ case, except for the additional variables~$\theta_2$ and~$\dot\theta_2$:
+\section{\twodof\ system}
+As before, we enlarge the system in order to reach the position reference. The overall enlarged state-space system and the closed control loop scheme are definitely similar to the \onedof\ case, except for the additional variables~$\theta_2$ and~$\dot\theta_2$:
 \begin{equation}
 	\begin{bmatrix}
 		\dot{\theta}_l \\
@@ -144,7 +144,7 @@ As before, we enlarge the system in order to reach the position reference. The o
 \begin{figure*}[h]
 	\centering
 	\includegraphics[width=0.7\textwidth]{pp_2dof}
-	\caption{\acrshort{2-dof}\ block-scheme, with pole placement and state reconstruction}
+	\caption{\twodof\ block-scheme, with pole placement and state reconstruction}
 \end{figure*}
 
 Also in this case, we decide not to force the complex poles to real ones, but we just rise their damping coefficients. Below, it is possible to see where we placed the new poles of the system and the gain vector that lets us do it.

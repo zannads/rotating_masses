@@ -18,9 +18,9 @@ The time horizon is infinite, so the solution~$\bar{P}$ of the \textit{algebraic
 \end{subequations}
 
 The system response, such as settling time and transient shape, highly depends on mutual ratios between values in those matrices, that become design parameters. Many simulations in Simulink allowed us to find a possible trade-off among those parameters, just to perform an acceptable experiment in laboratory and, starting from that, improve performances by tuning.
-As done in pole placement, the system~(both in case~\acrshort{1-dof} and~\acrshort{2-dof}) has been enlarged so that an integrator is able to nullify the steady-state error.
+As done in pole placement, the system~(both in case~\onedof\ and~\twodof) has been enlarged so that an integrator is able to nullify the steady-state error.
 
-\section{\acrshort{1-dof}\ system}
+\section{\onedof\ system}
 
 Similarly to the pole-placement control, the state is enlarged by adding an integrator on the error:
 \begin{equation}
@@ -101,7 +101,7 @@ The control law, hence, depends on both the state~$x(t)$ and the integral variab
 		\subcaption{LQG with switch among different KF}
 		\label{fig:1dof_LQ_KF_switch}
 	\end{subfigure}
-	\caption{LQG with different sensors available, \acrshort{1-dof}\ case}
+	\caption{LQG with different sensors available, \onedof\ case}
 \end{figure*}
 
 \paragraph{Sensors not available: minimum Kalman Filters}
@@ -112,13 +112,13 @@ Now we consider the case of missing signals, possibly due to sensor faults or in
 \begin{figure*}
 	\centering
 	\includegraphics[width=0.7\textwidth]{KF_state_feedback}
-	\caption{State measurement not available: estimated state feedback, \acrshort{1-dof} case}
+	\caption{State measurement not available: estimated state feedback, \onedof\ case}
 	\label{fig:KF_state_feedback}
 \end{figure*}
 
 In order to speed up the laboratory experience, a long experiment that switches among the different combinations of available sensors has been performed; this simulates a real-time fault detection and, accordingly, commutation to a congruous configuration of the reconstructor.
 
-In the~\acrshort{1-dof} case, actually, there are three different situations: all sensors available (i.e.~potentiometer and first mass encoder), encoder only~($\theta_l$), potentiometer only~($\theta_1$). Unfortunately, this last Kalman Filter is very slow because of the potentiometer noise, hence an \textit{ad hoc} slower controller must be designed~(settling time~4~s, comparable with the Kalman time response):
+In the~\onedof\ case, actually, there are three different situations: all sensors available (i.e.~potentiometer and first mass encoder), encoder only~($\theta_l$), potentiometer only~($\theta_1$). Unfortunately, this last Kalman Filter is very slow because of the potentiometer noise, hence an \textit{ad hoc} slower controller must be designed~(settling time~4~s, comparable with the Kalman time response):
 \[
 	Q =
 	\begin{bmatrix}
@@ -159,7 +159,7 @@ $
 
 The long switching experiment, in~\cref{fig:1dof_LQ_KF_switch}, shows the other two possible situations: in the first~$18\ s$ all position sensors are available, then only the encoder is available.
 
-\section{\acrshort{2-dof} system}
+\section{\twodof\ system}
 
 In this case, the error is computed on the second mass position, then the enlarged system is formed by
 \begin{equation}
@@ -217,14 +217,14 @@ The resulting controller is:
 	\label{eq:2dof_LQ_fastK}
 \end{equation}
 
-In~\cref{fig:2dof_LQ_classicKF}, a comparison between simulation and experiment is visible. An improvement with respect to the~\acrshort{1-dof} case exists: no oscillations are present in the transient. Also other experiments have been performed in laboratory sessions, where settling time was shorter, but oscillations were not negligible because of a non-optimal tuning of matrices~$Q$ and ~$R$.
+In~\cref{fig:2dof_LQ_classicKF}, a comparison between simulation and experiment is visible. An improvement with respect to the~\onedof\ case exists: no oscillations are present in the transient. Also other experiments have been performed in laboratory sessions, where settling time was shorter, but oscillations were not negligible because of a non-optimal tuning of matrices~$Q$ and ~$R$.
 
 \paragraph{Sensors not available: minimum Kalman Filters}
 
 In this case, separate experiments are shown (\cref{fig:2dof_LQ_minKF}) focusing on single step, so that the transients are more visible. It can be seen that all of them are very similar, meaning that the system is observable by using any of the proposed sensor combinations.
 
-An issue appears by using Kalman Filter with potentiometer only: after a few seconds, an instability occurs and the experiment fails. There is a numerical reason for this, in fact from the mathematical viewpoint the \acrshort{2-dof}~system should be observable also from the potentiometer (checked by \textit{obsv}~Matlab function), but in practice it is not: as explained in \cref{SVD_explaination}, it is clear that at least two eigenvectors are not linearly independent.
-This means that the only potentiometer is not sufficient for the state reconstruction and, so, for the control of the \acrshort{2-dof}~system.
+An issue appears by using Kalman Filter with potentiometer only: after a few seconds, an instability occurs and the experiment fails. There is a numerical reason for this, in fact from the mathematical viewpoint the \twodof~system should be observable also from the potentiometer (checked by \textit{obsv}~Matlab function), but in practice it is not: as explained in \cref{SVD_explaination}, it is clear that at least two eigenvectors are not linearly independent.
+This means that the only potentiometer is not sufficient for the state reconstruction and, so, for the control of the \twodof~system.
 
 \begin{figure*}
 	\centering
@@ -238,7 +238,7 @@ This means that the only potentiometer is not sufficient for the state reconstru
 		\subcaption{LQG with all measurements, detail of a step}
 		\label{fig:2dof_LQ_classicKF_focus}
 	\end{subfigure}
-	\caption{LQG with all sensors available, \acrshort{2-dof} case}
+	\caption{LQG with all sensors available, \twodof\ case}
 	\vspace{1cm}
 	\begin{subfigure}{0.45\columnwidth}
 		\includegraphics[width=\textwidth]{2dof_LQ_minKF_enc1+enc2}
@@ -261,6 +261,6 @@ This means that the only potentiometer is not sufficient for the state reconstru
 		\subcaption{LQG with potentiometer and second encoder}
 		\label{fig:2dof_LQ_minKF_pot+enc2}
 	\end{subfigure}
-	\caption{LQG with some sensors unavailable, \acrshort{2-dof}\ case}
+	\caption{LQG with some sensors unavailable, \twodof\ case}
 	\label{fig:2dof_LQ_minKF}
 \end{figure*}
