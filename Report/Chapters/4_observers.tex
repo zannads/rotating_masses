@@ -41,7 +41,7 @@ and its estimation error dynamics is asymptotically stable, as pole placement pr
 
 The necessary and sufficient condition to guarantee observer design and asymptotic stability is that pair~$(A,C)$ is observable. In this case, the rank of observability matrix is 4~(as the order of the system). \\
 
-The initial position of the system, detected by the potentiometer, is subtracted to all position readings~(motor, first mass and, if connected, second mass); this causes a shift in state reconstruction that will never be recovered. Actually, this does not represent a problem since this kind of observer is only used for pole-placement controllers: as shown later, this will automatically bring the system to the correct reference, i.e.\ in the middle of potentiometer electrical range, thanks to an integral action.
+The initial position of the system, detected by the potentiometer, is subtracted to all position readings~(motor, first mass and, if connected, second mass); this causes a shift in state reconstruction that will never be recovered. Actually, this does not represent a problem since this kind of observer is only used for pole-placement controllers: as shown later, this will automatically bring the system to the correct reference thanks to an integral action.\footnote{Just for graphical reasons, reconstructed and real states are superimposed by adding again the initial condition to~$\hat x$.}
 
 In \cref{fig:observer_1dof}, a position control (performed by pole-placement, introduced in next chapter) is reported. It can be seen that the position of motor and first mass are shifted with respect to their measurements because of the initial position; however, position reconstructions perfectly superimpose measurements, as expected.\\
 Concerning the speeds, mass velocity is a bit different from the measured one~(derived by the encoder), while motor speed is noisy because of potentiometer high variance; in any case, small differences on speed are not critical, since speed signals are not significantly weighted in next control techniques.
@@ -87,7 +87,7 @@ This time, poles have been located in different positions: 2 of them in~$-300 \,
 
 \section{Kalman filter}
 
-The state reconstruction based on Luenberg observer works fine in abscence of any disturbance. Unfortunately, as mentioned in \cref{sec:sensors}, sensors produce signals at each sampling time that can be considered as stochastic variables. These variables have a variance that depends on the intrinsical characteristic of the sensors. The solution to represent this kind of behaviour, consist in separating the measurement signal $y(t)$ in a component deriving from the states, that can be considered the real value, and a component due to a white noise with a given covariance.  \\
+The state reconstruction based on Luenberg observer works fine in absence of any disturbance. Unfortunately, as mentioned in \cref{sec:sensors}, sensors produce signals at each sampling time that can be considered as stochastic variables. These variables have a variance that depends on the intrinsic characteristic of the sensors. The solution to represent this kind of behavior, consist in separating the measurement signal $y(t)$ in a component deriving from the states, that can be considered the real value, and a component due to a white noise with a given covariance.  \\
 
 With a mathematical description 
 
@@ -111,8 +111,8 @@ which is the steady state variance of the reconstruction error $ x-\hat x$.\\
 
 Although the original estimation problem didn't take in account any measured input $u$, in presence of it, it is possible to slightly modify the equations for the estimation. 
 The estimated state dynamics is a stable and causal LTI system, with equation as \cref{eqn:est_state_dyn}. \\
-The $L$ gain is the result of the filtering problem, for the generalized plant, without input $u$. \\
-To obtain it, exogneous input $w$, that is any zero-mean unit-intensity white process such that
+The $L$ gain is the result of the filtering problem, for the generalized plant, without input $u$.
+To obtain it, exogenous input $w$, that is any zero-mean unit-intensity white process such that
 \begin{equation}
 	\begin{bmatrix}
 		n_x(t) \\
@@ -159,7 +159,7 @@ The obtained model can simulate much better the position of the masses then that
 	\label{eqn:b_w_d_w}
 \end{equation}
 For the \twodof\ system the matrices have the same values, but their size is extended.\\
-The results of \cref{eqn:riccati_kf} and \cref{eqn:kf_gain} place the poles of the filters in positions where the dominant time constants are around $0.02 s$, that is fast enough for our settling time goals. \\
+The results of \cref{eqn:riccati_kf} and \cref{eqn:kf_gain} place the poles of the filters in positions where the dominant time constants are around $0.02\ s$, that is fast enough for our settling time goals. \\
 
 From an analysis of the reconstructed states, it emerges that indeed these are less sensitive to measurement noise then the observers solution. This reflects in improved control signals when state feedback control law are used. \\
 
@@ -184,7 +184,7 @@ From a first analysis, all the possible setups produce an observable system, thu
 
 The results that are produced from these configurations can be summarized in two types. \\ 
 
-The first can be called encoder based solution, this means that even if the measurement from the potentiometer is available, it is almost automatically discarded in favor of the encoder one. As mentioned in the previous section, this happens because the potentiometer variance is much more bigger then that one of the encoder and Riccati equations produce results that depends mostly on the lowest one. All the solutions where at least one encoder is used, produce this result and generate a state estimator with a time constant very low, allowing to push the control action to high speeds.\\
+The first can be called encoder based solution, this means that even if the measurement from the potentiometer is available, it is almost automatically discarded in favor of the encoder one. As previously mentioned, this happens because the potentiometer variance is much more bigger then that one of the encoder and Riccati equations produce results that depends mostly on the lowest one. All the solutions where at least one encoder is used, produce this result and generate a state estimator with a time constant very low, allowing to push the control action to high speeds.\\
 
 On the other hand, the solution that makes use of only the potentiometer, both in \onedof\ and \twodof, generates a different type of filter. When only the potentiometer is used, the system matrices for the output equation (example is based on \twodof) becomes 
 \begin{equation}
@@ -195,13 +195,13 @@ On the other hand, the solution that makes use of only the potentiometer, both i
 		0 & 0 & 0 & 0 & 0 & 0 & 1e-6 & 0 & 0 \\
 	\end{bmatrix} 
 \end{equation}
-The Riccati equation that solves the filtering problem for this system produce much slower re-constructors. The time constant of the produced filter is around 0.8 seconds. Changing the parameters in the matrix $Q_x$ allows to steer a little bit the position of the poles of the estimator, but it can't move a lot the time constant of the main dynamic, mainly its damping. Indeed, the matrix $B_w$ at \ref{eqn:b_w_d_w} has been selected with those values because it was the one generating the less oscillatory response of the filter for this setup and a fast enough estimation for the other ones.\\
+The Riccati equation that solves the filtering problem for this system produce much slower re-constructors. The time constant of the produced filter is around~$0.8\ s$. Changing the parameters in the matrix $Q_x$ allows to steer a little bit the position of the poles of the estimator, but it can't move a lot the time constant of the main dynamic, mainly its damping. Indeed, the matrix $B_w$ at \ref{eqn:b_w_d_w} has been selected with those values because it was the one generating the less oscillatory response of the filter for this setup and a fast enough estimation for the other ones.\\
 
 In order to be able to use also this setup the control action needs to be slowed down, otherwise different controllers should be tuned based on the availability of the sensors and logic switches could select the more appropriate controller.\\
 
-Some tests with a switch that selects the different state re-constructors have been performed. The results are not satisfying. In the \onedof\ setup, when the controller passes from the Kalman filter with all the sensors to the one with only the encoder, this isn't a problem and the system keeps following the reference, but when it starts to use the estimation derived only by the potentiometer, it diverges.This diverging behavior is not caused by an unstable mode of the controller, but it is due to a couple of reasons. When the controller is switched the estimation changes instantaneously and so does the control action. When the two estimates are quite closed, like between the classic filter and the one with only the encoder, this sudden change results in a very small step in the voltage applied. Instead, when the estimations differ a lot, this voltage step may be too big and the saturation block limits the control action. This triggers an unstable effect, with the voltage being applied continuously at the two saturation limits. The controller is unable to revert this, trying to apply bigger and bigger control actions to bring the state back to reference, but being limited by the saturation block. To avoid this effect, that couldn't be compensated in an easy way, the observers have been tested one at the time. \\
+Some tests with a switch that selects the different state re-constructors have been performed. The results are not satisfying. In the \onedof\ setup, when the controller passes from the Kalman filter with all the sensors to the one with only the encoder, this isn't a problem and the system keeps following the reference, but when it starts to use the estimation derived only by the potentiometer, it diverges. This diverging behavior is not caused by an unstable mode of the controller, but it is due to a couple of reasons. When the controller is switched the estimation changes instantaneously and so does the control action. When the two estimates are quite closed, like between the classic filter and the one with only the encoder, this sudden change results in a very small step in the voltage applied. Instead, when the estimations differ a lot, this voltage step may be too big and the saturation block limits the control action. This triggers an unstable effect, with the voltage being applied continuously at the two saturation limits. The controller is unable to revert this, trying to apply bigger and bigger control actions to bring the state back to reference, but being limited by the saturation block. To avoid this effect, that couldn't be compensated in an easy way, the observers have been tested one at the time. \\
 
-The results confirm partially the hypothesis, the filters with at least one encoder for the \onedof and at least 2 sensors for the \twodof\ system works well and can use the fastest controller.\\
+The results confirm partially the hypothesis, the filters with at least one encoder for the \onedof\ and at least~2 sensors for the \twodof\ system works well and can use the fastest controller.\\
 Moreover, the \onedof\ system can be controlled estimating the states from only the potentiometer measurement, but with the condition of slowing down the controller.\\
 
 On the other hand, for the \twodof\ setup it was not possible to control it using only the potentiometer, despite being able to reconstruct the states using only one of the two encoders.
