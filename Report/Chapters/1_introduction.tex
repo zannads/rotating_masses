@@ -22,7 +22,7 @@ A voltage amplifier, driven by the DAQ board, gives the input to the system (a m
 \paragraph{Experiments preparation and data collection}
 
 % Cenni al experiment_handler
-The set of experiments and data collected in the laboratory requires a systematic way to organize and manage them\footnote{Instructions to use files and simulations are written in \textit{readme.txt}, in .zip folder.}. Hence, Matlab functions have been designed: they help us in defining new experiments, which control technique using, which data types recording and analyzing, which Simulink simulation performing.
+The set of experiments and data collected in the laboratory requires a systematic way to organize and manage them\footnote{Instructions to use files and simulations are written in \textit{Appendix.pdf}, in .zip folder.}. Hence, Matlab functions have been designed: they help us in defining new experiments, which control technique using, which data types recording and analyzing, which Simulink simulation performing.
 
 \section{Available sensors}
 \label{sec:sensors}
@@ -72,7 +72,7 @@ Unfortunately it is visible that the sensor data are quite imprecise: the slope 
 \end{itemize}
 
 \subparagraph{Uncertainty and noise}
-Even when the system is steady, we can see that the motor position measurement oscillates; this is due to an error in voltage measurement performed by the ADC. It is treated as a white-noise, whose variance is determined in Matlab, using data collected in steady condition.
+Even when the system is steady, it is possible to see that the motor position measurement oscillates; this is due to an error in voltage measurement performed by the ADC. It is treated as a white-noise, whose variance is determined in Matlab, using data collected in steady condition.
 \begin{align*}
 	\Theta_{pot} &\sim \Gamma \bigl{(} 0, 1e-6 \bigr{)}
 \end{align*}
@@ -84,7 +84,7 @@ The encoder is a digital sensor that reads angular motions. It generates a pulse
 \[
 	\theta_x = \frac{2\pi}{4096} \ y \qquad x={1,2}
 \]
-The~$y$ signal is processed by a Matlab function that imposes the initial condition of the masses position to 0 (is to be noted that the buffer is not reset after an experiment, hence it will result in an incorrect value at the beginning of the motion of the following experiment). Moreover, it must be considered that the buffer storage has dimension 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the MATLAB function is able to overcome this problem by returning the next correct number. The result is the correct relative motion from the beginning of the experiment.
+The~$y$ signal is processed by a Matlab function that imposes the initial condition of the masses position to 0 (is to be noted that the buffer is not reset after an experiment, hence it will result in an incorrect value at the beginning of the motion of the following experiment). Moreover, it must be considered that the buffer storage has dimension 16 bits, with values between $-32.768$ and $32.767$. Once a limit of the buffer is reached, an overflow occurs and the MATLAB function is able to overcome this problem by returning the next correct number. The result is the relative motion from the beginning of the experiment.
 
 \subparagraph{Uncertainty and noise}
 
@@ -102,7 +102,7 @@ Thus, each measurement can be seen as a uniform distribution of probability betw
 
 \subparagraph{Speed}
 
-The speed of the two masses is obtainable by derivating the measurement of the encoders. It is done thanks to the \textit{Discrete Derivative} Simulink block, that differentiates two consecutive values with respect to the sampling time:
+The speed of the two masses is obtainable by deriving the measurement of the encoders. It is done thanks to the \textit{Discrete Derivative} Simulink block, that differentiates two consecutive values with respect to the sampling time:
 \[
 	\dot{\theta_1} = \frac{ \theta_{enc}(t) - \theta_{enc}(t-1)}{T_s}
 \]

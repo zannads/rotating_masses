@@ -1,46 +1,36 @@
 
-After we have shown a set of possible solutions with the frequency controllers, we provide now an approach in the state-space domain. This is possible thanks to the estimations made through the \textit{greyest} function by Matlab.\\
-As shown in the previous chapter, we have built a full-state observer and Kalman Filters with different input sensor configurations, in order to simulate the reliability of the controller with respect to eventual faults. We will introduce now a pole placement technique taking as input the estimated states coming out from observer or Kalman Filters. Later, we will compare these solutions and we will choose the optimal configuration. The \onedof\ case will be analyzed at first and then we will study the \twodof\ one.
+After a set of possible solutions with the frequency controllers have been proposed, now an approach in the state-space domain is provided. This is possible thanks to the estimations made through the \textit{greyest} function by MATLAB.\\
+As shown in the previous chapter, a full-state observer and Kalman Filters are built. The first technique introduced is the pole placement. This takes as input the estimated states coming out from the observer or Kalman filter.
 
 \section{\onedof\ system}
-The estimated states are so $\hat\theta_l$, $\dot{\hat\theta}_l$, $\hat\theta_1$, $\dot{\hat\theta}_1$. 
-A pole placement applied to the only four states of the system is not sufficient to reach the reference; to overcome this problem we decided to apply an integrator. A possible solution is to enlarge the system, adding a state $v(t)$; the resulting enlarged state-space system is the following one:
-\begin{equation}
-	\begin{bmatrix}
-		\dot\theta_l \\
-		\ddot\theta_l \\
-		\dot\theta_1 \\
-		\ddot\theta_1 \\
+The estimated states are $\hat\theta_l$, $\dot{\hat\theta}_l$, $\hat\theta_1$, $\dot{\hat\theta}_1$. 
+A pole placement applied to the only four states of the system is not sufficient to reach the reference; to overcome this problem an integrator has been inserted in the loop. A possible solution is to enlarge the system, adding a state $v(t)$; the resulting enlarged state-space system is:
+\begin{center}
+	$\begin{bmatrix}
+		\dot{x} \\
 		\dot{v}
 	\end{bmatrix}
 	=
 	\begin{bmatrix}
-		0 &1 & 0 & 0 & 0 \\
-		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m K^2_g}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 & 0 \\
-		0 & 0 & 0 & 1 & 0 \\
-		\frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}}{J_1} & -\frac{B_1}{J_1} & 0 \\
-		0 & 0 & 1 & 0 & 0 
+		A_{sys} & 0 \\
+		-C_{back} & 0
 	\end{bmatrix}
 	\begin{bmatrix}
-		\theta_l \\
-		\dot\theta_l \\
-		\theta_1 \\
-		\dot\theta_1 \\
+		x \\
 		v
 	\end{bmatrix}
 	+
 	\begin{bmatrix}
-		0 \\
-		\frac{\eta_m \eta_g k_t K_g}{R_m J_m} \\
-		0 \\
-		0 \\
+		B_{sys} \\
 		0
 	\end{bmatrix}
-	V
-\end{equation}
+	V$		\qquad $ C_{back} =
+	\begin{bmatrix}
+		0 & 0 & -1 & 0
+	\end{bmatrix}$
+\end{center}
 
-Now we check the controllability of this enlarged system by using \textit{ctrb} Matlab function.
-As expected it is fully controllable and now we can proceed by using the following scheme:
+The controllability of the enlarged system, determined by using \textit{ctrb} MATLAB function, as expected, is full.
 \begin{figure*}[h]
 	\centering
 	\includegraphics[width=0.7\textwidth]{pp_1dof}
@@ -49,24 +39,25 @@ As expected it is fully controllable and now we can proceed by using the followi
 \end{figure*}
 
 In \cref{fig:1_dof block scheme pp + obs}, the state estimator block represents either the observer or one of the Kalman Filters. 
-At this point we set the poles through the \textit{place} Matlab function. In particular we decide to postpone the real poles to speed up the system, whereas concerning the complex ones we just enhance their damping coefficients. At the beginning we thought to turn them into real poles but the resulting control effort was very aggressive and it was not leading any significant improvement to the dynamics. The placed poles and the corresponding gain~$K$ computed by the above-mentioned Matlab function are written below:
+At this point, the poles are set through the \textit{place} MATLAB function. In particular it has been decided to postpone the real poles to speed up the system, whereas concerning the complex ones it is just enhanced their damping coefficient. Turning them real would make the controller effort too aggressive, while not leading to any significant improvement in the dynamics. The placed poles and the corresponding gain~$K$ computed by the above-mentioned MATLAB function are:
 \begin{equation}
-	PlacedPoles^{T} =
+	\lambda_{CL} =
 	\begin{bmatrix}
 		-20 \\ -50 \\ -40.1\ \bigl{(} 0.8+\sin(\arccos(0.8))i \bigr{)} \\ -40.1\ \bigl{(} 0.8-\sin(\arccos(0.8))i \bigr{)} \\-10  
-	\end{bmatrix}
-	K_x^{T} =
+	\end{bmatrix}^{T}
+	\quad
+	K_x =
 	\begin{bmatrix}
 		185.9405 \\  3.5059 \\ -125.8645 \\ 0.1222
-	\end{bmatrix}
-	\\
+	\end{bmatrix}^T
+	\quad
 	K_v =
 	\begin{bmatrix}
 		286.2122
 	\end{bmatrix}
 \end{equation}
 
-We will provide now the comparison between the configurations made by the same pole placement and the different state estimator. We will do it plotting also the simulation made through our scheme. Doing so we test the reliability of our model with respect the real system.
+A comparison between the same pole placement and the different state estimator is shown in figures \cref{fig:Position step response with full-state observer} and \cref{fig:Position step response with full Kalman Filter}. 
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
@@ -95,71 +86,53 @@ We will provide now the comparison between the configurations made by the same p
 	\label{fig:Position step response with full Kalman Filter}
 \end{figure*}
 
-As regards the step response, we can notice as the Kalman filter configuration is not as smooth as the observer one. This might be caused by a delay in Kalman Filter state estimation. By the way, both cases are considered acceptable. On the other hand, the Kalman filter brings a significant improvement on the control action, resulting to be less noisy due to the filter robustness against the white noises.
-We are already satisfied by this performance and we do not need to speed it up, however other solutions will be provided later on with LQG.
-
+Regard the step response, it is possible to notice that the Kalman filter configuration is not as smooth as the observer one. This might be caused by a slower Kalman Filter state estimation. By the way, both cases are considered acceptable. On the other hand, the Kalman filter brings a significant improvement on the control action, resulting to be less noisy due to the filter robustness against the white noises.
+These performances are satisfactory and a faster controller is not needed, however even better solutions will be provided later on with LQG.
+\newpage
 \section{\twodof\ system}
-As before, we enlarge the system in order to reach the position reference. The overall enlarged state-space system and the closed control loop scheme are definitely similar to the \onedof\ case, except for the additional variables~$\theta_2$ and~$\dot\theta_2$:
-\begin{equation}
-	\begin{bmatrix}
-		\dot{\theta}_l \\
-		\ddot{\theta}_l \\
-		\dot{\theta}_1 \\
-		\ddot{\theta}_1 \\
-		\dot{\theta}_2 \\
-		\ddot{\theta}_2 \\
-		\dot v
+Like before, the enlarged system structure is used in order to reach the position reference. The overall enlarged state-space system and the closed control loop scheme are definitely similar to the \onedof\ case, except for the additional variables~$\theta_2$ and~$\dot\theta_2$:
+\begin{center}
+	$\begin{bmatrix}
+		\dot{x} \\
+		\dot{v}
 	\end{bmatrix}
 	=
 	\begin{bmatrix}
-		0 &1 & 0 & 0 & 0 & 0 \\
-		-\frac{K_{s_1}}{J_m} & -\frac{B_m}{J_m}-\frac{\eta_m \eta_g k_t k_m K^2_g}{R_m J_m}  & \frac{K_{s_1}}{J_m} & 0 & 0 & 0 & 0 \\
-		0 & 0 & 0 & 1 & 0 & 0 \\
-		\frac{K_{s_1}}{J_1} & 0 & -\frac{K_{s_1}+K_{s_2}}{J_1} & -\frac{B_1}{J_1} & \frac{K_{s_2}}{J_1} & 0 & 0 \\
-		0 & 0 & 0 & 0 & 0 & 1 & 0 \\
-		0 & 0 & \frac{K_{s_2}}{J_2} & 0 & -\frac{K_{s_2}}{J_2} & -\frac{B_2}{J_2} & 0 \\
-		0 & 0 & 0 & 0 & 1 & 0 & 0
+		A_{sys} & 0 \\
+		-C_{back} & 0
 	\end{bmatrix}
 	\begin{bmatrix}
-		\theta_l \\
-		\dot{\theta}_1 \\
-		\theta_1 \\
-		\dot{\theta}_1 \\
-		\theta_2 \\
-		\dot{\theta}_2 \\
+		x \\
 		v
 	\end{bmatrix}
 	+
 	\begin{bmatrix}
-		0 \\
-		\frac{\eta_m \eta_g k_t K_g}{R_m J_m} \\
-		0 \\
-		0 \\
-		0 \\
-		0 \\
+		B_{sys} \\
 		0
 	\end{bmatrix}
-	V
-\end{equation}
+	V$		\qquad $ C_{back} =
+	\begin{bmatrix}
+		0 & 0 & 0 & 0 & -1 & 0
+	\end{bmatrix}$
+\end{center}
 \begin{figure*}[h]
 	\centering
 	\includegraphics[width=0.7\textwidth]{pp_2dof}
 	\caption{\twodof\ block-scheme, with pole placement and state reconstruction}
 \end{figure*}
-
-Also in this case, we decide not to force the complex poles to real ones, but we just rise their damping coefficients. Below, it is possible to see where we placed the new poles of the system and the gain vector that lets us do it.
-
+Also in this case, complex poles at the same frequency have been preferred over real ones; in this way only their damping has been changed:
 \begin{equation}
-	PlacedPoles^{T} =
+	\lambda_{CL} =
 	\begin{bmatrix}
 		-20 \\ -30 \\ -24.5 \bigl{(} 0.6+\sin(\arccos(0.6))i \bigr{)} \\ -24.5 \bigl{(} 0.6-\sin(\arccos(0.6))i \bigr{)} \\
 		-61.9 \bigl{(} 0.2+\sin(\arccos(0.2))i \bigr{)} \\ -61.9 \bigl{(} 0.2-\sin(\arccos(0.2))i \bigr{)} \\ -10
-	\end{bmatrix}
-	K_x^{T} =
+	\end{bmatrix}^{T}
+	\quad
+	K_x =
 	\begin{bmatrix}
 		68.1752  \\  1.1393 \\ -71.9542 \\   0.0150 \\  30.2715  \\  0.5489
-	\end{bmatrix}
-	\\
+	\end{bmatrix}^{T}
+	\quad
 	K_v =
 	\begin{bmatrix}
 		110.9516
@@ -176,7 +149,7 @@ Also in this case, we decide not to force the complex poles to real ones, but we
 		\includegraphics[scale=0.25]{voltage_pp_2}
 		\caption{Voltage}
 	\end{subfigure}
-	\caption{position step response with full-state observer}
+	\caption{Position step response with full-state observer}
 \end{figure*}
 
 \begin{figure*}[h]

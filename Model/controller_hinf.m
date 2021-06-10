@@ -65,8 +65,6 @@ aug_P = connect( P, W_e, W_u, W_t1, er, aug_input, aug_output );
 
 [controller.c11, ~, gamma] = hinfsyn( aug_P, 3, 1 );
 
-%out = sim( 'Hinf_design.slx' );
-
 %% 2 dof Hinf 
 % y = [err, theta_l; theta_1; theta_2];
 % w = [theta_2_ref; noise_x; noise_y]

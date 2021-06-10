@@ -1,0 +1,115 @@
+\documentclass{report}
+
+\usepackage[english]{babel}
+
+\begin{document}
+	\begin{center}
+		\Large
+		\textbf{Rotating Masses Appendix}
+		
+		\vspace{0.4cm}
+		\large
+		Functioning of the system
+	\end{center}
+
+Since the first laboratory data collection has been key for a good management of the lab experiences. Moreover, this data were very useful after the laboratory sessions., to validate the models that has been extracted and also to compare them with new solutions. 
+There was also the need to have an easy way for plotting these data collected for better interpreting these results.
+
+So, the solution the team found is the following. 
+
+\chapter{Scheme.slx}
+\section{Simulated system}
+This Simulink scheme has the simulated system and the controller in development. The simulated system tries to represent the real one as best as it can. It outputs the signal with the same sign as the real one, we decided to have the inversion of the sign in matrix C for the encoders. Moreover the white noise computed theoretically has been added, in case of the encoders it is even bigger then the real one we experienced.
+
+Another part in the simulated system subsystem is the disturbance creator to take into account the disturbances affecting the system at constant speed. This is active only in those experiments where the controlled variable is the speed. 
+
+This part of the scheme has a logic switch that activates the system with 1 or 2 d.o.f.. 
+
+Moreover, the plots of the system have as input also the signal data. These signals are the data collected in laboratory, they are loaded and prepared in the Simulink format by some specific functions.
+
+\section{Controller}
+The controller makes use of all the measured signals available, then internally selects the desired technique of control. 
+It follows a reference, created from an ad hoc object.
+ 
+\subsection{Reference generator}
+The first object, key for repeating the same experiment both in the laboratory and during simulation, is the experiment struct. 
+This variable stores the data regarding the reference signal, that could be of three types: step (or a sequence of it), ramps or sinusoid. Then, a Simulink block, containing these signal generators, reproduces the reference for the controller. Moreover, linking each type of experiment to a title allowed us to repeat them without confusion. 
+
+\subsection{Controller parameters}
+The controller struct is the second solution we defined. Instead of having different variables in the workspace for each controller we decide to have a single one. This means just one struct variable, where each field corresponds to a controller that has been tuned. Each one of this fields (controller) has inside its own parameters, that can differ from one to another. 
+In this way, on Simulink all controllers were always loaded and using another variable called \textit{active\_technique} we were able, very easily and even at runtime, to change the controller structure.  
+A similar solution has been developed for the observers. 
+
+\section{Experiment\_handler}
+The last and most complicated structure that has been built is the experiment\_handler class. This class, takes care of loading, saving, defining the different objects on the MATLAB workspace. 
+It allows to define, edit and load the required reference signal (experiment), given the title or letting the user selecting one.
+
+It allows to load the data collected in the laboratory and to format them in the Simulink format (column array with time as first column and the signal as second), so that we can compare simulation signal with laboratory results. 
+
+Anyway, the most important feature that has been implemented is the~\textit{create\_data} function. This function, called directly on the MATLAB command window after an experiment, saves the data in a very easy way for this data to be ridden for us. 
+A title to the test is assigned, to avoid the default Simulink titles with dates and hours that were confusing and not self-explanatory.
+Then, based on the signal saved in the Simulink scheme, it creates a struct where each field is a signal and it can be referred very easily with its name for plotting them in MATLAB.
+Moreover, with this approach, there is the possibility to save automatically important information regarding the single experiment. This is useful because it avoids the team to manually write them on paper, with the risk of confusing experiments, parameters of the controllers and losing information. 
+So, after each experiment, data, reference signal, controller and observer parameters are automatically saved with the desired name. This allowed for a perfect reproducibility of the experiments after the laboratory session and also avoiding a lot of possible errors due to human intervention in the saving of this parameters.
+
+\chapter{Experiment test}
+\section{guided\_script.m}
+This simple script takes care automatically of loading the controllers, the correct system and the desired experiment.
+
+The possible experiments are the following: 
+\begin{itemize}
+	\item position step reference at $\frac{\pi}{2}$, $-\frac{\pi}{4}$
+	\item speed step reference at $17\ rad/s$, $-17\ rad/s$, $10\ rad/s$
+\end{itemize}
+
+For position control the techniques are:
+\begin{itemize}
+	\item Cascade control loop
+	\item LQG
+	\item $H_{\infty}$
+\end{itemize}
+
+For speed control only PI controller is available. 
+
+\section{Manual selection}
+To run a simulation by hand the following procedure needs to be followed. 
+Type the following commands on the command window.
+
+\begin{enumerate}
+	\item script (load parameters)\\
+	Then select the number of dof
+	\item experiment = e\_h.load\_experiment (select the reference signal)
+	\item controller.active\_technique = x (activate the desired x controller )
+	\item controller.active\_observer = x ( activate the desired x observer if needed)
+	\item open and run scheme.slx 
+	\item look at the results with the data inspector
+\end{enumerate}
+
+The available controllers are:
+\begin{enumerate}
+	\item PI for speed 1-d.o.f
+	\item P-PI for position 1-d.o.f
+	\item PI for speed 2-d.o.f
+	\item P-PI for position 2-d.o.f
+	
+	\item PID for speed 1-d.o.f (not tuned)
+	\item P-PID for position 1-d.o.f (not tuned)
+	\item PID for speed 2-d.o.f (not tuned)
+	\item P-PID for position 2-d.o.f (not tuned)
+	
+	\item LQG for position 1-d.o.f. 
+	\item LQG for position 2-d.o.f.
+	
+	\item $H_\infty$ for position 1-d.o.f.
+	\item $H_\infty$ for position 2-d.o.f.	
+\end{enumerate}
+
+For LQG control also the observer is needed. 
+The available observer are:
+\begin{enumerate}
+	\item Luenberger Observer
+	\item Luenberger Reduced Order Observer (not working)
+	\item Kalman filter
+\end{enumerate}
+
+\end{document}

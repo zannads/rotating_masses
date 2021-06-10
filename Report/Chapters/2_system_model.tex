@@ -122,10 +122,10 @@ The physical model can be described by ordinary differential equations (ODEs), s
 \end{equation}
 
 From this mathematical formulation, it is easy to check (thanks to Matlab functions  \textit{ctrb} and \textit{obsv}) the controllability by means of the voltage applied to the motor and the system observability.
-The system having just one rotating mass is controllable only in two state variables over five: surely, one of those is the current (directly affected by the input), the other is one among the remaining. On the other hand, the observability matrix~$M_O$ is full rank; however, it must be considered that the current~$i$ dynamics is extremely rapid (the time constant is defined as~$\tau_i = \frac{L_m}{R_m} = 7.56\ 10^{-5} \ s$), then the sampling time~($T_s = 2 ms$) prevents its observation even with a current sensor installed on the motor.
+The system having just one rotating mass is controllable only in two state variables over five. On the other hand, the observability matrix~$M_O$ is full rank; however, it must be considered that the current~$i$ dynamics is extremely rapid (the time constant is defined as~$\tau_i = \frac{L_m}{R_m} = 7.56\ 10^{-5} \ s$), then the sampling time~($T_s = 2\ ms$) prevents its observation even with a current sensor installed on the motor.
 Similarly to this case, it can be expected that also the \twodof~system is not fully controllable. \\
 
-Since the current dynamics cannot be verified by experimental data, we have decided to ignore it~(the rest of the model is not significantly affected by that, since its transient is definitely negligible): in the following model, the current statically depends on input voltage and electromotive force (back-emf). \\
+Since the current dynamics cannot be verified by experimental data, it has been decided to ignore it~(the rest of the model is not significantly affected by that, since its transient is definitely negligible): in the following model, the current statically depends on input voltage and electromotive force (back-emf). \\
 
 % Forma di stato ridotta
 \noindent \textit{State-space representation of the reduced \onedof\ system}
@@ -201,8 +201,8 @@ This time, checking again the controllability and observability of the reduced o
 
 In order to validate this model, some experiments on the real system have been performed. Firstly, only one mass, then, two masses in cascade were linked to the shaft. By imposing to the motor a certain voltage, the open-loop response has been compared to the Simulink simulation (based on the model previously illustrated).
 
-\paragraph{Experiments input}
-The experiments, aimed at identifying and validating the model, have been performed by imposing a voltage to the motor. They can be classified in two types: steps (multiple in time and of different size) and variable frequency sine waves. The range of applied voltages~($\pm 10\ V$) is constrained by the motor physical limitations.
+\paragraph{Experiments types}
+The experiments, aimed at identifying and validating the model, have been performed by imposing a voltage to the motor. They can be classified in two types: steps (multiple in time and of different size) and variable frequency sine-waves. The range of applied voltages~($\pm 10\ V$) is constrained by the DAQ physical limitations.
 
 At first, the static gain of the transfer function between the control input of the motor and the first mass speed~($G_{V,\dot{\theta}_1}$) has been checked. To do so, a constant voltage has been imposed; once the transient of first mass settlement is over, it is clear that the mathematical model underestimates the steady-state speed.
 The first approach has been that of changing the model parameters whose effect on the static gain is more significant: the rotor resistance~($R_m$), the motor efficiency~($\eta_m$), the mechanical efficiency of the gear~($\eta_g$), the current-torque constant~($k_t$) and the mass speed-voltage constant~($k_m$, responsible of the back-emf).
@@ -211,7 +211,7 @@ Thanks to the experiments, it has been noticed that the real system behavior is 
 
 % parametri modificati ---> G_opt
 
-The variable frequency sine wave experiments suggest another significant difference between the physical model and the nominal one. Here, it is visible that resonance frequency of the nominal model is greater that the real one; anyway, the amplitude of the oscillations at those frequencies is comparable. \\
+The variable frequency sine-wave experiments suggest another significant difference between the physical model and the nominal one. Here, it is visible that resonance frequency of the nominal model is greater that the real one; anyway, the amplitude of the oscillations at those frequencies is comparable. \\
 This fact affects also the step response transient: the initial overshoot and later oscillations depend on complex conjugate poles, linked to the physical parameters of springs and masses (spring stiffness~$K_s$, mass inertia~$J$, mass friction coefficient~$B$). \\
 
 A tuning of the static gain does not allow an improvement of the mathematical model in the transient behavior. However, manually changing all the other parameters would be particularly difficult, since it is a trial-and-error approach based on no precise rational reasoning (it must be considered also, indeed, that nominal parameters shown in the reference manual are obtained experimentally).
@@ -222,7 +222,7 @@ A solution to this problem is to untie our approach from the purely mathematical
 A black-box approach totally loses a connection to the mathematical model and its physical dimensions; on the contrary, it is exclusively based on data collected by experiments in laboratory.
 Therefore, it is reasonable to estimate only the transfer function of our interest (according to the design of the controller of speed, designed later):~$G_{V,\dot{\theta}_1}$ or~$G_{V,\dot{\theta}_2}$, meaning the transfer functions from the voltage (input) to the masses speed.
 
-Masses speeds (generated by the derivation of encoder data) are collected in a set of experiments by using the Matlab functions~\textit{iddata()} e~\textit{merge()}. So, the obtained data are the input of the~\textit{tfest()} function: the obtained output is the identified black-box model.
+Masses speeds (generated by the derivation of encoder data) are collected in a set of experiments by using the MATLAB functions~\textit{iddata()} e~\textit{merge()}. So, the obtained data are the input of the~\textit{tfest()} function: the obtained output is the identified black-box model.
 
 \paragraph{Order of the transfer function}
 
@@ -291,6 +291,6 @@ The identified model has a resonance frequency located in between the nominal an
 		\includegraphics[width=0.6\textwidth]{2dof_g_v_w2}
 		\subcaption{\twodof\ case: $G_{V,\dot\theta_2}$}
 	\end{subfigure}
-	\caption{Comparison between nominal model, black-box id.\ and white-box id.}
+	\caption{Comparison between nominal model, black-box id.\ and gray-box id.}
 	\label{fig:allModels_comparison}
 \end{figure}
