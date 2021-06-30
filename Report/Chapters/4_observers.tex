@@ -27,7 +27,7 @@ In order to construct the observer, matrices A and C are needed~(where C matrix 
 \end{equation}
 
 Closed-loop poles can be automatically placed in prescribed positions thanks to the MATLAB function~\textit{place}\footnote{This function requires to locate poles in different positions. To place poles in a unique position, it is sufficient to slightly move some of them.}.
-The choice for poles frequency is~$400 \, rad/s$, meaning that the settling time of the observer is about 12.5 ms.
+The choice for poles frequency is~$400 \, rad/s$, meaning that the settling time of the observer is about 12.5 ms. It has been selected to be this fast because the model is very reliable and mainly to test the structure of the re-constructor as it is key for the following step, i.e., the Kalman filter. 
 
 The estimated state dynamics, then, becomes
 \begin{equation}
@@ -41,10 +41,11 @@ and its estimation error dynamics is asymptotically stable, as pole placement pr
 
 The necessary and sufficient condition to guarantee observer design and asymptotic stability is that pair~$(A,C)$ is observable. In this case, the rank of observability matrix is 4~(as the order of the system). \\
 
-The initial position of the system, detected by the potentiometer, is subtracted to all position readings~(motor, first mass and, if connected, second mass); this causes a shift in state reconstruction that will never be recovered. Actually, this does not represent a problem since this kind of observer is only used for pole-placement controllers: as shown later, this will automatically bring the system to the correct reference thanks to an integral action.\footnote{Just for graphical reasons, reconstructed and real states are superimposed by adding again the initial condition to~$\hat x$.}
+%The initial position of the system, detected by the potentiometer, is subtracted to all position readings~(motor, first mass and, if connected, second mass); this causes a shift in state reconstruction that will never be recovered. Actually, this does not represent a problem since this kind of observer is only used for pole-placement controllers: as shown later, this will automatically bring the system to the correct reference thanks to an integral action.\footnote{Just for graphical reasons, reconstructed and real states are superimposed by adding again the initial condition to~$\hat x$.}
+The measurements are returned as an absolute displacement with respect to the reference of the potentiometer. Thus, the observers have to recover the initial condition that is the starting position. Since this is measurable, it is removed so that the observer doesn't have the superimposition of the free response due to the initial condition. 
 
-In \cref{fig:observer_1dof}, a position control (performed by pole-placement, introduced in next chapter) is reported. It can be seen that the position of motor and first mass are shifted with respect to their measurements because of the initial position; however, position reconstructions perfectly superimpose measurements, as expected.\\
-Concerning the speeds, mass velocity is a bit different from the measured one~(derived by the encoder), while motor speed is noisy because of potentiometer high variance; in any case, small differences on speed are not critical, since speed signals are not significantly weighted in next control techniques.
+In \cref{fig:observer_1dof}, a position control (performed by pole-placement, introduced in next chapter) is reported. 
+Concerning the speeds, mass velocity is a bit different from the measured one~(derived by the encoder), while motor speed is noisy because of potentiometer high variance; in any case, small differences on speed are not critical, since speed signals are not significantly weighted in the following control techniques.
 
 \paragraph{\twodof\ system}
 
@@ -144,17 +145,17 @@ On the other hand, matrix $Q_x$ doesn't depend directly on some physical propert
 This means that by varying the parameters in this matrix, the solutions of the filtering problem change. \\
 Moreover, this matrix can be considered as the uncertainty derived from the model identification process, i.e. since matrices $A$ and $B$ of the system have been computed by grey-box estimation (\cref{sec:gray_b_id}), they are naturally uncertain as they can't capture the real dynamic of the system that is much more complicated. \\
 
-The obtained model can simulate much better the position of the masses then that of the motor shaft, this because during the identifcation process those measurements where taken with the encoder, that is much more accurate than the potentiometer. This translates in a higher value of the state variance for the shaft position then that of the masses. With a similar reasoning, speed states are more uncertain then position ones, as they are derived from them. Trying to balance the filter reliabilty (keeping $Q_x$ as high as possible) and filter settling time (keeping $Q_x$ as low as possible) these are the matrices that better suit the filtering problem.
+The obtained model can simulate much better the position of the masses then that of the motor shaft, this because during the identification process those measurements where taken with the encoder, that is much more accurate than the potentiometer. This translates in a higher value of variance for the first state, that is the position of the shaft, with respect to the other position state. With a similar reasoning, speed states are more uncertain then position ones, as they are derived from them. Trying to balance the filter reliability (keeping $Q_x$ as high as possible) and filter settling time (keeping $Q_x$ as low as possible) these are the matrices that better suit the filtering problem.
 \begin{equation}
 	B_w = \begin{bmatrix}
-		0.3e-4 & 0 & 0 & 0 & 0 & 0\\
-		0 & 1e-2 & 0 & 0 & 0 & 0 \\
-		0 & 0 & 1e-8 & 0 & 0 & 0  \\
-		0 & 0 & 0 & 1e-4 & 0 & 0
+		\sqrt{0.3e-4} & 0 & 0 & 0 & 0 & 0\\
+		0 & \sqrt{1e-2} & 0 & 0 & 0 & 0 \\
+		0 & 0 & \sqrt{1e-8} & 0 & 0 & 0  \\
+		0 & 0 & 0 & \sqrt{1e-4} & 0 & 0
 	\end{bmatrix} \
 	D_w = \begin{bmatrix}
-		0 & 0 & 0 & 0 & 1e-6 & 0\\
-		0 & 0 & 0 & 0 & 0 & 2e-8 
+		0 & 0 & 0 & 0 & \sqrt{1e-6} & 0\\
+		0 & 0 & 0 & 0 & 0 & \sqrt{2e-8} 
 	\end{bmatrix} 
 	\label{eqn:b_w_d_w}
 \end{equation}
@@ -172,7 +173,7 @@ Moreover, while the characteristic of the encoder, that is a direct measurement 
 \end{figure*}
 In \cref{fig:kf_2dof} it is possible to see how, despite a drift in the potentiometer measurement around the second step, the reconstructed state is more related to the measurement coming from the encoders than that of the potentiometer. Indeed, the dashed lines (the reconstructed signals) are very close to the signals coming from the encoders (red and green continuous lines), despite the fact that the measurement coming from the potentiometer reaches a different steady state value (continuous blue line). This error in the potentiometer measurement can be the result of a small non linearity in the characteristic of the sensor. \\
 
-This example shows perfectly the reliability of the Kalman filter; the noise variance of the shaft measurement is 50 times bigger than that of the encoders, the solution obtained with this formulation of the problem filters the noise in the optimal way. Moreover, in this specific situation, Kalman filter makes the measurement less reliable almost useless, trusting only the best ones. 
+This example shows perfectly the reliability of the Kalman filter; the noise variance of the shaft measurement is 50 times bigger than that of the encoders, the solution obtained with this formulation of the problem filters the noise in the optimal way. Moreover, in this specific situation, Kalman filter makes the measurement less reliable (in this case the potentiometer) almost useless, trusting only the best ones, i.e., the one deriving from the encoder. 
 
 \paragraph{Faulty sensor estimation}
 The setup that has been used up to this point has been making use of all  the possible measurements, but after the analysis of the reconstructed state with the Kalman filter there was still a point to be analyzed. What would be the performance and the reliability of the system in case the encoder, that is the most important measurement, doesn't work anymore. \\
@@ -184,7 +185,7 @@ From a first analysis, all the possible setups produce an observable system, thu
 
 The results that are produced from these configurations can be summarized in two types. \\ 
 
-The first can be called encoder based solution, this means that even if the measurement from the potentiometer is available, it is almost automatically discarded in favor of the encoder one. As previously mentioned, this happens because the potentiometer variance is much more bigger then that one of the encoder and Riccati equations produce results that depends mostly on the lowest one. All the solutions where at least one encoder is used, produce this result and generate a state estimator with a time constant very low, allowing to push the control action to high speeds.\\
+The first can be called encoder based solution, this means that even if the measurement from the potentiometer is available, it is almost automatically discarded in favor of the encoder one. As previously mentioned, this happens because the potentiometer variance is much bigger then that one of the encoder and Riccati equations produce results that depends mostly on the lowest one. All the solutions where at least one encoder is used, produce this result and generate a state estimator with a time constant very low, allowing to push the control action to high speeds.\\
 
 On the other hand, the solution that makes use of only the potentiometer, both in \onedof\ and \twodof, generates a different type of filter. When only the potentiometer is used, the system matrices for the output equation (example is based on \twodof) becomes 
 \begin{equation}
@@ -192,7 +193,7 @@ On the other hand, the solution that makes use of only the potentiometer, both i
 		1 & 0 & 0 & 0 & 0 & 0
 	\end{bmatrix} \
 	D_w = \begin{bmatrix}
-		0 & 0 & 0 & 0 & 0 & 0 & 1e-6 & 0 & 0 \\
+		0 & 0 & 0 & 0 & 0 & 0 & \sqrt{1e-6} & 0 & 0 \\
 	\end{bmatrix} 
 \end{equation}
 The Riccati equation that solves the filtering problem for this system produce much slower re-constructors. The time constant of the produced filter is around~$0.8\ s$. Changing the parameters in the matrix $Q_x$ allows to steer a little bit the position of the poles of the estimator, but it can't move a lot the time constant of the main dynamic, mainly its damping. Indeed, the matrix $B_w$ at \ref{eqn:b_w_d_w} has been selected with those values because it was the one generating the less oscillatory response of the filter for this setup and a fast enough estimation for the other ones.\\
@@ -209,8 +210,8 @@ In this case the reason is not completely caused by the high variance of the sen
 
 To grasp this aspect, the following procedure has been followed. The rank of a matrix is the number of linearly independent eigenvectors.
 \label{SVD_explaination}
-Using SVD, it possible to extract the eigenvectors of a matrix. This method is applied to the observabilty matrix of different configurations. The numbers in the eigenvectors of the observability matrix smaller then a thousand can be neglected and therefore they are set to zero. For the setups using only the encoders or more than one sensor the remaining vectors are clearly linearly independent (each couple of vectors has just 2 elements different from zero), while for the \twodof\ system using only the potentiometer they appear to be more involved (there are some vectors that have up to 4 elements different from zero), hence they are not perfectly linearly independent.
-Here it is possible to see the result of this analysis for the eigenvectors of the observality matrix of the \twodof\ system with only the encoder on the last mass or with only the potentiometer. 
+Using the MATLAB function \textit{eig}, it possible to extract the eigenvectors of a matrix. This method is applied to the observabilty matrix of different configurations. As it is shown below in case two of them or more are similar the matrix is not full rank and it can't be inverted. 
+
 \begin{equation}
 	e_{O_{\theta_{2}}}= \begin{bmatrix}
 		0& 0 & 0 & 0 		& -0.708 & -0.706 \\

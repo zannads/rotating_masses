@@ -18,23 +18,7 @@ The system is made by 4 states and 2 sensors, that are a potentiometer and an en
 	\end{bmatrix}^{T}
 \end{equation}
 
-Considering the state and measurement noises written above, it is needed to specify their variances. The state one ($\tilde{Q}$) is obtained through an empirical tuning, as discussed in \cref{sec:Kalman_filter}, while the sensors one ($\tilde{R}$) is computed with methods discussed in \cref{sec:sensors}. The matrices are so composed:
-
-\begin{equation}
-	\tilde{Q}=
-	\begin{bmatrix}
-		0.3 \cdot 10^{-4} & 0 & 0 & 0 \\
-		0 & 10^{-2} & 0 & 0 \\
-		0 & 0 & 10^{-8} & 0 \\
-		0 & 0 & 0 & 10^{-4}
-	\end{bmatrix}
-	\\
-	\tilde{R}=
-	\begin{bmatrix}
-		10^{-6} & 0\\
-		0 & 2\cdot10^{-8} & 
-	\end{bmatrix}	
-\end{equation}
+Considering the state and measurement noises written above, it is needed to specify their variances. The state one ($\tilde{Q}$) is obtained through an empirical tuning, as discussed in \cref{sec:Kalman_filter}, while the sensors one ($\tilde{R}$) is computed with methods discussed in \cref{sec:sensors}.
 
 The \textit{generalized plant} $P(s)$ is:
 \begin{equation}
@@ -98,7 +82,7 @@ Starting from this reasoning, the weighting function have been empirically tuned
 	\caption{Weighting functions}
 \end{figure*}
 
- In \cref{fig:posH1dof}, it is observable how the simulation and the laboratory data share the same settling time, in any case, this one is the fastest ever obtained throughout the project work. Anyway, the simulation does not model the oscillations arisen in the laboratory, thus this controller is not fully reliable. Furthermore, in both the experiments it was able to reach the reference at steady state.
+ In \cref{fig:posH1dof}, it is observable how the simulation and the laboratory data share the same settling time, despite the fact that the $\gamma$ obtained by the $H_\infty$ is $6.34$ and thus the solution can't be considered acceptable. Anyway, this one is the fastest ever obtained throughout the project work. Furthermore, in both the experiments it was able to reach the reference at steady state.
  
  \begin{figure*}[h]
  	\centering
@@ -114,7 +98,7 @@ Starting from this reasoning, the weighting function have been empirically tuned
  	\label{fig:posH1dof}
  \end{figure*}
 
-Due to a lack of time, the final result is not satisfactory, but we suppose that if we could have applied the solution obtained in the \twodof~case, in which we spent more time, the result would have been acceptable.
+Due to a lack of time, the final result is not satisfactory, tuning all the parameters of a $H_\infty$ problem is a hard work that requires a lot of time due to the high number of degrees of freedom. 
 \newpage
 \section{\twodof\ system}
 In this scenario, the states are 6 and the sensors are 3, for this reason $w$ is composed of 10 signals:
@@ -125,26 +109,7 @@ In this scenario, the states are 6 and the sensors are 3, for this reason $w$ is
 		\theta_{2_{ref}} & n_x & n_y
 	\end{bmatrix}^T
 \end{equation}
-Coherently with the \onedof~case, the variances matrices are built keeping the same values:
-
-\begin{equation}
-	\tilde{Q}=
-	\begin{bmatrix}
-		0.3\cdot10^{-4} & 0 & 0 & 0 & 0 & 0\\
-		0 & 10^{-2} & 0 & 0 & 0 & 0\\
-		0 & 0 & 10^{-8} & 0 & 0 & 0 \\
-		0 & 0 & 0 & 10^{-4} & 0 & 0 \\
-		0 & 0 & 0 & 0 & 10^{-8} & 0 \\
-		0 & 0 & 0 & 0 & 0 & 10^{-4}
-	\end{bmatrix}
-	\\
-	\tilde{R}=
-	\begin{bmatrix}
-		10^{-6} & 0 & 0\\
-		0 & 2\cdot10^{-8} & 0 \\
-		0 & 0 & 2\cdot10^{-8} 
-	\end{bmatrix}	
-\end{equation}
+Coherently with the \onedof~case, the variances matrices are built keeping the same values as in the Kalman filter formulation:
 
 The definition of the \textit{generalized plant} $P(s)$ is the same explained starting from \cref{P(s)}. Then, the following weighting functions are implemented:
 
@@ -181,7 +146,7 @@ The reasoning followed to design these functions are the same written above and 
 \end{figure*}
 
 
-From the plots in figure \ref{fig:posH2dof}, a significant improvement with respect to the solution of the \onedof\ scenario can be noticed. Although there are a few oscillations, this result is considered acceptable. Most likely there exist better solutions, but due to lack of time we did not manage to explore them.
+From the plots in figure \ref{fig:posH2dof}, a significant improvement with respect to the solution of the \onedof\ scenario can be noticed. Although there are a few oscillations, this result could be considered acceptable. Unfortunately, the $\gamma$ of the $H_\infty$ problem is 7.43, this means that the weights still are not tuned very well. Most likely there exist better solutions, but due to lack of time we did not manage to explore them.
 
  \begin{figure*}[h]
 	\centering
