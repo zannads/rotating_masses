@@ -59,26 +59,20 @@ The goal of this first controller is to obtain a fast and robust performance. In
 \end{itemize}
 
 \paragraph{Tuning and simulation}
-From now on, $k_v$ will be used as tuning parameter of the PI regulator, while the~$0\ dB$ axis of Bode diagram of speed loop is indicated by~$w_{c,v}$. In order to reach the desired specifications, many Bode analyses and simulations have been done: here are reported cases with~$k_v=3.5$ and~$k_v=4.5$.
+From now on, $k_v$ will be used as tuning parameter of the PI regulator, while the~$0\ dB$ axis of Bode diagram of speed loop is indicated by~$w_{c,v}$. In order to obtain the desired specifications, many Bode analyses and simulations have been done: here is reported a comparison between step responses with~$k_v=3.5$ and~$k_v=4.5$ (\cref{fig:PI1dof_comparison}).
+The only choice that satisfies all the requirements is obtained by imposing~$k_v = 4.5$: open-loop and closed-loop Bode diagrams are shown in \cref{fig:PI1dof_bode}; here, it can be noticed that the cross-over frequency of the open-loop (detected by MATLAB \textit{margin} function) does not perfectly coincide with the closed-loop bandwidth, that will be estimated in \cref{par:1dof_vel_bwEstimation}.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
-		\includegraphics[width=\textwidth]{1dof_bode_trials}
-		\subcaption{Open-loop Bode diagrams}
-		\label{fig:PI1dof_bode}
-	\end{subfigure}
-	\begin{subfigure}{0.42\columnwidth}
 		\includegraphics[width=\textwidth]{1dof_step_trials}
 		\subcaption{Laboratory data of closed-loop step responses}
 		\label{fig:PI1dof_step}
 	\end{subfigure}
-	\caption{Comparisons between $k_v = 3.5$ and $k_v = 4.5$ cases}
-	\vspace{5mm}
-	\begin{subfigure}{0.6\columnwidth}
+	\begin{subfigure}{0.45\columnwidth}
 		\centering
 		\begin{tabular}{|c|cc|}
 			\hline
-			Results\footnote{Cutting frequency~$\omega_{c,v}$, gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_v=3.5$ & $k_v=4.5$ \\
+			Results\footnote{Open-loop cross-over frequency~$\omega_{c,v}$, gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_v=3.5$ & $k_v=4.5$ \\
 			\hline
 			$\omega_{c,v}\ [rad/s]$ & $6.24$ & $8.01$ \\
 			$G_m\ [dB]$ & $19$ & $16.8$ \\
@@ -87,22 +81,33 @@ From now on, $k_v$ will be used as tuning parameter of the PI regulator, while t
 			$T_s\ [s]$ & $0.65$ & $0.40$ \\
 			\hline
 		\end{tabular}
-		%\includegraphics[width=\textwidth]{1dof_step_trials}
-		%\caption{Closed-loop step responses}
-		%\label{fig:step_PI1dof_step}
+		\subcaption{Table of theoretical results, $k_v = 3.5$ and $k_v = 4.5$ cases}
 	\end{subfigure}
-	\caption{Table of theoretical results, $k_v = 3.5$ and $k_v = 4.5$ cases}
-	\label{fig:Bode and Step PI 10}
+	\caption{Comparisons between $k_v = 3.5$ and $k_v = 4.5$ cases}
+	\label{fig:PI1dof_comparison}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{openloop_margin_speed_1dof}
+		\subcaption{Open-loop}
+		\label{fig:PI1dof_bode_openLoop}
+	\end{subfigure}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{closedloop_bode_speed_1dof}
+		\subcaption{Closed-loop}
+		\label{fig:PI1dof_bode_closedLoop}
+	\end{subfigure}
+	\caption{Bode diagrams with $k_v = 4.5$}
+	\label{fig:PI1dof_bode}
 \end{figure*}
 
 \paragraph{Performance analysis}
-The only choice that satisfies all the requirements is obtained by imposing~$k_v = 4.5$. To test it, one of the worst case scenarios has been applied, that is the step from~$-17\ rad/s$ to~$17\ rad/s$, and then a smaller step of~$10\ rad/s$. The first one allows to asses the voltage saturation in the worst case, while the second one can be representative of the transient for an ordinary step.
+To test the chosen controller, one of the worst case scenarios has been applied, that is the step from~$-17\ rad/s$ to~$17\ rad/s$, and then a smaller step of~$10\ rad/s$. The first one allows to asses the voltage saturation in the worst case, while the second one can be representative of the transient for an ordinary step.
 In \cref{fig:PI with 4.5} is shown the comparison between the simulation and the data collected in the laboratory on the real system.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
 		\includegraphics[width=\textwidth]{1_step10}
 		\subcaption{Step of $10\ rad/s$}
+		\label{fig:PI with 4.5 step 10}
 	\end{subfigure}
 	\begin{subfigure}{0.45\columnwidth}
 		\includegraphics[width=\textwidth]{1_step17}
@@ -117,33 +122,33 @@ In \cref{fig:PI with 4.5} is shown the comparison between the simulation and the
 	\label{fig:PI with 4.5}
 \end{figure*}
 \subparagraph{Overshoot and phase margin}
-In the experimental data, an overshoot appears. This behavior is due to a lower phase margin of the real system, caused by a wrong estimation of the dominant pole, whose frequency might be actually lower than~$19\ rad/s$. \\
+In the experimental data, an overshoot appears (in \cref{fig:PI with 4.5 step 10} the reference step is not sufficiently high to cause voltage saturation). This behavior is due to a lower phase margin of the real system, caused by a wrong estimation of the dominant pole, whose frequency might be actually lower than~$19\ rad/s$. \\
 This issue allows to compute the phase margin: through the overshoot height percentage ($S_\% = \frac{0.4\ rad/s}{10\ rad/s} = 4\%$), it is possible to compute the system approximation damping~$\xi$ and, so, the phase margin~$\phi_m$ by means of the following formulas.
 \begin{equation}
 	S_\% = 100\ e^{\frac{-\pi\xi}{\sqrt{1-\xi^2}}} ,
 	\qquad
 	\phi_m = \frac{180\degree}{\pi} \arctan \Biggl( \frac{2\xi}{\sqrt{-2\xi^2 + \sqrt{1+4\xi^4} }} \Biggr)
+	\label{eq:phase_margin_compute}
 \end{equation}
 The obtained value is~$\phi_m = 66.2 \degree$, that is considered satisfactory according to our initial specifications.
 
 \subparagraph{Oscillations}
 A resonance uncertainty is observable through the small oscillations at the end of the transient, which are not well compensated by the notch filter. \\
-Another aspect that has to be considered is the presence of oscillations at steady state. Their frequencies are equal to the speed, then a possible explanation can be a change of the dynamic friction coefficient value along the revolution. As a matter of fact, this undesired behavior can be neglected, since the amplitude of the above-mentioned oscillations is very small. In case is necessary to attenuate them, the bandwidth of the loop should be increased to counteract them on time. By using just a PI as controller this is not possible, because increasing the cutting frequency results in lower phase margin and significant oscillations to the step response, that cannot be accepted. \\
-To avoid this behavior to steps in the reference signals, a solution could be placing a low-pass pre-filter on the reference signal. In this way, a step on the speed reference would result in a smoother reference signal and smaller oscillations will arise. This solution is analyzed with more details in the \twodof\ case, where these oscillations at the steady state cannot be neglected.
+Another aspect that has to be considered is the presence of oscillations at steady-state. Their frequencies are equal to the speed, then a possible explanation can be a change of the dynamic friction coefficient value along the revolution. As a matter of fact, this undesired behavior can be neglected, since the amplitude of the above-mentioned oscillations is very small. In case is necessary to attenuate them, the bandwidth of the loop should be increased to counteract them on time. By using just a PI as controller this is not possible, because increasing the cutting frequency would result in lower phase margin and significant oscillations to the step response, that cannot be accepted. \\
+To avoid this behavior to steps in the reference signals, a solution could be placing a low-pass pre-filter on the reference signal. In this way, a step on the speed reference would result in a smoother reference signal and smaller oscillations will arise. This solution is analyzed with more details in the \twodof\ case, where these oscillations at the steady-state cannot be neglected.
 
 \paragraph{Bandwidth estimation}
+\label{par:1dof_vel_bwEstimation}
 In \cref{fig:sinesweep_PI_1dof} and \cref{fig:Ramp1dof} are shown the responses of the closed-loop system to a sine-sweep, experiment that allows to evaluate its bandwidth, and to a ramp reference with a decreasing slope, that permits to asses the range of reachable speed set-points (especially for what concerns the low speeds). \\
-The analysis of both step and closed-loop sine-sweep responses, respectively \cref{fig:PI with 4.5} and \cref{fig:sinesweep_PI_1dof}, it appears that simulations do not follow exactly the data collected in the laboratory. This difference is caused by a non perfect identification of the real system. Indeed, an estimation of the bandwidth from the sine-sweep experiment is performed, two different crossover frequencies are obtained: the simulation places it around~$8.17\ rad/s$ and the real system one appears to be around~$17\ rad/s$. These values have been computed starting from the theory, for which the attenuation at the cutting frequency is~$-3\ dB$. \\
+The analysis of both step and closed-loop sine-sweep responses, respectively \cref{fig:PI with 4.5} and \cref{fig:sinesweep_PI_1dof}, reveal that simulations do not follow exactly the data collected in the laboratory. This difference is caused by a non perfect identification of the real system. Indeed, an estimation of the bandwidth from the sine-sweep experiment is performed, two different cross-over frequencies are obtained: the simulation places it around~$11.5\ rad/s$ and the real system one appears to be around~$14.9\ rad/s$. These values have been computed according to the theory, for which the attenuation at the cutting frequency is~$-3\ dB$. \\
 It can be noticed that a small resonance occurs around the cross-over frequency of the real system: a phase margin smaller that~$70 \degree$ can lead to this behavior. \\
 Moreover, it cannot be neglected the fact that this is a speed controller. Speed measurement is obtained through the derivation of the position of the encoder. Thus, these bandwidth values are not fully reliable because of uncertainty in measurement.
-
 \begin{figure*}[h]
 	\centering
 	\includegraphics[width=0.9\columnwidth]{Sine1dof}
 	\caption{Sineweep experiment from $0.1\ Hz$ to $10\ Hz$ in $100\ s$}
 	\label{fig:sinesweep_PI_1dof}
 \end{figure*}
-
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.4\columnwidth}
@@ -158,9 +163,8 @@ Moreover, it cannot be neglected the fact that this is a speed controller. Speed
 	\label{fig:Ramp1dof}
 \end{figure*}
 
-Thanks to the ramp experiment, it has been verified that this regulator can control the system even at very low speed. This result is very satisfying, because of the wide controllability range, which goes from~$-17.5\ rad/s$ to~$-0.3\ rad/s$ and from~$0.3\ rad/s$ to~$17.5\ rad/s$.
+Thanks to the ramp experiment, it has been verified that this regulator can control the system even at very low speed. This is a very satisfactory result, because of the wide range of reachable references, which go from~$-17.5\ rad/s$ to~$-0.3\ rad/s$ and from~$0.3\ rad/s$ to~$17.5\ rad/s$.
 
-\newpage
 \subsection{Position Control Loop}
 To control the position, different techniques have been considered: direct P and PI controllers on the mass position error have been taken into account. Since the speed control loop has highlighted some uncertainties on the model, a cascade control is useful for disturbances rejection and to face uncertainties.
 \begin{figure*}[h]
@@ -172,7 +176,7 @@ To control the position, different techniques have been considered: direct P and
 \paragraph{Tuning and simulation}
 The inner loop controls the speed, whereas the outer one the position. For the first loop, it is used the same PI structure as the previous section, while the position is regulated by using a proportional controller. It is important to remark that the cutting frequency of the position and the speed one must be far enough (about one decade) to ensure the frequency decoupling of the two loops. As consequence, if it is maintained the cutting frequency of the speed loop as decided before ($k_v=4.5$ that corresponds to a bandwidth of~$17\ rad/s$, as estimated in the sine-sweep in \cref{fig:sinesweep_PI_1dof}), a first possible solution is reached by setting the position cutting frequency equal to~$1.7\ rad/s$; however, this solution seems to be extremely slow (only simulation is shown in \cref{fig:P1dof_step}, without experimental data). \\
 
-To overcome this problem, the ratio between the speed cutting frequency and the position one can be pushed up to~$20\ \%$. In this scenario, the proportional gain can be fixed in order to have a higher bandwidth: firstly~$\omega_{c,p} = 2\ rad/s$ and, then, also~$\omega_{c,p} = 3.5\ rad/s$.
+To overcome this problem, the ratio between the speed cutting frequency and the position one can be pushed up to~$20\ \%$. In this scenario, the proportional gain can be fixed in order to have a higher bandwidth: firstly~$k_p = 2\ rad/s$ and, then, also~$k_p = 3.5\ rad/s$.
 In \cref{fig:P1dof_step} all these three cases are compared.
 \begin{figure*}[h]
 	\centering
@@ -184,30 +188,41 @@ In \cref{fig:P1dof_step} all these three cases are compared.
 	\begin{subfigure}{0.45\columnwidth}
 		\begin{tabular}{|c|ccc|}
 			\hline
-			Results\footnote{Gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $\omega_{c,p}=1.7$ & $\omega_{c,p}=2$ & $\omega_{c,p}=3.5$ \\
+			Results\footnote{Gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_p=1.7$ & $k_p=2$ & $k_p=3.5$ \\
 			\hline
 			$G_m\ [dB]$ & $23.2$ & $21.7$ & $16.9$ \\
-			$\phi_m\ [deg]$ & $78.0$ & $76.0$ & $63.3$ \\
+			$\phi_m\ [deg]$ & $78.0$ & $76.0$ & $66.3$ \\
 			\hline
 			$T_s\ [s]$ & $2.30$ & $1.80$ & $0.75$ \\
 			\hline
 		\end{tabular}
 	\end{subfigure}
-	\caption{Comparisons between $w_{c,p}=1.7$, $w_{c,p}=2$ and $w_{c,p}=3.5$ cases}
+	\caption{Comparisons between $k_p=1.7$, $k_p=2$ and $k_p=3.5$ cases}
 	\label{fig:Bode and Step P 1dof comparison}
 \end{figure*}
 The last case is certainly the fastest one, so it is considered the best solution reached so far. \\
-However, small oscillations occur after the end of the transient; initially, we thought that those were caused by the coupling of speed and position control loops: this suggested us to not speed up the controller with a higher proportional gain, in order to avoid greater oscillations. Spending more time thinking about this problem allowed us to deduce that the previous hypothesis was wrong. A more reasonable explanation attributes the cause of these oscillation to the switch of integrator in the inner loop; so actually, following this reasoning, a faster system could have been obtained. \\
+However, small oscillations occur after the end of the transient; initially, we thought that those were caused by the coupling of speed and position control loops: this suggested us to not speed up the controller with a higher proportional gain, in order to avoid greater oscillations. Spending more time thinking about this problem allowed us to deduce that the previous hypothesis was wrong. A more reasonable explanation attributes the cause of these oscillation to the switch of integrator (explained later on) in the inner loop; so actually, following this reasoning, a faster system could have been obtained. \\
 
-Definitely, the~$\omega_{c,p} = 3.5\ rad/s$ tuning has been chosen, at that time, as the best solution. Results are in \cref{fig:Pos_1dof_3.5}.
+Definitely, the~$k_p = 3.5\ rad/s$ tuning has been chosen, at that time, as the best solution. Bode diagrams of open-loop and closed-loop are reported in \cref{fig:Bode P 3.5}; here, as explained in the speed control loop tuning, the cross-over frequency detected by MATLAB does not perfectly coincides with the bandwidth of the closed-loop.
 \begin{figure*}[h]
 	\centering
-	\includegraphics[width=0.4\textwidth]{1_bode3.5}
-	\caption{Position control loop with  $w_{c,p}=3.5\ rad/s$}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{openloop_margin_pos_1dof}
+		\subcaption{Open-loop Bode diagram}
+	\end{subfigure}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{closedloop_bode_pos_1dof}
+		\subcaption{Open-loop Bode diagram}
+	\end{subfigure}
+	\caption{Bode diagrams with  $k_p=3.5\ rad/s$}
 	\label{fig:Bode P 3.5}
 \end{figure*}
 
-\begin{figure*}[h]
+\paragraph{Performance analysis}
+Due to the friction, the position reached by the mass is not exactly the reference one. The controller integrates this small error and the control input raises slowly. Since the static friction coefficient is higher than the dynamic one, the load will move only after a few seconds, during which the controller has kept integrating the error asking for an increasing control action.
+Once that the input is large enough to counteract the static friction, the load moves and the friction drops, making the applied control input stronger than what needed. The result is that the load moves over the reference, generating an error that is even bigger than the original one.
+For the above-mentioned reasons, a logic switch has been implemented. Its purpose is that of deactivate the integrative action of the inner loop whenever the position error is smaller than a threshold equal to~$0.85 \degree$, that corresponds to 10 pulses of the encoder and is a bit greater than the maximum static error due to friction. On the other hand, it is not possible to zero error at steady state since only the proportional action is in place.
+\begin{figure*}
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
 		\includegraphics[scale=0.3]{pos_1_dof}
@@ -217,30 +232,26 @@ Definitely, the~$\omega_{c,p} = 3.5\ rad/s$ tuning has been chosen, at that time
 		\includegraphics[scale=0.3]{volt_1_dof}
 		\caption{Voltage}
 	\end{subfigure}
-	\caption{Step response with $\omega_{c,p}=3.5$}
+	\caption{Step response with $k_p=3.5$}
 	\label{fig:Pos_1dof_3.5}
 \end{figure*}
 
-\newpage
-Due to the friction, the position reached by the mass is not exactly the reference one. The controller integrates this small error and the control input raises slowly. Since the static friction coefficient is higher than the dynamic one, the load will move only after a few seconds, during which the controller has kept integrating the error asking for an increasing control action.
-Once that the input is large enough to counteract the static friction, the load moves and the friction drops, making the applied control input stronger than what needed. The result is that the load moves over the reference, generating an error that is even bigger than the original one.
-For the above-mentioned reasons, a logic switch has been implemented. Its purpose is that of deactivate the integrative action of the inner loop whenever the position error is smaller than a threshold equal to~$0.85 \degree$. On the other hand, it is not possible to zero error at steady state since only the proportional action is in place.
+\paragraph{Bandwidth and phase margin estimation}
+Also in this case, a sine-sweep experiment is performed to estimate the bandwidth of the closed-loop system. Simulation and laboratory data are really close, as their cutting frequency estimation: the first one is around~$5.6\ rad/s$, the second one~$5.3\ rad/s$.
 \begin{figure*}[h]
 	\centering
-	\includegraphics[scale=0.2]{sine_pos_1dof}
+	\includegraphics[width=0.9\columnwidth]{sine_pos_1dof}
 	\caption{Sine-sweep experiment from $0.1\ Hz$ to $1\ Hz$ in $100\ s$}
 	\label{fig:sinesweep_pos_1dof}
 \end{figure*}
+According to the fact that there are not oscillations and overshoots, it is expected a high phase margin that is supposed to be very close to the theoretical one, reported in the comparison table.
 
-Also in this case, a sine-sweep experiment is performed to estimate the bandwidth of the closed loop system. The simulation and laboratory data are really close and the cutting frequency is around~$5.5\ rad/s$ for the simulated system and~$4.5\ rad/s$ for the real system.
-\newpage
 \section{\twodof\ system}
-Consider the transfer function from voltage to the second mass speed:
+The objective in this case is the same of the previous one: a quite fast control, limiting oscillations as possible. Now, consider the transfer function from voltage to the second mass speed:
 \[
 G_{v,\dot{\theta}_2}(s)=
 \frac{-1.293 \cdot 10^{8}}{s^5+40.9s^{4}+4833s^{3}+1.686 \cdot 10^{5} s^{3}+3.327 \cdot 10^{6} s+7.355 \cdot 10^{7}}
 \]
-
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.4\columnwidth}
@@ -253,9 +264,7 @@ G_{v,\dot{\theta}_2}(s)=
 	\label{fig:G(s)2dof}
 \end{figure*}
 
-As it is possible to notice in \cref{fig:G(s)2dof}, there are now two couples of complex conjugated poles with low damping coefficient. A similar solution to the \onedof\ problem has been applied, it is used a notch filter to delete these poles and substitute them with a couple of complex conjugated poles, this time at frequency~$100\ rad/s$ and a damping coefficient equal to~$0.72$. The reason why it has been decided to postpone the poles frequency instead of using the original one is explain in the speed control loop section.
-
-
+As it is possible to notice in \cref{fig:G(s)2dof}, there are now two couples of complex conjugated poles with low damping coefficient. A similar solution to the \onedof\ problem has been applied, it is used a notch filter to delete these poles and substitute them with a couple of complex conjugated poles, this time at frequency~$100\ rad/s$ and a damping coefficient equal to~$0.72$. The reason why it has been decided to move ahead the poles frequency instead of using the original one is explain in the speed control loop section.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
@@ -271,59 +280,103 @@ As it is possible to notice in \cref{fig:G(s)2dof}, there are now two couples of
 	\caption{Plant $G(s)$ with Notch Filter $N_f(s)$: $G_{tot}$(s)}
 \end{figure*}
 
-
 Applying the notch filter represented in \cref{fig:Notch Filter2}, the controller sees the plant~$G_{tot}(s)$ of \cref{fig:Plant G(s) with Notch Filter2}.
 
-\newpage 
 \subsection{Speed Control Loop}
-The controller structure is the PI, enriched with an anti-wind-up structure; as before, the zero of the PI controller cancels out the real pole at~$30.6\ rad/s$.
+The controller structure is the PI, enriched with an anti-windup; as before, the zero of the PI controller cancels out the real pole at~$30.6\ rad/s$.
 \[
 R(s)=-k_v
 \frac{\frac{s}{30.6}+1}{s}
 \]
+\begin{figure*}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{2dof_PI_scheme}
+	\caption{Closed-loop block scheme}
+\end{figure*}
 
-As noticed in the \onedof~case, there are some periodic oscillations due to a change of the dynamic friction along the revolution of the masses. Right now the amplitude of these disturbances cannot be neglected anymore and a solution to attenuate them as much as possible needs to be found. In order to enhance the disturbance rejection, a~$w_{c,v}$ high enough to obtain a large bandwidth is required. On the other hand, it is not possible to set it at high frequencies, otherwise the phase margin would decrease dramatically. A good trade-off is imposing~$k_v=5$.
- In order to design the right controller, in the simulation scheme it has been added a disturbance acting on both torques (\textit{mass1} and \textit{mass2}) with fixed amplitude at~$0.005$ and frequency equal to the masses speed to simulate this change of the dynamic friction during the revolution.
+\paragraph{Tuning and simulation}
+As noticed in the \onedof~case, there are some periodic oscillations due to a change of the dynamic friction along the revolution of the masses. 
+Right now, the amplitude of these disturbances cannot be neglected anymore and a solution to attenuate them as much as possible needs to be found. In order to enhance the disturbance rejection, a~$w_{c,v}$ high enough to obtain a large bandwidth is required. On the other hand, it is not possible to set it at too high frequencies, otherwise the phase margin would decrease dramatically. In order to design the right controller, in the simulation scheme of~$G(s)$ it has been added a disturbance: it acts as a torque on (\textit{mass1} and \textit{mass2}) shafts, with fixed amplitude at~$0.005\ Nm$ and frequency equal to the masses speed, to simulate the dynamical change of friction during the revolution. \\
+A first possible tuning is the following:
 \begin{figure*}[h]
 	\centering
 	\includegraphics[scale=0.4]{step10_noPF}
-	\caption{Step response with $k_v=5 $}
+	\caption{Step response with $k_v=5$}
 	\label{fig:step10_noPF}
 \end{figure*}
-
-This solution is far to be acceptable due to its high oscillations during the transient. To keep large enough the bandwidth, it has been decided not to anticipate the~$w_{c,v}$, but to build a low-pass pre-filter on the reference signal with cutting frequency at~$7\ rad/s$. Thanks to this solution, the closed loop system will not be excited by high frequencies and two other positive effects appear: no oscillations during the transient and rejection of the resonances identification uncertainties. Indeed, the amplitudes of the oscillations at steady state are decreased and now can be considered acceptable. 
-
-\newpage
+\\
+This solution is far to be acceptable, due to its high oscillations during the transient. To keep large enough the bandwidth, it has been decided not to anticipate the~$w_{c,v}$, but to build a low-pass pre-filter on the reference signal. Thanks to this solution, the closed-loop system will not be excited by high frequencies; moreover, even the uncertainty on resonances do not produce differences between simulation and experiments at the laboratory.
+Many settings have been tried: in \cref{fig:2dof_PI_trials} is shown the comparison between these two configurations. The \textit{tuning 2}, starting from the previous experiment (\cref{fig:step10_noPF}), cancels out the transient oscillations by means of the low-pass pre-filter; then, the \textit{tuning 1} tries to enlarge the bandwidth even more.
 \begin{figure*}[h]
 	\centering
-\begin{subfigure}{0.4\columnwidth}
-	\includegraphics[width=\textwidth]{step10}
-	\subcaption{Step $10\ rad/s$}
-\end{subfigure}
-\begin{subfigure}{0.4\columnwidth}
-	\includegraphics[width=\textwidth]{step17}
-	\subcaption{Step $17\ rad/s$}
-\end{subfigure}
-\begin{subfigure}{0.4\columnwidth}
-	\includegraphics[width=\textwidth]{volt17}
-	\subcaption{Voltage related to a step of $17\ rad/s$}
-\end{subfigure}
-\caption{Speed control loop with $k_v=5$ with low-pass pre-filter}
-\label{fig:PI_with_5}
+	\begin{subfigure}{0.45\columnwidth}
+		\centering
+		\includegraphics[width=0.8\textwidth]{2dof_PI_trials}
+		\subcaption{Closed-loop step responses}
+	\end{subfigure}
+	\begin{subfigure}{0.45\columnwidth}
+		\centering
+		\begin{tabular}{|c|cc|}
+			\hline
+			& Tuning 1 & Tuning 2 \\
+			\hline
+			$k_v$ & 10 & 5 \\
+			$P_f$ & $\frac{8}{s+8}$ & $\frac{7}{s+7}$ \\
+			\hline
+		\end{tabular}
+		\subcaption{Configuration parameters}
+	\end{subfigure}
+	\caption{Comparison between two different tunings}
+	\label{fig:2dof_PI_trials}
+\end{figure*}
+In both cases, the settling time is around $0.8\ s$. However, in the first tuning, oscillations in the transient are not considered acceptable because of the too aggressive control action and, therefore, the too low phase margin. Simultaneously, no further disturbance rejection is obtained; hence, our choice is the second tuning.
+
+\paragraph{Performance analysis}
+As it is possible to notice in figure \ref{fig:PI_with_5}, the simulation and laboratory data are really close during the transient and the voltage never saturates.
+\subparagraph{Oscillations} This solution satisfies the requirements: no oscillations in transient happen and reduction of disturbances amplitude at steady-state. In particular, open-loop disturbances have an amplitude of about~$3\%$ both at~$10\ rad/s$ and~$17\ rad/s$, respectively reduced to~$2.5\%$ and~$1.2\%$ in closed-loop.
+\begin{figure*}[h]
+	\centering
+	\begin{subfigure}{0.4\columnwidth}
+		\includegraphics[width=\textwidth]{step10}
+		\subcaption{Step of $10\ rad/s$}
+	\end{subfigure}
+	\begin{subfigure}{0.4\columnwidth}
+		\includegraphics[width=\textwidth]{step17}
+		\subcaption{Step of $34\ rad/s$}
+	\end{subfigure}
+	\begin{subfigure}{0.4\columnwidth}
+		\includegraphics[width=\textwidth]{volt17}
+		\subcaption{Voltage related to a step of $34\ rad/s$}
+	\end{subfigure}
+	\caption{Speed control loop with $k_v=5$ with low-pass pre-filter}
+	\label{fig:PI_with_5}
 \end{figure*}
 
-As it is possible to notice in figure \ref{fig:PI_with_5}, the simulation and laboratory data are really close during the transient and the voltage never saturates. This solution satisfies the requirements. The \cref{fig:sinesweep_speed_2dof} shows the response to a sinesweep without applying the pre-filter to the reference.  This is useful to understand the mismatch between the simulation and the real system in the range of frequency from 1 Hz to 10 Hz.
-
+\paragraph{Bandwidth and phase margin estimation}
+The \cref{fig:sinesweep_speed_2dof} shows the response to a sine-sweep, without applying the pre-filter to the reference. This is useful to estimate the bandwidth of the closed-loop.
 \begin{figure*}[h]
 	\centering
-	\includegraphics[scale=0.4]{sine_PI}
-	\caption{Sineweep experiment from $1\ Hz$ to $10\ Hz$ in $100\ s$}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{openloop_margin_speed_2dof}
+		\subcaption{Open-loop Bode diagram}
+	\end{subfigure}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{closedloop_bode_speed_2dof}
+		\subcaption{Closed-loop Bode diagram}
+	\end{subfigure}
+\end{figure*}
+\begin{figure*}[h]
+	\includegraphics[width=\textwidth]{sine_PI}
+	\caption{Sine-sweep experiment from $1\ Hz$ to $10\ Hz$ in $100\ s$}
 	\label{fig:sinesweep_speed_2dof}
 \end{figure*}
 
-From \cref{fig:sinesweep_speed_2dof}, it appears that the overall frequencial behavior of the simulation is similar to the real one. The main difference arises around 75 seconds that corresponds to a frequency around~$25\ rad/s$. At this frequency there is the first resonance peak of the plant. An explanation to this different behavior could be an overestimation of the damping coefficient. As consequence, the whole resonance peak has not been compensated completely and the sinesweep experiment shows it very well. \\
+The simulations indicates the cutting frequency around~$11.8\ rad/s$. Data collected in laboratory show a resonance effect at that frequency; as in the case of step response, this could be explained by a lower phase margin in the real system with respect to the simulated one.
+Looking at the step response in \cref{fig:step10_noPF}, the overshoot is about~$48\%$, then the \cref{eq:phase_margin_compute} gives phase margin of about~$25\degree$.
 
-As it has been done for the \onedof\ system, the controllability range is tested with a ramp with decreasing low speed. In this case, the presence of small oscillations prevents the control the system at very low speed. For this reason the controllable speed belongs to two possible intervals: from~$-17\ rad/s$ to~$-0.5\ rad/s$ and from~$0.5\ rad/s$ to~$17\ rad/s$.
+Actually, another difference arises at about~$75\ s$, that corresponds to a frequency around~$25\ rad/s$: at this frequency, there is the first resonance peak of the plant. An explanation to this different behavior could be an under-estimation of the damping coefficient in model identification: by applying a too strong damping coefficient to the zeros of the notch filter, it generates a small decreasing of the modulus at that frequency to the overall system. As consequence, the whole resonance peak has been compensated more than needed and the sine-sweep experiment shows it very well. \\
+
+As it has been done for the \onedof\ system, the range of reachable set-points is tested with a ramp with decreasing low speed. In this case, the presence of small oscillations prevents the control the system at very low speed. For this reason the controllable speed belongs to two possible intervals: from~$-17\ rad/s$ to~$-0.5\ rad/s$ and from~$0.5\ rad/s$ to~$17\ rad/s$.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.45\columnwidth}
@@ -351,15 +404,14 @@ Following the same reasoning of the \onedof~case, a cascade control strategy is 
 	\caption{Closed-loop block scheme}
 \end{figure*}
 
+\paragraph{Tuning and simulation}
 A comparison between three different solutions is now provided:
 \begin{itemize}
-	\item $k_v=5 \ and\  \omega_{c,p}=3$
-	\item $k_v=5 \  and\ \omega_{c,p}=2.5$
-	\item $k_v=4 \ and\ \omega_{c,p}=2$
+	\item $k_v=5$ and $k_p=3$
+	\item $k_v=5$ and $k_p=2.5$
+	\item $k_v=4$ and $k_p=2$
 \end{itemize}
-
-where $k_v$ represents the gain used to set the PI regulator of the inner loop, while $\omega_{c,p}$ is the bandwidth of the position loop. For the reason that each solution has a different $\omega_{c,p}$, from now on only $\omega_{c,p}$ will be used to distinguish them.
-
+where $k_v$ represents the gain used to set the PI regulator of the inner loop, while~$k_p$ is the gain of position loop. For the reason that each solution has a different~$k_p$, from now on only~$k_p$ will be used to distinguish them.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.4\columnwidth}
@@ -370,28 +422,29 @@ where $k_v$ represents the gain used to set the PI regulator of the inner loop, 
 	\begin{subfigure}{0.4\columnwidth}
 		\begin{tabular}{|c|ccc|}
 			\hline
-			Results\footnote{Gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $\omega_{c,p}=3$ & $\omega_{c,p}=2.5$ & $\omega_{c,p}=2$ \\
+			Results\footnote{Gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_p=3$ & $k_p=2.5$ & $k_p=2$ \\
 			\hline
 			$G_m\ [dB]$ & $20.4$ & $22$ & $24.1$ \\
 			$\phi_m\ [deg]$ & $70.5$ & $73.6$ & $73.7$ \\
 			\hline
-			$T_s\ [s]$ & $0.90$ & $1.25$ & $1.5$ \\
+			$T_s\ [s]$ & $0.90$ & $1.25$ & $1.75$ \\
 			\hline
 		\end{tabular}
 	\end{subfigure}
-	\caption{Comparisons between $w_{c,p}=2$, $w_{c,p}=2.5$ and $w_{c,p}=3$ cases}
+	\caption{Comparisons between $k_p=2$, $k_p=2.5$ and $k_p=3$ cases}
 	\label{fig:Bode and Step P 2dof comparison}
 \end{figure*}
 
-%Thus, the~$k_v$ coefficient of the PI controller has been set to~$4$. Despite decreasing the bandwidth and the disturbance rejection, the solution works fine anyway because the disturbance due to the dynamic friction does not arise significantly anymore, since the system is controlled with position reference.
-%In order to assure the frequency decoupling, a low proportional gain of the outer loop is needed. Indeed,~$k_p$ has been set to~$2$ because it is a good trade-off between a good settling time and an acceptable phase margin.
-From the comparison done in \ref{fig:Bode and Step P 2dof comparison}, it can be notice that the best solution is provided by imposing $k_v=5$ and  $\omega_{c,p}=3$. Indeed, it has the smallest settling time, but at the same time it keeps a completely acceptable phase margin. By comparing each of this solution with its respective simulation, we noticed how in both cases with $w_{c,p}=3$ and $w_{c,p}=2.5$, the simulation is quite different from the data collected at the laboratory. While as regards the third scenario, this difference is almost negligible. Since we favored the great simulation reliability of this last case over the low settling time of the case given by $w_{c,p}=3$, it has been chosen as the optimal solution the one obtained by imposing $k_v=4$ and $\omega_{c,p}=2$.
-Below, it possible to see the comparison between the laboratory data obtained with this control strategy and the simulation.
+From the comparison done in \cref{fig:Bode and Step P 2dof comparison}, it can be notice that the best solution is provided by imposing $k_v=5$ and  $\omega_{c,p}=3$. Indeed, it has the smallest settling time, but at the same time it keeps a completely acceptable phase margin. By comparing each of this solution with its respective simulation, we noticed how in both cases with $w_{c,p}=3$ and $w_{c,p}=2.5$, the simulation is quite different from the data collected at the laboratory. While as regards the third scenario, this difference is almost negligible. Since we favored the great simulation reliability of this last case over the low settling time of the case given by $w_{c,p}=3$, it has been chosen as the optimal solution the one obtained by imposing $k_v=4$ and $\omega_{c,p}=2$.
+
+\paragraph{Performance analysis}
+Below, it possible to see the comparison between simulation and laboratory data obtained with this control strategy.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.48\columnwidth}
 		\includegraphics[width=\textwidth]{step_P_2dof}
 		\subcaption{Position}
+		\label{fig:P_2dof_pos}
 	\end{subfigure}
 	\begin{subfigure}{0.45\columnwidth}
 		\includegraphics[width=\textwidth]{speed_P_2dof}
@@ -400,17 +453,33 @@ Below, it possible to see the comparison between the laboratory data obtained wi
 	\begin{subfigure}{0.45\columnwidth}
 		\includegraphics[width=\textwidth]{volt_P_2dof}
 		\subcaption{Voltage}
+		\label{fig:P_2dof_volt}
 	\end{subfigure}
-	\caption{Position control loop with $k_{p} =2$ with a position step of $\frac{\pi}{4}$}
-	\label{fig:P_2dof}
+	\caption{Position control loop with $k_{p} =2$ with a position step of $\frac{\pi}{4}\ rad$}
 \end{figure*}
-\newline
-From \cref{fig:P_2dof}(c), it can observed the presence of two voltage spikes, which do not influence neither the position or the speed of the mass. As done in the \onedof\ position control, a logic switch is inserted in the PI controller to overcome the static friction issue, by disabling the integrator. This switch might be the cause of those spikes, indeed, these events arise whenever the switch is activated. 
-It is possible to notice in \cref{fig:P_2dof}, that the second mass does not reach the position reference due to the above-mentioned switch gate.
-The mismatch between the simulation and the laboratory data is fully negligible, as it is shown through the sinesweep experiment in \cref{fig:sinesweep_pos_2dof}. In also, from this sinesweep experiment the bandwidth of the closed loop system has been estimated to be equal to $w_{c,p}=2.7$, both for the simulation and the laboratory data.
+
+The settling time is around~$1.75\ s$, that is considered satisfactory. \\
+From \cref{fig:P_2dof_volt}, it can be observed the presence of two voltage spikes, which do not influence neither the position nor the mass speed. As done in the \onedof\ position control, a logic switch is inserted in the PI controller to overcome the static friction issue by disabling the integrator. This switch might be the cause of those spikes, indeed, these events arise whenever the switch is activated. \\
+It is possible to notice in \cref{fig:P_2dof_pos}, that the second mass does not reach the position reference due to the above-mentioned switch gate.
+
+\paragraph{Bandwidth and phase margin estimation}
+The mismatch between simulation and laboratory data is fully negligible, as it is shown through the sine-sweep experiment in \cref{fig:sinesweep_pos_2dof}. From this, it can be seen that the bandwidth of the closed-loop system has been estimated to be equal to~$w_{c,p}=2.7$, both for the simulation and the laboratory data. This result is also confirmed by the closed-loop Bode diagram (\cref{fig:2dof_pos_bode}) and by step response settling time.
+The simulation accuracy with respect to the real system suggests that also the phase margin computation is almost correct: $\phi_m = 73.7\degree$.
 \begin{figure*}[h]
 	\centering
-	\includegraphics[scale=0.2]{sine_P_2dof}
-	\caption{Sineweep experiment from $0.1\ Hz$ to $1\ Hz$ in $100\ s$}
-	\label{fig:sinesweep_pos_2dof}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{openloop_margin_pos_2dof}
+		\subcaption{Open-loop Bode diagram}
+	\end{subfigure}
+	\begin{subfigure}{0.45\columnwidth}
+		\includegraphics[width=\textwidth]{closedloop_bode_pos_2dof}
+		\subcaption{Closed-loop Bode diagram}
+		\label{fig:2dof_pos_bode}
+	\end{subfigure}
+	\begin{subfigure}{0.9\columnwidth}
+		\includegraphics[width=\textwidth]{sine_P_2dof}
+		\subcaption{Sine-sweep experiment from $0.1\ Hz$ to $1\ Hz$ in $100\ s$}
+		\label{fig:sinesweep_pos_2dof}
+	\end{subfigure}
+	\caption{Bode and sine-sweep analyses}
 \end{figure*}

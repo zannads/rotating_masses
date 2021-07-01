@@ -1,7 +1,7 @@
 Gn_v_w1_1dof = minreal([0,0,0,-1]/(s*eye(4)-nominal_sys_1dof.A)*nominal_sys_1dof.B)
 Gn_v_w1_2dof = minreal([0,0,0,-1,0,0]/(s*eye(6)-nominal_sys_2dof.A)*nominal_sys_2dof.B)
 Gn_v_w2_2dof = minreal([0,0,0,0,0,-1]/(s*eye(6)-nominal_sys_2dof.A)*nominal_sys_2dof.B)
-
+Gg_v_wl_2dof = minreal([1,0,0,0,0,0]/(s*eye(6)-greybox_id_2dof.A)*greybox_id_2dof.B)
 Gg_v_w1_1dof = minreal([0,0,0,-1]/(s*eye(4)-greybox_id_1dof.A)*greybox_id_1dof.B)
 Gg_v_w1_2dof = minreal([0,0,0,-1,0,0]/(s*eye(6)-greybox_id_2dof.A)*greybox_id_2dof.B)
 Gg_v_w2_2dof = minreal([0,0,0,0,0,-1]/(s*eye(6)-greybox_id_2dof.A)*greybox_id_2dof.B)
