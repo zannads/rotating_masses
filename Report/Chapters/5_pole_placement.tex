@@ -86,8 +86,12 @@ A comparison between the same pole placement and the different state estimator i
 	\label{fig:Position step response with full Kalman Filter}
 \end{figure*}
 
-Regard the step response, it is possible to notice that the Kalman filter configuration is not as smooth as the observer one. This might be caused by a slower Kalman Filter state estimation. By the way, both cases are considered acceptable. On the other hand, the Kalman filter brings a significant improvement on the control action, resulting to be less noisy due to the filter robustness against the white noises.
-These performances are satisfactory and a faster controller is not needed, however even better solutions will be provided later on with LQG.
+\paragraph{Performance analysis}
+Regard the step response, it is possible to notice that the Kalman filter configuration is not as smooth as the observer one. This might be caused by a slower Kalman Filter state estimation. By the way, both cases are considered acceptable. On the other hand, the Kalman filter brings a significant improvement on the control action, resulting to be less noisy due to the filter robustness against the white noises. \\
+
+The settling time, in both configurations, is about~$0.55\ s$, that is considered satisfactory; a bandwidth estimation, derived by the settling time, is then about~$10\ rad/s$, according to the dominant pole. In the second case, where the controller is based on the Kalman filter, a small overshoot appears; actually, it is not perfectly recovered due to the switch on the integral action.
+However, in both cases, phase margin can be supposed to be greater than~$65\degree$.
+Even better solutions will be provided later on with LQG, so a further tuning and analysis have not been done here.
 \newpage
 \section{\twodof\ system}
 Like before, the enlarged system structure is used in order to reach the position reference. The overall enlarged state-space system and the closed control loop scheme are definitely similar to the \onedof\ case, except for the additional variables~$\theta_2$ and~$\dot\theta_2$:
@@ -152,6 +156,9 @@ Also in this case, complex poles at the same frequency have been preferred over 
 	\caption{Position step response with full-state observer}
 \end{figure*}
 
+\paragraph{Performance analysis}
+In the case of observer reconstructor, the settling time is around~$0.9\ s$ (estimated bandwidth of~$5.5\ rad/s$, a bit smaller than the expected one from the closed-loop dominant pole); instead, using the Kalman filter both with all available sensors and second mass encoder only, it is reduced to~$0.6\ s$ (estimated bandwidth of~$8.3\ rad/s$). It is notable that small differences between simulation and collected data appear in the transient, probably due to some identification uncertainties.
+Also in \twodof\ case, phase margin can be supposed to be greater than~$65\degree$.
 \begin{figure*}[h]
 	\centering
 	\begin{subfigure}{0.5\columnwidth}

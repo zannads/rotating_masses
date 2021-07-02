@@ -86,8 +86,10 @@ Moreover, the poles of the closed loop system are in:
 		-5.7+41i & -5.7-41i & -17.7+4i & -17.7-4i & -5.87 
 	\end{bmatrix}
 \end{equation}
-Thus, the closed loop system has a dominant time constant of $0.17\ s$. 
- Since not all measurements are available~(speeds are very noisy), a state reconstructor is necessary: the Kalman Filter introduced in chapter~4 works thanks to~$\theta_l$ and~$\theta_1$ signals, that makes this LQR an LQG control. As shown in~\cref{fig:1dof_LQ_classicKF}, from the simulation a settling time of~0.8~s~(comparable to the previous controllers, but greater than the one of Kalman Filter, as desired) is expected. Actually, laboratory experiment is a bit oscillating in the transient; indeed, this control technique does not explicitly cancel the system dynamics, difficult to be attenuated by tuning matrices. At steady-state condition, the integral action could detect a small static error that would cause some sudden motions, so a switch disables the input signal of the integrator in proximity of the reference.
+Thus, the closed loop system has a dominant time constant of $0.17\ s$. \\
+ Since not all measurements are available~(speeds are very noisy), a state reconstructor is necessary: the Kalman Filter introduced in chapter~4 works thanks to~$\theta_l$ and~$\theta_1$ signals, that makes this LQR an LQG control.
+ \subparagraph{Performance analysis}
+ As shown in~\cref{fig:1dof_LQ_classicKF}, from the simulation a settling time of~0.8~s~(comparable to the previous controllers, but greater than the one of Kalman Filter, as desired) is expected; estimated bandwidth is, then, around~$6.25\ rad/s$. Actually, laboratory experiment is a bit oscillating in the transient; indeed, this control technique does not explicitly cancel the system dynamics, difficult to be attenuated by tuning matrices. At steady-state condition, the integral action could detect a small static error that would cause some sudden motions, so a switch disables the input signal of the integrator in proximity of the reference.
 
 \begin{figure*}
 	\centering
@@ -210,7 +212,7 @@ The additional parameters make the tuning more complicated. Here, a higher weigh
 	\qquad
 	R = 2.5
 \]
-The resulting controller is:
+The resulting controller and closed-loop poles are written below, leading to a dominant time constant of~$0.2\ s$.
 \begin{equation}
 	K =
 	\left[
@@ -226,23 +228,30 @@ The resulting controller is:
 	\right]
 	\label{eq:2dof_LQ_fastK}
 \end{equation}
-with the closed loop poles that are in:
 \begin{equation}
 	\lambda_{CL} =
 	\begin{bmatrix}
 		-5+62.5i & -5-62.5i & -47.7 & -9.25+26.3i & -9.25-26.3i & -5+3.2i & -5-3.2i 
 	\end{bmatrix}
 \end{equation}
-Thus, the dominant time constant is $0.2\ s$. 
 
-In~\cref{fig:2dof_LQ_classicKF}, a comparison between simulation and experiment is visible. An improvement with respect to the~\onedof\ case exists: no oscillations are present in the transient. Also other experiments have been performed in laboratory sessions, where settling time was shorter, but oscillations were not negligible because of a non-optimal tuning of matrices~$Q$ and ~$R$.
+In~\cref{fig:2dof_LQ_classicKF}, a comparison between simulation and experiment is visible.
+\subparagraph{Performance analysis}
+An improvement with respect to the~\onedof\ case exists: no oscillations are present in the transient. Also other experiments have been performed in laboratory sessions, where settling time was shorter, but oscillations were not negligible because of a non-optimal tuning of matrices~$Q$ and~$R$. Instead, in this case, settling time is about~$0.8\ s$, with estimated bandwidth of~$6.25\ rad/s$.
 
 \paragraph{Sensors not available: minimum Kalman Filters}
 
 In this case, separate experiments are shown (\cref{fig:2dof_LQ_minKF}) focusing on single step, so that the transients are more visible. It can be seen that all of them are very similar, meaning that the system is observable by using any of the proposed sensor combinations.
 
-An issue appears by using Kalman Filter with potentiometer only: after a few seconds, an instability occurs and the experiment fails. There is a numerical reason for this, in fact from the mathematical viewpoint the \twodof~system should be observable also from the potentiometer (checked by \textit{obsv}~MATLAB function), but in practice it is not: as explained in \cref{SVD_explaination}, it is clear that at least two eigenvectors are not linearly independent.
-This means that the only potentiometer is not sufficient for the state reconstruction and, so, for the control of the \twodof~system.
+An issue appears by using Kalman Filter with potentiometer only: after a few seconds, a dynamic instability occurs and the experiment fails. A focus on the data shows that oscillations occur at the resonance frequency of the system ($62.3\ rad/s$).
+By analyzing the closed-loop poles moved by the~$LQR$, it appears that the higher resonance frequency is very low damped; this leads to significant oscillations at the resonance frequency, indeed the control law directly excites the system at this frequency.
+Due to the high noisy reconstruction coming from this Kalman filter, the controller is not able to counteract these oscillations.
+\begin{equation}
+	\lambda_{CL} =
+	\begin{bmatrix}
+		-1.55+62.3i & -1.55-62.3i & -30 & -3.83+24.7i & -3.83-24.7i & -1.09 & -1.09
+	\end{bmatrix}
+\end{equation}
 
 \begin{figure*}
 	\centering

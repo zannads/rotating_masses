@@ -208,9 +208,9 @@ The results confirm partially the hypothesis, the filters with at least one enco
 Moreover, the \onedof\ system can be controlled estimating the states from only the potentiometer measurement, but with the condition of slowing down the controller.\\
 
 \subparagraph{Potentiometer only in \twodof\ case}
-On the other hand, for the \twodof\ setup it was not possible to control it using only the potentiometer, despite being able to reconstruct the states using only one of the two encoders.
-A first hypothesis is in the observability matrix. This is full rank for all the possible combination of used measurements. But in case of potentiometer sensor only, even though the smallest singular value obtained by~\textit{svd} is around~$0.5$ and condition number around~$1e+8$, the modal matrix computed by MATLAB function \textit{eig} is not full rank; this lead us to a wrong conclusion, in fact, actually the system is observable as visible in every transfer function (all poles appear from input to any output). \\
-A deeper analysis shows that the poles of the Kalman filter with potentiometer only are not moved with respect to the ones of the system. In particular, there are two couples of complex conjugate poles at resonance frequencies. These cause oscillations, in particular, in the reconstruction of speeds.
+On the other hand, for the \twodof\ setup it was not possible to control it using only the potentiometer. \\
+A first hypothesis is in the observability matrix. This is full rank for all the possible combination of used measurements. In case of potentiometer sensor only, the smallest singular value obtained by~\textit{svd} is around~$0.5$ and the condition number is around~$1e+8$, then it is possible to exclude numerical errors in the rank calculation of matrix~$M_O$. On the other hand, the modal matrix computed by MATLAB function \textit{eig} is not full rank; this lead us to a wrong conclusion, in fact, actually the system seems to be observable: in every transfer function all poles appear from input to any output. Moreover, this Kalman filter has been tested on past experiments; results contain speeds oscillations at~$62.3\ rad/s$. \\
+A deeper analysis, indeed, shows that some poles of the Kalman filter with potentiometer only are in the same position of the system ones. In particular, there are two couples of complex conjugate poles at~$24.9\ rad/s$ and~$62.3\ rad/s$ (the same of the system). \\
 %\begin{wrapfigure}{r}{10cm}
 %	\[
 %		\Phi_{O,pot} = \begin{bmatrix}
@@ -224,5 +224,4 @@ A deeper analysis shows that the poles of the Kalman filter with potentiometer o
 %	\]
 %\end{wrapfigure}
 \label{SVD_explaination}
-
-Since the controller is based on that reconstruction, it applies a control action exactly at the system resonance frequency. Hence, reconstructing and applying the control action at the system resonance frequency, together with the high noise of the potentiometer, would cause a dynamical instability.
+\par Since the controller is based on that reconstruction, it applies a control action exactly at the system resonance frequency. Hence, reconstructing and applying the control action at the system resonance frequency, together with the high noise of the potentiometer, would cause a dynamical instability.

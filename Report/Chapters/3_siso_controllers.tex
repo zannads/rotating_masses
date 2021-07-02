@@ -59,7 +59,7 @@ The goal of this first controller is to obtain a fast and robust performance. In
 \end{itemize}
 
 \paragraph{Tuning and simulation}
-From now on, $k_v$ will be used as tuning parameter of the PI regulator, while the~$0\ dB$ axis of Bode diagram of speed loop is indicated by~$w_{c,v}$. In order to obtain the desired specifications, many Bode analyses and simulations have been done: here is reported a comparison between step responses with~$k_v=3.5$ and~$k_v=4.5$ (\cref{fig:PI1dof_comparison}).
+From now on, $k_v$ will be used as tuning parameter of the PI regulator, while the~$0\ dB$ axis cross-over frequency of the speed open-loop is indicated by~$w_{c,v}$. In order to obtain the desired specifications, many Bode analyses and simulations have been done: here is reported a comparison between step responses with~$k_v=3.5$ and~$k_v=4.5$ (\cref{fig:PI1dof_comparison}).
 The only choice that satisfies all the requirements is obtained by imposing~$k_v = 4.5$: open-loop and closed-loop Bode diagrams are shown in \cref{fig:PI1dof_bode}; here, it can be noticed that the cross-over frequency of the open-loop (detected by MATLAB \textit{margin} function) does not perfectly coincide with the closed-loop bandwidth, that will be estimated in \cref{par:1dof_vel_bwEstimation}.
 \begin{figure*}[h]
 	\centering
@@ -72,7 +72,7 @@ The only choice that satisfies all the requirements is obtained by imposing~$k_v
 		\centering
 		\begin{tabular}{|c|cc|}
 			\hline
-			Results\footnote{Open-loop cross-over frequency~$\omega_{c,v}$, gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_v=3.5$ & $k_v=4.5$ \\
+			Comparison\footnote{Open-loop cross-over frequency~$\omega_{c,v}$, gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_v=3.5$ & $k_v=4.5$ \\
 			\hline
 			$\omega_{c,v}\ [rad/s]$ & $6.24$ & $8.01$ \\
 			$G_m\ [dB]$ & $19$ & $16.8$ \\
@@ -188,7 +188,7 @@ In \cref{fig:P1dof_step} all these three cases are compared.
 	\begin{subfigure}{0.45\columnwidth}
 		\begin{tabular}{|c|ccc|}
 			\hline
-			Results\footnote{Gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_p=1.7$ & $k_p=2$ & $k_p=3.5$ \\
+			Comparison\footnote{Gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_p=1.7$ & $k_p=2$ & $k_p=3.5$ \\
 			\hline
 			$G_m\ [dB]$ & $23.2$ & $21.7$ & $16.9$ \\
 			$\phi_m\ [deg]$ & $78.0$ & $76.0$ & $66.3$ \\
@@ -422,7 +422,7 @@ where $k_v$ represents the gain used to set the PI regulator of the inner loop, 
 	\begin{subfigure}{0.4\columnwidth}
 		\begin{tabular}{|c|ccc|}
 			\hline
-			Results\footnote{Gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_p=3$ & $k_p=2.5$ & $k_p=2$ \\
+			Comparison\footnote{Gain margin~$G_m$ and phase margin~$\phi_m$ are obtained theoretically by means of MATLAB. Instead, settling time~$T_s$ is measured through data collected at the laboratory.} & $k_p=3$ & $k_p=2.5$ & $k_p=2$ \\
 			\hline
 			$G_m\ [dB]$ & $20.4$ & $22$ & $24.1$ \\
 			$\phi_m\ [deg]$ & $70.5$ & $73.6$ & $73.7$ \\
